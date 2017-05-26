@@ -1,0 +1,143 @@
+import io.franzbecker.gradle.lombok.task.DelombokTask
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+plugins {
+    id 'findbugs'
+//    id 'checkstyle'
+    id 'com.jfrog.bintray' version '1.7.3'
+    id 'io.franzbecker.gradle-lombok' version '1.8'
+    id 'nebula.lint' version '6.8.0'
+    id 'nebula.release' version '4.2.0'
+    id 'nebula.dependency-lock' version '4.9.3'
+    id 'nebula.info' version '3.5.2'
+    id 'com.github.ben-manes.versions' version '0.14.0'
+}
+
+
+apply plugin: 'maven'
+
+allprojects {
+    repositories {
+        maven { url 'http://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/libs-milestone' }
+        jcenter()
+    }
+    apply plugin: 'maven'
+    apply plugin: 'java'
+
+    group = 'org.amv.trafficsoft'
+    version = '0.0.5-SNAPSHOT'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+}
+
+subprojects {
+    apply plugin: 'findbugs'
+//    apply plugin: 'checkstyle'
+    apply plugin: 'jacoco'
+    apply plugin: 'nebula.dependency-lock'
+    apply plugin: 'nebula.lint'
+    apply plugin: 'nebula.nebula-release'
+    apply plugin: 'nebula.info'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'io.franzbecker.gradle-lombok'
+
+    dependencies {
+        compile 'com.google.guava:guava:21.0'
+        compileOnly 'org.projectlombok:lombok:1.16.16'
+
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.hamcrest:hamcrest-all:1.3'
+        testCompile 'pl.pragmatists:JUnitParams:1.0.6'
+    }
+
+    lombok {
+        version = '1.16.16'
+        sha256 = 'fbf682c7ff113e5187a9c4b4cbd7a8ad782abd8ccff91b9fa7289a4a6aa8c19a'
+    }
+
+    task delombok(type: DelombokTask, dependsOn: compileJava) {
+        ext.outputDir = file("$buildDir/delombok")
+        outputs.dir(outputDir)
+        sourceSets.main.java.srcDirs.each {
+            inputs.dir(it)
+            args(it, '-d', outputDir)
+        }
+    }
+
+    task delombokHelp(type: DelombokTask) {
+        args '--help'
+    }
+
+    javadoc {
+        dependsOn delombok
+        source = delombok.outputDir
+        exclude 'lombok.config'
+        failOnError = false
+    }
+
+    tasks.withType(Jar).all { jarTask ->
+        manifest {
+            attributes(
+                    'Artifact': project.name,
+                    'Group': rootProject.group,
+                    'Build-Version': rootProject.version
+            )
+        }
+    }
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier = 'sources'
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    /*checkstyle {
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        toolVersion = '6.7'
+        ignoreFailures = true
+        showViolations = false
+        sourceSets = [sourceSets.main]
+        reportsDir = rootProject.file("$buildDir/reports/checkstyle")
+    }*/
+
+    findbugs {
+        effort = 'min'
+        ignoreFailures = true
+        sourceSets = [sourceSets.main]
+    }
+
+    task subprojectsDependencies(type: DependencyReportTask) {
+
+    }
+
+    test {
+        // Generate code coverage reports ... run with jacoco
+        jacocoTestReport {
+            additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+            reports {
+                xml.enabled true
+                csv.enabled false
+                html.destination "${buildDir}/reports/jacoco/html"
+            }
+            executionData = files("${buildDir}/jacoco/test.exec")
+        }
+
+        // * enable on demand
+        // testLogging.showStandardStreams = true
+        finalizedBy jacocoTestReport
+    }
+
+}

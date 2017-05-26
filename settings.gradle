@@ -1,0 +1,6 @@
+rootProject.name = 'amv-trafficsoft-datahub'
+
+include 'amv-trafficsoft-datahub-xfcd'
+include 'amv-trafficsoft-datahub-web'
+include 'amv-trafficsoft-datahub-kafka'
+

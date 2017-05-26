@@ -1,0 +1,23 @@
+
+repositories {
+    jcenter()
+    maven {
+        url 'https://repo.spring.io/libs-snapshot'
+    }
+}
+
+dependencies {
+    compile project(':amv-trafficsoft-datahub-xfcd')
+
+
+    compile('org.springframework.boot:spring-boot-starter:2.0.0.BUILD-SNAPSHOT') {
+        exclude module: 'spring-boot-starter-logging'
+    }
+
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+    compile 'com.google.guava:guava:21.0'
+    compileOnly 'org.projectlombok:lombok:1.16.16'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test:2.0.0.BUILD-SNAPSHOT'
+}
+
