@@ -1,5 +1,7 @@
 application-dev.yml
 application-dev-*.yml
+*.db
+*.db.wal.*
 
 # Created by https://www.gitignore.io/api/java,gradle,intellij
 
