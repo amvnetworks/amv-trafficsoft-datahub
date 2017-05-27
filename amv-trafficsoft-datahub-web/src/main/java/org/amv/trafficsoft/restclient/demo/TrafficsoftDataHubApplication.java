@@ -14,7 +14,7 @@ public class TrafficsoftDataHubApplication {
         log.info("Starting {} ...", TrafficsoftDataHubApplication.class.getSimpleName());
 
         new SpringApplicationBuilder(TrafficsoftDataHubApplication.class)
-                .web(WebApplicationType.NONE)
+                .web(WebApplicationType.SERVLET)
                 .bannerMode(Banner.Mode.CONSOLE)
                 .run(args);
     }
