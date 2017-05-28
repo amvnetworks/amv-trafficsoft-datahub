@@ -7,8 +7,6 @@ import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.reactivestreams.Publisher;
 import org.springframework.boot.CommandLineRunner;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 
@@ -22,13 +20,7 @@ public class DeliveryToEventBus implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Scheduler scheduler = Schedulers.newSingle("delivery-publisher");
-
-        Flux.interval(Duration.ofMillis(1), period)
-                .subscribeOn(scheduler)
-                .publishOn(scheduler)
-                .doOnNext(i -> log.info("About to call publisher {}", publisher.getClass()))
-                .flatMap(i -> Flux.from(publisher))
+        Flux.from(publisher)
                 .doOnNext(deliveryRestDto -> eventBus.post(deliveryRestDto))
                 .subscribe(deliveryRestDto -> {
                     log.debug("received delivery: {}", deliveryRestDto);

@@ -1,10 +1,11 @@
 package org.amv.trafficsoft.restclient.demo;
 
 import com.google.common.eventbus.AsyncEventBus;
-import org.amv.trafficsoft.datahub.xfcd.GetDataPublisher;
-import org.amv.trafficsoft.datahub.xfcd.HandledDeliveryHandler;
-import org.amv.trafficsoft.datahub.xfcd.LoggingDeliverySink;
-import org.amv.trafficsoft.datahub.xfcd.MapDbDeliverySink;
+import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.common.util.concurrent.AbstractScheduledService;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.ServiceManager;
+import org.amv.trafficsoft.datahub.xfcd.*;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.restclient.demo.command.DeliveryToEventBus;
 import org.amv.trafficsoft.restclient.demo.command.LastDataRunner;
@@ -12,6 +13,8 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +23,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,8 +54,8 @@ public class TrafficsoftDatahubConfig {
     }
 
     @Bean
-    public GetDataPublisher GetDataPublisher(XfcdClient xfcdClient) {
-        return new GetDataPublisher(xfcdClient, customerProperties.getContractId());
+    public XfcdGetDataPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
+        return new XfcdGetDataPublisher(xfcdClient, customerProperties.getContractId());
     }
 
     @Bean
@@ -92,6 +97,30 @@ public class TrafficsoftDatahubConfig {
         return new LoggingDeliverySink(asyncEventBus());
     }
 
+
+    @Bean
+    public ScheduledXfcdConfirmDelivieriesService scheduledConfirmDelivieriesService(XfcdClient xfcdClient) {
+        return new ScheduledXfcdConfirmDelivieriesService(
+                AbstractScheduledService.Scheduler.newFixedDelaySchedule(
+                        TimeUnit.SECONDS.toMillis(1),
+                        TimeUnit.SECONDS.toMillis(60),
+                        TimeUnit.MILLISECONDS
+                ),
+                xfcdClient,
+                customerProperties.getContractId(),
+                asyncEventBus()
+        );
+    }
+
+    @Bean
+    public XfcdGetDataService xfcdGetDataService(XfcdClient xfcdClient) {
+        return new XfcdGetDataService(
+                xfcdGetDataPublisher(xfcdClient),
+                asyncEventBus()
+        );
+    }
+
+    /*
     @Bean
     public HandledDeliveryHandler HandledDeliveryHandler(XfcdClient xfcdClient) {
         return HandledDeliveryHandler.builder()
@@ -99,15 +128,56 @@ public class TrafficsoftDatahubConfig {
                 .xfcdClient(xfcdClient)
                 .contractId(customerProperties.getContractId())
                 .build();
-    }
+    }*/
 
     @Bean
-    public CommandLineRunner deliveryToEvemtBusRunner(GetDataPublisher publisher, AsyncEventBus asyncEventBus) {
+    public CommandLineRunner deliveryToEvemtBusRunner(XfcdGetDataPublisher publisher, AsyncEventBus asyncEventBus) {
         return DeliveryToEventBus.builder()
                 .eventBus(asyncEventBus)
                 .publisher(publisher)
                 .period(Duration.ofSeconds(30))
                 .build();
+    }
+
+
+    @Bean
+    public SpringServiceManager serviceManager(List<Service> services) {
+        return new SpringServiceManager(new ServiceManager(services));
+    }
+
+    /*@Bean
+    public SpringServiceManager springServiceManager(ServiceManager serviceManager) {
+        return new SpringServiceManager(serviceManager);
+    }*/
+
+    public static class SpringServiceManager extends AbstractIdleService implements
+            InitializingBean, DisposableBean {
+
+        private final ServiceManager delegate;
+
+        public SpringServiceManager(ServiceManager delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected void startUp() throws Exception {
+            delegate.startAsync();
+        }
+
+        @Override
+        protected void shutDown() throws Exception {
+            delegate.stopAsync();
+        }
+
+        @Override
+        public void destroy() throws Exception {
+            shutDown();
+        }
+
+        @Override
+        public void afterPropertiesSet() throws Exception {
+            startUp();
+        }
     }
 /*
     @Bean
@@ -120,7 +190,7 @@ public class TrafficsoftDatahubConfig {
 
 
     @Bean
-    public CommandLineRunner deliveryToKafkaRunner(GetDataPublisher publisher, DeliveryKafkaSink deliveryKafkaSink) {
+    public CommandLineRunner deliveryToKafkaRunner(XfcdGetDataPublisher publisher, DeliveryKafkaSink deliveryKafkaSink) {
         return DeliveryToKafkaRunner.builder()
                 .deliveryKafkaSink(deliveryKafkaSink)
                 .publisher(publisher)
