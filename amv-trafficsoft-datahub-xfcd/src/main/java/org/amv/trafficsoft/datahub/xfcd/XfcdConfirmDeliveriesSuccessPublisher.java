@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.ScheduledXfcdConfirmDelivieriesService.ConfirmDeliveriesSuccessEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
+import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.TopicProcessor;
 
 import static java.util.Objects.requireNonNull;
@@ -25,16 +26,12 @@ public class XfcdConfirmDeliveriesSuccessPublisher implements Publisher<ConfirmD
     @AllowConcurrentEvents
     public void onNext(ConfirmDeliveriesSuccessEvent value) {
         requireNonNull(value);
-
-        //log.info("Got an event of type {}", value.getClass());
         this.processor.onNext(value);
     }
 
     @Override
     public void subscribe(Subscriber<? super ConfirmDeliveriesSuccessEvent> subscriber) {
         requireNonNull(subscriber);
-
-        log.info("Subscribing {}", subscriber.getClass());
         this.processor.subscribe(subscriber);
     }
 }
