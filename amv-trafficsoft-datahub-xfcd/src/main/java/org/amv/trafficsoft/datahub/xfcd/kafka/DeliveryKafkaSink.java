@@ -1,8 +1,9 @@
-package org.amv.trafficsoft.datahub.xfcd;
+package org.amv.trafficsoft.datahub.xfcd.kafka;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.kafka.DatahubKafkaConfig;
+import org.amv.trafficsoft.datahub.xfcd.XfcdDeliveryFluxSink;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;

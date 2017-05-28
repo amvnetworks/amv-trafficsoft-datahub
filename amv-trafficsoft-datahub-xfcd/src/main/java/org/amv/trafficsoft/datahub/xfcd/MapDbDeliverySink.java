@@ -74,9 +74,4 @@ public class MapDbDeliverySink {
                 .subscribe(asyncEventBus::post);
     }
 
-    @Value
-    @Builder
-    public static class HandledDelivery {
-        private DeliveryRestDto delivery;
-    }
 }

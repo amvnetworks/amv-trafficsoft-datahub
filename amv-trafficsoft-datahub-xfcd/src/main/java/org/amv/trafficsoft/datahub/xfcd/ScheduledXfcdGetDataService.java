@@ -1,10 +1,10 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.ScheduledXfcdConfirmDelivieriesService.ConfirmDeliveriesSuccessEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
@@ -12,22 +12,29 @@ import reactor.core.publisher.TopicProcessor;
 
 @Slf4j
 @Builder
-public class XfcdGetDataService extends AbstractExecutionThreadService {
+public class ScheduledXfcdGetDataService extends AbstractScheduledService {
 
+    @NonNull
     private XfcdGetDataPublisher xfcdGetDataPublisher;
+    @NonNull
     private XfcdConfirmDeliveriesSuccessPublisher xfcdConfirmDeliveriesSuccessPublisher;
+    @NonNull
+    private Scheduler scheduler;
+    @NonNull
     private EventBus eventBus;
 
+    @Override
+    protected Scheduler scheduler() {
+        return scheduler;
+    }
 
     @Override
     protected void startUp() throws Exception {
         Flux.from(xfcdConfirmDeliveriesSuccessPublisher)
                 .subscribe(new BaseSubscriber<ConfirmDeliveriesSuccessEvent>() {
-
                     @Override
                     protected void hookOnNext(ConfirmDeliveriesSuccessEvent value) {
                         log.info("got confirmed deliveries SUCCESS");
-                        run();
                     }
                 });
     }
@@ -37,8 +44,8 @@ public class XfcdGetDataService extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void run() {
-        log.debug("About to call publisher {}", xfcdGetDataPublisher.getClass());
+    protected void runOneIteration() throws Exception {
+        log.info("ScheduledXfcdGetDataService starting.");
 
         TopicProcessor<DeliveryRestDto> sink = TopicProcessor.create();
 
@@ -49,11 +56,10 @@ public class XfcdGetDataService extends AbstractExecutionThreadService {
                 })
                 .doOnError(e -> log.error("", e))
                 .doOnComplete(() -> {
-                    log.info("XfcdGetDataService completed.");
+                    log.info("ScheduledXfcdGetDataService completed.");
                 })
                 .subscribe();
 
-        log.info("XfcdGetDataService starting.");
         Flux.from(xfcdGetDataPublisher).subscribe(sink);
     }
 }

@@ -29,10 +29,11 @@ public class XfcdGetDataPublisher implements Publisher<DeliveryRestDto> {
             xfcdClient
                     .getDataAndConfirmDeliveries(contractId, Collections.emptyList())
                     .toObservable()
-                    .flatMapIterable(i -> i)
-                    .subscribe(value -> fluxSink.next(value),
-                            e -> fluxSink.error(e),
-                            () -> fluxSink.complete());
+                    .doOnNext(list -> log.info("Fetched {} delivieries", list.size()))
+                    .flatMapIterable(list -> list)
+                    .subscribe(fluxSink::next,
+                            fluxSink::error,
+                            fluxSink::complete);
         };
 
         this.deliveryRestDtoFlux = Flux.create(fluxSinkConsumer);

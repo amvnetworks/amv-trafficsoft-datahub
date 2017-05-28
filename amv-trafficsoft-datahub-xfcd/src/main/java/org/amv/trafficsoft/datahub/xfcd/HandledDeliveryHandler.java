@@ -5,7 +5,6 @@ import com.google.common.eventbus.Subscribe;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.MapDbDeliverySink.HandledDelivery;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 

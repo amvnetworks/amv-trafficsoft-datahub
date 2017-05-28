@@ -1,8 +1,7 @@
 package org.amv.trafficsoft.restclient.demo;
 
 import com.google.common.eventbus.AsyncEventBus;
-import com.google.common.util.concurrent.AbstractIdleService;
-import com.google.common.util.concurrent.AbstractScheduledService;
+import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
 import org.amv.trafficsoft.datahub.xfcd.*;
@@ -11,8 +10,6 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -84,47 +81,34 @@ public class TrafficsoftDatahubConfig {
 
 
     @Bean
-    public ScheduledXfcdConfirmDelivieriesService scheduledConfirmDelivieriesService(XfcdClient xfcdClient) {
-        return new ScheduledXfcdConfirmDelivieriesService(
-                AbstractScheduledService.Scheduler.newFixedDelaySchedule(
-                        TimeUnit.SECONDS.toMillis(1),
-                        TimeUnit.SECONDS.toMillis(12),
-                        TimeUnit.MILLISECONDS
-                ),
-                xfcdClient,
-                customerProperties.getContractId(),
-                asyncEventBus()
-        );
-    }
-
-    @Bean
-    public XfcdGetDataService xfcdGetDataService(XfcdClient xfcdClient) {
-        return XfcdGetDataService.builder()
-                .xfcdGetDataPublisher(xfcdGetDataPublisher(xfcdClient))
-                .xfcdConfirmDeliveriesSuccessPublisher(xfcdConfirmDeliveriesSuccessPublisher())
+    public XfcdConfirmDeliveriesService scheduledConfirmDelivieriesService(XfcdClient xfcdClient) {
+        return XfcdConfirmDeliveriesService.builder()
+                .scheduler(
+                        Scheduler.newFixedDelaySchedule(
+                                TimeUnit.SECONDS.toMillis(1),
+                                TimeUnit.SECONDS.toMillis(12),
+                                TimeUnit.MILLISECONDS
+                        ))
+                .xfcdHandledDeliveryPublisher(xfcdHandledDeliveryPublisher())
+                .xfcdClient(xfcdClient)
+                .contractId(customerProperties.getContractId())
                 .eventBus(asyncEventBus())
                 .build();
     }
 
-    /*
     @Bean
-    public HandledDeliveryHandler HandledDeliveryHandler(XfcdClient xfcdClient) {
-        return HandledDeliveryHandler.builder()
-                .asyncEventBus(asyncEventBus())
-                .xfcdClient(xfcdClient)
-                .contractId(customerProperties.getContractId())
+    public ScheduledXfcdGetDataService scheduledXfcdGetDataService(XfcdClient xfcdClient) {
+        return ScheduledXfcdGetDataService.builder()
+                .xfcdGetDataPublisher(xfcdGetDataPublisher(xfcdClient))
+                .xfcdConfirmDeliveriesSuccessPublisher(xfcdConfirmDeliveriesSuccessPublisher())
+                .eventBus(asyncEventBus())
+                .scheduler(Scheduler.newFixedDelaySchedule(
+                        TimeUnit.SECONDS.toMillis(1),
+                        TimeUnit.SECONDS.toMillis(30),
+                        TimeUnit.MILLISECONDS
+                ))
                 .build();
-    }*/
-
-    /*@Bean
-    public CommandLineRunner deliveryToEvemtBusRunner(XfcdGetDataPublisher publisher, AsyncEventBus asyncEventBus) {
-        return DeliveryToEventBus.builder()
-                .eventBus(asyncEventBus)
-                .publisher(publisher)
-                .period(Duration.ofSeconds(30))
-                .build();
-    }*/
-
+    }
 
     @Bean
     public SpringServiceManager serviceManager(List<Service> services) {
@@ -141,56 +125,5 @@ public class TrafficsoftDatahubConfig {
     public XfcdConfirmDeliveriesSuccessPublisher xfcdConfirmDeliveriesSuccessPublisher() {
         return new XfcdConfirmDeliveriesSuccessPublisher(asyncEventBus());
     }
-    /*@Bean
-    public SpringServiceManager springServiceManager(ServiceManager serviceManager) {
-        return new SpringServiceManager(serviceManager);
-    }*/
 
-    public static class SpringServiceManager extends AbstractIdleService implements
-            InitializingBean, DisposableBean {
-
-        private final ServiceManager delegate;
-
-        public SpringServiceManager(ServiceManager delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected void startUp() throws Exception {
-            delegate.startAsync();
-        }
-
-        @Override
-        protected void shutDown() throws Exception {
-            delegate.stopAsync();
-        }
-
-        @Override
-        public void destroy() throws Exception {
-            shutDown();
-        }
-
-        @Override
-        public void afterPropertiesSet() throws Exception {
-            startUp();
-        }
-    }
-/*
-    @Bean
-    public DeliveryKafkaSink DeliveryKafkaSink(KafkaSender<Long, DeliveryRestDto> kafkaSender) {
-        return DeliveryKafkaSink.builder()
-                .kafkaSender(kafkaSender)
-                .topic("delivery")
-                .build();
-    }
-
-
-    @Bean
-    public CommandLineRunner deliveryToKafkaRunner(XfcdGetDataPublisher publisher, DeliveryKafkaSink deliveryKafkaSink) {
-        return DeliveryToKafkaRunner.builder()
-                .deliveryKafkaSink(deliveryKafkaSink)
-                .publisher(publisher)
-                .period(Duration.ofSeconds(30))
-                .build();
-    }*/
 }

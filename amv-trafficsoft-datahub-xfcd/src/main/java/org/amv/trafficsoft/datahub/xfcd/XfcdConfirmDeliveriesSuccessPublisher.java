@@ -4,10 +4,8 @@ import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.ScheduledXfcdConfirmDelivieriesService.ConfirmDeliveriesSuccessEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
-import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.TopicProcessor;
 
 import static java.util.Objects.requireNonNull;
