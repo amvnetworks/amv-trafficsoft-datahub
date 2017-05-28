@@ -7,8 +7,6 @@ import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
 import org.amv.trafficsoft.datahub.xfcd.*;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
-import org.amv.trafficsoft.restclient.demo.command.DeliveryToEventBus;
-import org.amv.trafficsoft.restclient.demo.command.LastDataRunner;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
@@ -16,13 +14,10 @@ import org.mapdb.Serializer;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -41,16 +36,6 @@ public class TrafficsoftDatahubConfig {
     @Autowired
     public TrafficsoftDatahubConfig(CustomerProperties customerProperties) {
         this.customerProperties = requireNonNull(customerProperties);
-    }
-
-    @Bean
-    @Profile("get-last-data-demo")
-    public CommandLineRunner lastDataRunner(XfcdClient xfcdClient) {
-        return new LastDataRunner(
-                xfcdClient,
-                customerProperties.getContractId(),
-                customerProperties.getVehicleIds()
-        );
     }
 
     @Bean
@@ -103,7 +88,7 @@ public class TrafficsoftDatahubConfig {
         return new ScheduledXfcdConfirmDelivieriesService(
                 AbstractScheduledService.Scheduler.newFixedDelaySchedule(
                         TimeUnit.SECONDS.toMillis(1),
-                        TimeUnit.SECONDS.toMillis(60),
+                        TimeUnit.SECONDS.toMillis(12),
                         TimeUnit.MILLISECONDS
                 ),
                 xfcdClient,
@@ -114,10 +99,11 @@ public class TrafficsoftDatahubConfig {
 
     @Bean
     public XfcdGetDataService xfcdGetDataService(XfcdClient xfcdClient) {
-        return new XfcdGetDataService(
-                xfcdGetDataPublisher(xfcdClient),
-                asyncEventBus()
-        );
+        return XfcdGetDataService.builder()
+                .xfcdGetDataPublisher(xfcdGetDataPublisher(xfcdClient))
+                .xfcdConfirmDeliveriesSuccessPublisher(xfcdConfirmDeliveriesSuccessPublisher())
+                .eventBus(asyncEventBus())
+                .build();
     }
 
     /*
@@ -130,14 +116,14 @@ public class TrafficsoftDatahubConfig {
                 .build();
     }*/
 
-    @Bean
+    /*@Bean
     public CommandLineRunner deliveryToEvemtBusRunner(XfcdGetDataPublisher publisher, AsyncEventBus asyncEventBus) {
         return DeliveryToEventBus.builder()
                 .eventBus(asyncEventBus)
                 .publisher(publisher)
                 .period(Duration.ofSeconds(30))
                 .build();
-    }
+    }*/
 
 
     @Bean
@@ -145,6 +131,16 @@ public class TrafficsoftDatahubConfig {
         return new SpringServiceManager(new ServiceManager(services));
     }
 
+
+    @Bean
+    public XfcdHandledDeliveryPublisher xfcdHandledDeliveryPublisher() {
+        return new XfcdHandledDeliveryPublisher(asyncEventBus());
+    }
+
+    @Bean
+    public XfcdConfirmDeliveriesSuccessPublisher xfcdConfirmDeliveriesSuccessPublisher() {
+        return new XfcdConfirmDeliveriesSuccessPublisher(asyncEventBus());
+    }
     /*@Bean
     public SpringServiceManager springServiceManager(ServiceManager serviceManager) {
         return new SpringServiceManager(serviceManager);

@@ -8,14 +8,16 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.MapDbDeliverySink.HandledDelivery;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import rx.Observable;
 
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class ScheduledXfcdConfirmDelivieriesService extends AbstractScheduledService {
@@ -32,7 +34,7 @@ public class ScheduledXfcdConfirmDelivieriesService extends AbstractScheduledSer
     private final XfcdClient xfcdClient;
     private final long contractId;
 
-    private final Queue<MapDbDeliverySink.HandledDelivery> queue =
+    private final Queue<HandledDelivery> queue =
             Queues.newConcurrentLinkedQueue();
 
     public ScheduledXfcdConfirmDelivieriesService(Scheduler scheduler,
@@ -48,7 +50,7 @@ public class ScheduledXfcdConfirmDelivieriesService extends AbstractScheduledSer
     }
 
     @Subscribe
-    public void onNext(MapDbDeliverySink.HandledDelivery value) {
+    public void onNext(HandledDelivery value) {
         queue.add(value);
     }
 
@@ -63,30 +65,49 @@ public class ScheduledXfcdConfirmDelivieriesService extends AbstractScheduledSer
     @Override
     protected void runOneIteration() throws Exception {
         if (queue.isEmpty()) {
+            log.info("Queue is empty");
             return;
         }
+        log.info("Queue contains {} elements", queue.size());
 
-        Map<Long, DeliveryRestDto> handledDeliveryIds = queue.stream()
-                .map(MapDbDeliverySink.HandledDelivery::getDelivery)
-                .collect(Collectors.toMap(DeliveryRestDto::getDeliveryId, i -> i));
+        ImmutableList<HandledDelivery> handledDeliveries = ImmutableList.copyOf(queue.stream()
+                .collect(toList()));
 
-        Set<Long> deliveryIds = handledDeliveryIds.keySet();
-        log.info("About to confirm deliveries {}", handledDeliveryIds);
+        Set<Long> deliveryIds = handledDeliveries.stream()
+                .map(HandledDelivery::getDelivery)
+                .map(DeliveryRestDto::getDeliveryId)
+                .collect(Collectors.toSet());
+        log.info("About to confirm deliveries {}", deliveryIds);
 
         xfcdClient.confirmDeliveries(contractId, ImmutableList.copyOf(deliveryIds))
                 .toObservable()
                 .doOnNext(foo -> log.info("Confirmed delivery {}", deliveryIds))
-                .map(foo -> handledDeliveryIds.values())
-                .doOnNext(queue::removeAll)
+                .map(foo -> handledDeliveries)
+                .doOnNext(ids -> {
+                    log.info("about to remove {} elements from queue", ids.size());
+                    queue.removeAll(ids);
+                    log.info("Queue contains now {} elements", queue.size());
+                })
                 .flatMap(Observable::from)
+                .map(HandledDelivery::getDelivery)
                 .map(delivery -> ConfirmedDelivery.builder()
                         .delivery(delivery)
                         .build())
+                .doOnCompleted(() -> {
+                    log.info("about to post ConfirmDeliveriesSuccessEvent event");
+                    eventBus.post(ConfirmDeliveriesSuccessEvent.builder()
+                            .build());
+                })
                 .subscribe(eventBus::post);
     }
 
     @Override
     protected Scheduler scheduler() {
         return scheduler;
+    }
+
+    @Builder
+    public static class ConfirmDeliveriesSuccessEvent {
+
     }
 }
