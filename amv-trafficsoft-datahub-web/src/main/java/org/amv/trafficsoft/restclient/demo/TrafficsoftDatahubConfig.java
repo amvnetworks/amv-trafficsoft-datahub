@@ -37,7 +37,10 @@ public class TrafficsoftDatahubConfig {
 
     @Bean
     public XfcdGetDataPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
-        return new XfcdGetDataPublisher(xfcdClient, customerProperties.getContractId());
+        return XfcdGetDataPublisher.builder()
+                .xfcdClient(xfcdClient)
+                .contractId(customerProperties.getContractId())
+                .build();
     }
 
     @Bean

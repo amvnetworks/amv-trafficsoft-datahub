@@ -1,5 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
@@ -14,17 +15,14 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
+@Builder
 public class XfcdGetDataPublisher implements Publisher<DeliveryRestDto> {
 
     private final XfcdClient xfcdClient;
     private final long contractId;
 
-    Flux<DeliveryRestDto> deliveryRestDtoFlux;
-
-    public XfcdGetDataPublisher(XfcdClient xfcdClient, long contractId) {
-        this.xfcdClient = requireNonNull(xfcdClient);
-        this.contractId = contractId;
-
+    @Override
+    public void subscribe(Subscriber<? super DeliveryRestDto> subscriber) {
         Consumer<FluxSink<DeliveryRestDto>> fluxSinkConsumer = fluxSink -> {
             xfcdClient
                     .getDataAndConfirmDeliveries(contractId, Collections.emptyList())
@@ -36,11 +34,7 @@ public class XfcdGetDataPublisher implements Publisher<DeliveryRestDto> {
                             fluxSink::complete);
         };
 
-        this.deliveryRestDtoFlux = Flux.create(fluxSinkConsumer);
-    }
-
-    @Override
-    public void subscribe(Subscriber<? super DeliveryRestDto> subscriber) {
-        deliveryRestDtoFlux.subscribe(subscriber);
+        Flux.create(fluxSinkConsumer)
+                .subscribe(subscriber);
     }
 }
