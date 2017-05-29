@@ -4,5 +4,5 @@ import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.Flux;
 
-public interface XfcdDeliveryFluxSink extends Subscriber<DeliveryRestDto> {
+public interface XfcdDeliveryRestDtoSubscriber extends Subscriber<DeliveryRestDto> {
 }

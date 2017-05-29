@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub.xfcd;
+package org.amv.trafficsoft.datahub.xfcd.experimental;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,6 +7,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.Builder;
 import lombok.Value;
+import org.amv.trafficsoft.datahub.xfcd.event.HandledDelivery;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.mapdb.HTreeMap;
 import reactor.core.publisher.Flux;
@@ -68,6 +69,7 @@ public class MapDbDeliverySink {
 
         Flux.fromIterable(ImmutableList.of(value))
                 .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .map(delivery -> HandledDelivery.builder()
                         .delivery(delivery)
                         .build())

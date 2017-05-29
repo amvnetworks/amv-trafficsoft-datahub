@@ -3,13 +3,12 @@ package org.amv.trafficsoft.datahub.xfcd.kafka;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.kafka.DatahubKafkaConfig;
-import org.amv.trafficsoft.datahub.xfcd.XfcdDeliveryFluxSink;
+import org.amv.trafficsoft.datahub.xfcd.XfcdDeliveryRestDtoSubscriber;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 import reactor.kafka.sender.SenderResult;
@@ -20,7 +19,7 @@ import java.time.ZoneId;
 @Builder
 @Slf4j
 public class DeliveryKafkaSink extends BaseSubscriber<DeliveryRestDto>
-        implements XfcdDeliveryFluxSink {
+        implements XfcdDeliveryRestDtoSubscriber {
 
     private KafkaSender<Long, DeliveryRestDto> kafkaSender;
     private String topic;

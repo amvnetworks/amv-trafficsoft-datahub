@@ -5,10 +5,12 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmDeliveriesSuccessEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.TopicProcessor;
+import reactor.core.scheduler.Schedulers;
 
 @Slf4j
 @Builder
@@ -47,9 +49,11 @@ public class ScheduledXfcdGetDataService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         log.info("ScheduledXfcdGetDataService starting.");
 
-        TopicProcessor<DeliveryRestDto> sink = TopicProcessor.create();
+        TopicProcessor<DeliveryRestDto> sink = TopicProcessor.create(this.getClass().getName());
 
         sink
+                .publishOn(Schedulers.single())
+                .subscribeOn(Schedulers.single())
                 .doOnNext(deliveryRestDto -> eventBus.post(deliveryRestDto))
                 .doOnNext(deliveryRestDto -> {
                     log.trace("received delivery: {}", deliveryRestDto);

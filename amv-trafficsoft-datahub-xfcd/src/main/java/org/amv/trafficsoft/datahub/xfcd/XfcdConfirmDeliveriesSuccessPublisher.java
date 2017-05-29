@@ -1,9 +1,9 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmDeliveriesSuccessEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.TopicProcessor;
@@ -21,15 +21,16 @@ public class XfcdConfirmDeliveriesSuccessPublisher implements Publisher<ConfirmD
     }
 
     @Subscribe
-    @AllowConcurrentEvents
     public void onNext(ConfirmDeliveriesSuccessEvent value) {
         requireNonNull(value);
+
         this.processor.onNext(value);
     }
 
     @Override
     public void subscribe(Subscriber<? super ConfirmDeliveriesSuccessEvent> subscriber) {
         requireNonNull(subscriber);
+
         this.processor.subscribe(subscriber);
     }
 }

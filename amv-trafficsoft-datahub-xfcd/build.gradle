@@ -9,6 +9,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mapdb/mapdb
     compile group: 'org.mapdb', name: 'mapdb', version: '3.0.4'
+    compile 'net.openhft:chronicle-map:3.13.0'
 
 
     compile 'io.projectreactor:reactor-core:3.1.0.M1'

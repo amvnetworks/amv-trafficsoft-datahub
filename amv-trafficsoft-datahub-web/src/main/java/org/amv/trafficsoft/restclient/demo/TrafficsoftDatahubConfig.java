@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
 import org.amv.trafficsoft.datahub.xfcd.*;
+import org.amv.trafficsoft.datahub.xfcd.experimental.MapDbDeliverySink;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -48,10 +49,20 @@ public class TrafficsoftDatahubConfig {
         return new AsyncEventBus("async-event-bus", Executors.newFixedThreadPool(20));
     }
 
+    /*@Bean
+    public ChronicleMap<Long, DeliveryRestDto> chronicleDeliveryRestDtoMap() throws IOException {
+        return ChronicleMap
+                .of(Long.class, DeliveryRestDto.class)
+                .name("amv-trafficsoft-deliveries")
+                .entries(50_000)
+                --> not working .averageValue(DeliveryRestDto.builder().build())
+                .createPersistedTo(new File("amv-trafficsoft-deliveries.chronicle.db"));
+    }*/
+
     @Bean(destroyMethod = "close")
     public DB db() {
         return DBMaker
-                .fileDB("amv-trafficsoft-deliveries.db")
+                .fileDB("amv-trafficsoft-deliveries.mapdb.db")
                 .fileMmapEnableIfSupported()
                 .transactionEnable()
                 .make();
@@ -71,6 +82,12 @@ public class TrafficsoftDatahubConfig {
                 .deliveriesMap(deliveriesMap())
                 .build();
     }
+
+    /*
+    @Bean
+    public ChronicleMapDeliverySink chronicleMapDeliverySink() throws IOException {
+        return new ChronicleMapDeliverySink(asyncEventBus(), chronicleDeliveryRestDtoMap());
+    }*/
 
     @Bean
     public MapDbDeliverySink mapDbDeliverySink() {

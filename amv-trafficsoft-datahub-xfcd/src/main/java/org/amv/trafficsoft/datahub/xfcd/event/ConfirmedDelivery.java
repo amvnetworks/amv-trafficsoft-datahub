@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub.xfcd;
+package org.amv.trafficsoft.datahub.xfcd.event;
 
 import lombok.Builder;
 import lombok.Value;

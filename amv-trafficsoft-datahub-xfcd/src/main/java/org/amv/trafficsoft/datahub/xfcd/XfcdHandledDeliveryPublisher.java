@@ -1,9 +1,9 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.event.HandledDelivery;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.DirectProcessor;
@@ -21,9 +21,9 @@ public class XfcdHandledDeliveryPublisher implements Publisher<HandledDelivery> 
     }
 
     @Subscribe
-    @AllowConcurrentEvents
     public void onNext(HandledDelivery value) {
         requireNonNull(value);
+
         this.processor.onNext(value);
     }
 
@@ -31,7 +31,6 @@ public class XfcdHandledDeliveryPublisher implements Publisher<HandledDelivery> 
     public void subscribe(Subscriber<? super HandledDelivery> subscriber) {
         requireNonNull(subscriber);
 
-        log.info("Subscribing {}", subscriber.getClass());
         this.processor.subscribe(subscriber);
     }
 }

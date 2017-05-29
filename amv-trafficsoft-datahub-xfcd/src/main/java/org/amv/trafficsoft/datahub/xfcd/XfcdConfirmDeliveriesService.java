@@ -6,10 +6,14 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmDeliveriesSuccessEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDelivery;
+import org.amv.trafficsoft.datahub.xfcd.event.HandledDelivery;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 import rx.Observable;
 
 import java.time.Duration;
@@ -40,7 +44,10 @@ public class XfcdConfirmDeliveriesService extends AbstractScheduledService {
     @Override
     protected void startUp() throws Exception {
         log.info("startUp()");
+
         Flux.from(xfcdHandledDeliveryPublisher)
+                .publishOn(Schedulers.single())
+                .subscribeOn(Schedulers.single())
                 .bufferTimeout(100, Duration.ofSeconds(10))
                 .doOnSubscribe(subscription -> log.info("subscribed"))
                 .subscribe(new BaseSubscriber<List<HandledDelivery>>() {
