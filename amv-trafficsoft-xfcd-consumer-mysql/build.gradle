@@ -1,0 +1,9 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc')
+
+    compile 'mysql:mysql-connector-java:5.1.8'
+}

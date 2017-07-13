@@ -10,17 +10,4 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mapdb/mapdb
     compile group: 'org.mapdb', name: 'mapdb', version: '3.0.4'
     compile 'net.openhft:chronicle-map:3.13.0'
-
-
-    compile 'io.projectreactor:reactor-core:3.1.0.M1'
-    compile 'io.projectreactor.addons:reactor-adapter:3.1.0.M1'
-    compile 'io.projectreactor.addons:reactor-extra:3.0.7.RELEASE'
-
-    testCompile 'org.slf4j:slf4j-simple:1.7.25'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test:1.5.2.RELEASE'
-    testCompile('org.springframework.boot:spring-boot-starter-web:1.5.2.RELEASE') {
-        exclude module: 'spring-boot-starter-logging'
-    }
-
 }

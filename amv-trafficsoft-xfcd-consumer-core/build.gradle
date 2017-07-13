@@ -1,0 +1,7 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-model:0.0.7'
+}
