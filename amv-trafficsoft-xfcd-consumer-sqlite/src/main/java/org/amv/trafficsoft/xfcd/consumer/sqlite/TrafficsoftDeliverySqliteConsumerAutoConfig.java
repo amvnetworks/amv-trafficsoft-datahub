@@ -6,32 +6,31 @@ import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAut
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
-
 @Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftDeliveryJdbcConsumerAutoConfig.class)
+@ConditionalOnClass(org.sqlite.JDBC.class)
 @ConditionalOnProperty(
         value = "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName",
         havingValue = "org.sqlite.JDBC"
 )
+@ConditionalOnBean(name = "trafficsoftDeliveryJdbcConsumerNamedTemplate")
 @EnableTransactionManagement
 public class TrafficsoftDeliverySqliteConsumerAutoConfig {
 
     @Autowired
-    private DataSource dataSource;
-
-    @Bean
-    public NamedParameterJdbcTemplate namedJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(dataSource);
-    }
+    @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Bean
     public TrafficsoftDeliveryConsumer deliveryConsumer(TrafficsoftDeliveryJdbcDao deliveryDao) {
@@ -45,6 +44,6 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
 
     @Bean
     public TrafficsoftDeliveryJdbcDao deliveryDao() {
-        return new SqliteTrafficsoftDeliveryJdbcDao(namedJdbcTemplate(), deliveryRowMapper());
+        return new SqliteTrafficsoftDeliveryJdbcDao(namedJdbcTemplate, deliveryRowMapper());
     }
 }

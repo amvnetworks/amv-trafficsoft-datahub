@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':amv-trafficsoft-datahub-xfcd')
     compile group: 'org.apache.kafka', name: 'kafka-streams', version: '0.10.2.1'
 
     compile 'org.springframework.kafka:spring-kafka:2.0.0.M2'

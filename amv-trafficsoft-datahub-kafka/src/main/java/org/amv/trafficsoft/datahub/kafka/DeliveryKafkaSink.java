@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub.xfcd.kafka;
+package org.amv.trafficsoft.datahub.kafka;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;

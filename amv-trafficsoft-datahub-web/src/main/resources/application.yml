@@ -1,4 +1,4 @@
-spring.application.name: 'amv-trafficsoft-restclient-demo'
+spring.application.name: 'amv-trafficsoft-datahub-demo'
 spring.profiles.active: demo
 
 server.port: 8090

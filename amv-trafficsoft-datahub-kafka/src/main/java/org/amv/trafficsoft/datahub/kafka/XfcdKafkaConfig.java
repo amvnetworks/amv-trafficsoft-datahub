@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub.xfcd.kafka;
+package org.amv.trafficsoft.datahub.kafka;
 
 import org.amv.trafficsoft.datahub.kafka.DatahubKafkaConfig;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;

@@ -49,7 +49,9 @@ public class ScheduledXfcdGetDataService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         log.info("ScheduledXfcdGetDataService starting.");
 
-        TopicProcessor<DeliveryRestDto> sink = TopicProcessor.create(this.getClass().getName());
+        TopicProcessor<DeliveryRestDto> sink = TopicProcessor.<DeliveryRestDto>builder()
+                .name(this.getClass().getName())
+                .build();
 
         sink
                 .publishOn(Schedulers.single())

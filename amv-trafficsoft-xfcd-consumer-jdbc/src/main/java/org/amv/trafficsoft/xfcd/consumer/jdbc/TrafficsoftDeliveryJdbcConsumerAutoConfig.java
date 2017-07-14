@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -43,7 +44,7 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
         @Autowired(required = false)
         private MetricRegistry metricRegistry;
 
-        @Bean
+        @Bean(name = "trafficsoftDeliveryJdbcConsumerHikariConfig")
         public HikariConfig jdbcConsumerHikariConfig() {
             HikariConfig config = new HikariConfig();
 
@@ -53,7 +54,7 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
             config.setJdbcUrl(properties.getJdbcUrl());
             config.setUsername(properties.getUsername());
             config.setPassword(properties.getPassword());
-            config.setPoolName("vishy-consumer-jdbc");
+            config.setPoolName("trafficsoft-xfcd-consumer-jdbc-pool");
 
             if (metricRegistry != null) {
                 config.setMetricRegistry(metricRegistry);
@@ -67,7 +68,7 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
             return config;
         }
 
-        @Bean(name = "trafficsoftDeliveryJdbcConsumerHikariDataSource")
+        @Bean(name = "trafficsoftDeliveryJdbcConsumerDataSource")
         public HikariDataSource jdbcConsumerHikariDataSource() {
             return new HikariDataSource(jdbcConsumerHikariConfig());
         }
@@ -75,6 +76,11 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
         @Bean(name = "trafficsoftDeliveryJdbcConsumerTemplate")
         public JdbcTemplate jdbcConsumerJdbcTemplate() {
             return new JdbcTemplate(jdbcConsumerHikariDataSource());
+        }
+
+        @Bean(name = "trafficsoftDeliveryJdbcConsumerNamedTemplate")
+        public NamedParameterJdbcTemplate jdbcConsumerJdbcNamedTemplate() {
+            return new NamedParameterJdbcTemplate(jdbcConsumerHikariDataSource());
         }
 
         @Bean(name = "trafficsoftDeliveryJdbcConsumerTransactionManager")

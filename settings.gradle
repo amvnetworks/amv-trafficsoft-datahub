@@ -2,7 +2,7 @@ rootProject.name = 'amv-trafficsoft-datahub'
 
 include 'amv-trafficsoft-datahub-xfcd'
 include 'amv-trafficsoft-datahub-web'
-include 'amv-trafficsoft-datahub-kafka'
+//include 'amv-trafficsoft-datahub-kafka'
 include 'amv-trafficsoft-xfcd-consumer-jdbc'
 include 'amv-trafficsoft-xfcd-consumer-core'
 include 'amv-trafficsoft-xfcd-consumer-mysql'
