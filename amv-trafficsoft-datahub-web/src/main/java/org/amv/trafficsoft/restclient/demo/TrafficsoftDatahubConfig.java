@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
 import org.amv.trafficsoft.datahub.xfcd.*;
 import org.amv.trafficsoft.datahub.xfcd.experimental.MapDbDeliverySink;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -14,7 +15,6 @@ import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -23,24 +23,20 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 @Configuration
-@Import({
-        TrafficsoftRestClientConfig.class,
-        //XfcdKafkaConfig.class
-})
 public class TrafficsoftDatahubConfig {
 
-    private final CustomerProperties customerProperties;
+    private final TrafficsoftApiRestProperties apiRestProperties;
 
     @Autowired
-    public TrafficsoftDatahubConfig(CustomerProperties customerProperties) {
-        this.customerProperties = requireNonNull(customerProperties);
+    public TrafficsoftDatahubConfig(TrafficsoftApiRestProperties apiRestProperties) {
+        this.apiRestProperties = requireNonNull(apiRestProperties);
     }
 
     @Bean
     public XfcdGetDataPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
         return XfcdGetDataPublisher.builder()
                 .xfcdClient(xfcdClient)
-                .contractId(customerProperties.getContractId())
+                .contractId(apiRestProperties.getContractId())
                 .build();
     }
 
@@ -111,7 +107,7 @@ public class TrafficsoftDatahubConfig {
                         ))
                 .xfcdHandledDeliveryPublisher(xfcdHandledDeliveryPublisher())
                 .xfcdClient(xfcdClient)
-                .contractId(customerProperties.getContractId())
+                .contractId(apiRestProperties.getContractId())
                 .eventBus(asyncEventBus())
                 .build();
     }

@@ -1,5 +1,6 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
@@ -8,8 +9,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -34,7 +36,7 @@ public class TrafficsoftDeliverySqliteConsumerTest {
 
     @Test(expected = NullPointerException.class)
     public void itShouldThrowOnNull() throws Exception {
-        sut.accept(null);
+        sut.onNext(null);
 
         Assert.fail("It should have thrown exception");
     }
@@ -43,7 +45,9 @@ public class TrafficsoftDeliverySqliteConsumerTest {
     public void itShouldDoNothingOnEmptyList() throws Exception {
         List<DeliveryRestDto> deliveryRestDtoList = Collections.emptyList();
 
-        sut.accept(deliveryRestDtoList);
+        sut.onNext(TrafficsoftDeliveryPackageImpl.builder()
+                .deliveries(deliveryRestDtoList)
+                .build());
 
         verify(dao, never());
     }
@@ -59,7 +63,12 @@ public class TrafficsoftDeliverySqliteConsumerTest {
                         .build())
                 .build());
 
-        sut.accept(deliveryRestDtoList);
+        Flux.fromIterable(deliveryRestDtoList)
+                .map(delivery -> TrafficsoftDeliveryPackageImpl.builder()
+                        .addDelivery(delivery)
+                        .build())
+                .subscribeOn(Schedulers.immediate())
+                .subscribe(sut);
 
         verify(dao, times(1)).saveAll(anyList());
     }

@@ -6,6 +6,9 @@ repositories {
 dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd')
 
+
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:0.1.0-SNAPSHOT'
+
     compile('org.springframework.boot:spring-boot-starter:2.0.0.M2') {
         //exclude module: 'spring-boot-starter-logging'
     }

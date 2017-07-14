@@ -1,15 +1,19 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.DeliveryRestDtoMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import reactor.core.publisher.Flux;
+import reactor.test.scheduler.VirtualTimeScheduler;
 
 import java.util.List;
 
@@ -27,17 +31,31 @@ public class TrafficsoftDeliverySqliteConsumerIT {
 
     }
 
+    private static VirtualTimeScheduler testScheduler;
+
     @Autowired
     private TrafficsoftDeliveryJdbcDao deliveryDao;
 
     @Autowired
     private TrafficsoftDeliverySqliteConsumer sut;
 
+
+    @BeforeClass
+    public static void setUp() {
+        //testScheduler = VirtualTimeScheduler.getOrSet();
+    }
+
     @Test
     public void itShouldPersistToDatabase() throws Exception {
         final List<DeliveryRestDto> deliveryRestDto = DeliveryRestDtoMother.randomList();
 
-        this.sut.accept(deliveryRestDto);
+        Flux.fromIterable(deliveryRestDto)
+                .map(delivery -> TrafficsoftDeliveryPackageImpl.builder()
+                        .addDelivery(delivery)
+                        .build())
+                .subscribe(sut);
+
+        //testScheduler.advanceTimeBy(Duration.ofSeconds(100));
 
         final long deliveryId = deliveryRestDto.stream().findFirst()
                 .orElseThrow(IllegalStateException::new)
