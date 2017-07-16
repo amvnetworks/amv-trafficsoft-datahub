@@ -15,6 +15,7 @@ plugins {
     id 'nebula.dependency-lock' version '4.9.3'
     id 'nebula.info' version '3.5.2'
     id 'nebula.project' version '3.4.0'
+    id 'nebula.optional-base' version '3.2.0'
     id 'com.github.ben-manes.versions' version '0.14.0'
 }
 
@@ -48,6 +49,7 @@ subprojects {
     apply plugin: 'nebula.lint'
     apply plugin: 'nebula.nebula-release'
     apply plugin: 'nebula.info'
+    apply plugin: 'nebula.optional-base'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'io.franzbecker.gradle-lombok'
 

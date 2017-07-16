@@ -6,6 +6,8 @@ repositories {
 
 dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-autoconfigure')
+    compile project(':amv-trafficsoft-xfcd-consumer-sqlite-spring-boot-autoconfigure')
+
     compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:0.1.0-SNAPSHOT'
 
 }

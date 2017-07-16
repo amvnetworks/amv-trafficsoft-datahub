@@ -28,7 +28,7 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
      * <p>
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
      */
-    @Bean
+    @Bean("trafficsoftXfcdJdbcPropertiesValidator")
     public static TrafficsoftXfcdJdbcPropertiesValidator configurationPropertiesValidator() {
         return new TrafficsoftXfcdJdbcPropertiesValidator();
     }
@@ -87,7 +87,6 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
         public PlatformTransactionManager jdbcConsumerTransactionManager() {
             return new DataSourceTransactionManager(jdbcConsumerHikariDataSource());
         }
-
 
         @PostConstruct
         public void postConstruct() {

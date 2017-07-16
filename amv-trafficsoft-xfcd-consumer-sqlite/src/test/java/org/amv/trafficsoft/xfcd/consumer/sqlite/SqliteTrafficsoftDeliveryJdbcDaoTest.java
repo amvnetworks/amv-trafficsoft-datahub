@@ -54,7 +54,6 @@ public class SqliteTrafficsoftDeliveryJdbcDaoTest {
                 imTrafficsoftDeliveryRowMapper);
     }
 
-
     @Test
     @DatabaseSetup(value = "/sample_data_deliveries_bulk.xml")
     public void itShouldFindDeliveryByIdEmpty() {

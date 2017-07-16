@@ -9,6 +9,7 @@ dependencies {
 
     testCompile('org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.1.0-SNAPSHOT')
 
+    testCompile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     testCompile 'org.xerial:sqlite-jdbc:3.19.3'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.dbunit:dbunit:2.5.3'

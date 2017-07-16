@@ -3,7 +3,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-xfcd-consumer-core')
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc')
 
     compile('com.zaxxer:HikariCP:2.6.3')
     compile('org.flywaydb:flyway-core:4.2.0')
