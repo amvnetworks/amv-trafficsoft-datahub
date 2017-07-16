@@ -4,9 +4,8 @@ repositories {
 }
 
 dependencies {
-    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client:0.0.7'
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:0.1.0-SNAPSHOT'
 
-    // https://mvnrepository.com/artifact/org.mapdb/mapdb
-    compile group: 'org.mapdb', name: 'mapdb', version: '3.0.4'
+    compile 'org.mapdb:mapdb:3.0.4'
     compile 'net.openhft:chronicle-map:3.13.0'
 }
