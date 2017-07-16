@@ -1,0 +1,14 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
+    compile project(':amv-trafficsoft-xfcd-consumer-sqlite')
+
+    compileOnly 'org.xerial:sqlite-jdbc:3.19.3'
+
+    testCompile('org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.1.0-SNAPSHOT')
+
+    testCompile 'org.xerial:sqlite-jdbc:3.19.3'
+}

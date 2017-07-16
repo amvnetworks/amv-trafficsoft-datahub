@@ -7,8 +7,8 @@ import java.time.Instant;
 import static com.google.common.base.Preconditions.checkArgument;
 
 
-public final class TrafficsoftDeliveryDboMother {
-    private TrafficsoftDeliveryDboMother() {
+public final class TrafficsoftDeliveryEntityMother {
+    private TrafficsoftDeliveryEntityMother() {
         throw new UnsupportedOperationException();
     }
 

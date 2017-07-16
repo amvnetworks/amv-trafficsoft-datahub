@@ -5,9 +5,8 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.collect.ImmutableList;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryDboMother;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntityMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +39,7 @@ import static org.junit.Assert.assertThat;
         DbUnitTestExecutionListener.class
 })
 @Transactional
-public class TrafficsoftDeliveryJdbcDaoImplTest {
+public class SqliteTrafficsoftDeliveryJdbcDaoTest {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -107,8 +106,8 @@ public class TrafficsoftDeliveryJdbcDaoImplTest {
     }
 
     @Test
-    public void insertNewDelivery() throws Exception {
-        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryDboMother.randomUnconfirmed();
+    public void itShouldInsertDelivery() throws Exception {
+        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
 
         this.sut.save(trafficsoftDeliveryEntity);
 
@@ -118,7 +117,7 @@ public class TrafficsoftDeliveryJdbcDaoImplTest {
 
     @Test
     public void itShouldConfirmDeliveryById() throws Exception {
-        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryDboMother.randomUnconfirmed();
+        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
 
         this.sut.save(trafficsoftDeliveryEntity);
 
@@ -132,8 +131,8 @@ public class TrafficsoftDeliveryJdbcDaoImplTest {
 
     @Test
     public void itShouldConfirmDeliveriesByIds() throws Exception {
-        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryDboMother.randomUnconfirmed();
-        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity2 = TrafficsoftDeliveryDboMother.randomUnconfirmed();
+        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
+        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity2 = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
 
         this.sut.saveAll(Arrays.asList(trafficsoftDeliveryEntity, trafficsoftDeliveryEntity2));
 

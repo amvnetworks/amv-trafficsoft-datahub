@@ -7,4 +7,6 @@ include 'amv-trafficsoft-xfcd-consumer-jdbc'
 include 'amv-trafficsoft-xfcd-consumer-core'
 include 'amv-trafficsoft-xfcd-consumer-mysql'
 include 'amv-trafficsoft-xfcd-consumer-sqlite'
+include 'amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure'
+include 'amv-trafficsoft-xfcd-consumer-sqlite-spring-boot-autoconfigure'
 
