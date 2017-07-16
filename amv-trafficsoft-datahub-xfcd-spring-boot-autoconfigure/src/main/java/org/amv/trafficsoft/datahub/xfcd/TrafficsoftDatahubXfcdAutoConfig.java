@@ -30,7 +30,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
      * <p>
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
      */
-    @Bean("trafficsoftDatahubXfcdPropertiesValidator")
+    @Bean
     public static TrafficsoftDatahubXfcdPropertiesValidator configurationPropertiesValidator() {
         return new TrafficsoftDatahubXfcdPropertiesValidator();
     }
@@ -63,19 +63,13 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public LoggingDeliverySink loggingDeliverySink() {
-            return new LoggingDeliverySink(asyncEventBus());
+        public LoggingDeliveryPackageEventHandler loggingDeliverySink() {
+            return new LoggingDeliveryPackageEventHandler(asyncEventBus());
         }
 
         @Bean
-        public XfcdConfirmDeliveriesService scheduledConfirmDelivieriesService(XfcdClient xfcdClient) {
+        public XfcdConfirmDeliveriesService confirmDelivieriesService(XfcdClient xfcdClient) {
             return XfcdConfirmDeliveriesService.builder()
-                    .scheduler(
-                            Scheduler.newFixedDelaySchedule(
-                                    TimeUnit.SECONDS.toMillis(1),
-                                    TimeUnit.SECONDS.toMillis(12),
-                                    TimeUnit.MILLISECONDS
-                            ))
                     .xfcdHandledDeliveryPublisher(xfcdHandledDeliveryPublisher())
                     .xfcdClient(xfcdClient)
                     .contractId(apiRestProperties.getContractId())

@@ -4,5 +4,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':amv-trafficsoft-xfcd-consumer-core')
     compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:0.1.0-SNAPSHOT'
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.1.0-SNAPSHOT'
 }

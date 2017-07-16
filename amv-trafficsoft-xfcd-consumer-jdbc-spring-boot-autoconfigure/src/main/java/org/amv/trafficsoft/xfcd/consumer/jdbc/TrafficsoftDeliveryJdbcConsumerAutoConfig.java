@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 @Configuration
 @ConditionalOnProperty("amv.trafficsoft.xfcd.consumer.jdbc.enabled")
@@ -28,7 +30,7 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
      * <p>
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
      */
-    @Bean("trafficsoftXfcdJdbcPropertiesValidator")
+    @Bean
     public static TrafficsoftXfcdJdbcPropertiesValidator configurationPropertiesValidator() {
         return new TrafficsoftXfcdJdbcPropertiesValidator();
     }
@@ -38,11 +40,15 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
     @EnableTransactionManagement
     public class TrafficsoftDeliveryJdbcConsumerConfig {
 
-        @Autowired
-        private TrafficsoftXfcdJdbcProperties properties;
+        private final TrafficsoftXfcdJdbcProperties properties;
 
         @Autowired(required = false)
         private MetricRegistry metricRegistry;
+
+        @Autowired
+        public TrafficsoftDeliveryJdbcConsumerConfig(TrafficsoftXfcdJdbcProperties trafficsoftXfcdJdbcProperties) {
+            this.properties = requireNonNull(trafficsoftXfcdJdbcProperties);
+        }
 
         @Bean(name = "trafficsoftDeliveryJdbcConsumerHikariConfig")
         public HikariConfig jdbcConsumerHikariConfig() {

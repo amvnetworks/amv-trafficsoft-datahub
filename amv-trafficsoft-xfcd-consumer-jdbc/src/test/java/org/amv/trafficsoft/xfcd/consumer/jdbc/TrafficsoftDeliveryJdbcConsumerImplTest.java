@@ -1,9 +1,8 @@
-package org.amv.trafficsoft.xfcd.consumer.sqlite;
+package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,9 +20,9 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TrafficsoftDeliverySqliteConsumerTest {
+public class TrafficsoftDeliveryJdbcConsumerImplTest {
 
-    private TrafficsoftDeliverySqliteConsumer sut;
+    private TrafficsoftDeliveryJdbcPackageSubscriberImpl sut;
 
     private TrafficsoftDeliveryJdbcDao dao;
 
@@ -31,7 +30,7 @@ public class TrafficsoftDeliverySqliteConsumerTest {
     public void setUp() {
         this.dao = spy(TrafficsoftDeliveryJdbcDao.class);
 
-        this.sut = spy(new TrafficsoftDeliverySqliteConsumer(dao));
+        this.sut = spy(new TrafficsoftDeliveryJdbcPackageSubscriberImpl(dao));
     }
 
     @Test(expected = NullPointerException.class)

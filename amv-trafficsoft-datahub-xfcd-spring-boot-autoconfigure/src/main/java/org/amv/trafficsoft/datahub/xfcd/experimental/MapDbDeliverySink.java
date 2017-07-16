@@ -2,12 +2,12 @@ package org.amv.trafficsoft.datahub.xfcd.experimental;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.Builder;
 import lombok.Value;
-import org.amv.trafficsoft.datahub.xfcd.event.HandledDelivery;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
+import org.amv.trafficsoft.datahub.xfcd.event.HandledDeliveryPackage;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.mapdb.HTreeMap;
 import reactor.core.publisher.Flux;
@@ -25,14 +25,28 @@ public class MapDbDeliverySink {
 
         private final HTreeMap<Long, String> deliveriesMap;
 
-        public Flux<DeliveryRestDto> save(DeliveryRestDto deliveryRestDto) {
-            return Flux.create(fluxSink -> {
+        public Mono<TrafficsoftDeliveryPackage> saveAll(TrafficsoftDeliveryPackage deliveries) {
+            return Mono.create(fluxSink -> {
+                try {
+                    for (DeliveryRestDto deliveryRestDto : deliveries.getDeliveries()) {
+                        String json = objectMapper.writeValueAsString(deliveryRestDto);
+                        deliveriesMap.put(deliveryRestDto.getDeliveryId(), json);
+                    }
+
+                    fluxSink.success(deliveries);
+                } catch (JsonProcessingException e) {
+                    fluxSink.error(e);
+                }
+            });
+        }
+
+        public Mono<DeliveryRestDto> save(DeliveryRestDto deliveryRestDto) {
+            return Mono.create(fluxSink -> {
                 try {
                     String json = objectMapper.writeValueAsString(deliveryRestDto);
                     deliveriesMap.put(deliveryRestDto.getDeliveryId(), json);
 
-                    fluxSink.next(deliveryRestDto);
-                    fluxSink.complete();
+                    fluxSink.success(deliveryRestDto);
                 } catch (JsonProcessingException e) {
                     fluxSink.error(e);
                 }
@@ -64,14 +78,12 @@ public class MapDbDeliverySink {
     }
 
     @Subscribe
-    public void onNext(DeliveryRestDto value) {
-        deliveryDatabase.save(value);
-
-        Flux.fromIterable(ImmutableList.of(value))
+    public void onNext(TrafficsoftDeliveryPackage value) {
+        deliveryDatabase.saveAll(value)
                 .publishOn(Schedulers.elastic())
                 .subscribeOn(Schedulers.elastic())
-                .map(delivery -> HandledDelivery.builder()
-                        .delivery(delivery)
+                .map(delivery -> HandledDeliveryPackage.builder()
+                        .delivery(value)
                         .build())
                 .subscribe(asyncEventBus::post);
     }

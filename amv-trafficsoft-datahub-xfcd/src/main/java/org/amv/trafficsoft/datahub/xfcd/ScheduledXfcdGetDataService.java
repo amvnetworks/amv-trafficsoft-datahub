@@ -7,10 +7,13 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmDeliveriesSuccessEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
+import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.TopicProcessor;
 import reactor.core.scheduler.Schedulers;
+
+import java.time.Duration;
 
 @Slf4j
 @Builder
@@ -49,16 +52,20 @@ public class ScheduledXfcdGetDataService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         log.info("ScheduledXfcdGetDataService starting.");
 
-        TopicProcessor<DeliveryRestDto> sink = TopicProcessor.<DeliveryRestDto>builder()
+        eventBus.post(TrafficsoftDeliveryPackageImpl.builder()
+                .deliveries(DeliveryRestDtoMother.randomList())
+                .build());
+
+        TopicProcessor<TrafficsoftDeliveryPackage> sink = TopicProcessor.<TrafficsoftDeliveryPackage>builder()
                 .name(this.getClass().getName())
                 .build();
 
         sink
                 .publishOn(Schedulers.single())
                 .subscribeOn(Schedulers.single())
-                .doOnNext(deliveryRestDto -> eventBus.post(deliveryRestDto))
-                .doOnNext(deliveryRestDto -> {
-                    log.trace("received delivery: {}", deliveryRestDto);
+                .doOnNext(delivery -> eventBus.post(delivery))
+                .doOnNext(delivery -> {
+                    log.trace("received delivery: {}", delivery);
                 })
                 .doOnError(e -> log.error("", e))
                 .doOnComplete(() -> {

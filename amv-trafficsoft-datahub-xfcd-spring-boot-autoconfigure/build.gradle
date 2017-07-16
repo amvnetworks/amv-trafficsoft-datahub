@@ -9,4 +9,6 @@ dependencies {
 
     compile 'org.mapdb:mapdb:3.0.4'
     compile 'net.openhft:chronicle-map:3.13.0'
+
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc'), optional
 }
