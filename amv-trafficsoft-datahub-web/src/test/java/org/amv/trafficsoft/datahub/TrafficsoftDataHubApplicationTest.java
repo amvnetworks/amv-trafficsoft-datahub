@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.restclient.demo;
+package org.amv.trafficsoft.datahub;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

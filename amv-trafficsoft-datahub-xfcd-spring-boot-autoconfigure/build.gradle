@@ -1,0 +1,12 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':amv-trafficsoft-datahub-xfcd')
+
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:0.1.0-SNAPSHOT'
+
+    compile 'org.mapdb:mapdb:3.0.4'
+    compile 'net.openhft:chronicle-map:3.13.0'
+}

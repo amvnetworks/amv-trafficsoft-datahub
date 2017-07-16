@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.restclient.demo;
+package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.ServiceManager;

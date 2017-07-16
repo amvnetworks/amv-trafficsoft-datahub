@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.restclient.demo;
+package org.amv.trafficsoft.datahub;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

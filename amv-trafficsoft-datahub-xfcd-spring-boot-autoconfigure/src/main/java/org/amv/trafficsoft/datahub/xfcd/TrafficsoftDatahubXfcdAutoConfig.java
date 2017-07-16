@@ -1,18 +1,14 @@
-package org.amv.trafficsoft.restclient.demo;
+package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
-import org.amv.trafficsoft.datahub.xfcd.*;
-import org.amv.trafficsoft.datahub.xfcd.experimental.MapDbDeliverySink;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,12 +19,13 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 @Configuration
-public class TrafficsoftDatahubConfig {
+@AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
+public class TrafficsoftDatahubXfcdAutoConfig {
 
     private final TrafficsoftApiRestProperties apiRestProperties;
 
     @Autowired
-    public TrafficsoftDatahubConfig(TrafficsoftApiRestProperties apiRestProperties) {
+    public TrafficsoftDatahubXfcdAutoConfig(TrafficsoftApiRestProperties apiRestProperties) {
         this.apiRestProperties = requireNonNull(apiRestProperties);
     }
 
@@ -45,56 +42,10 @@ public class TrafficsoftDatahubConfig {
         return new AsyncEventBus("async-event-bus", Executors.newFixedThreadPool(20));
     }
 
-    /*@Bean
-    public ChronicleMap<Long, DeliveryRestDto> chronicleDeliveryRestDtoMap() throws IOException {
-        return ChronicleMap
-                .of(Long.class, DeliveryRestDto.class)
-                .name("amv-trafficsoft-deliveries")
-                .entries(50_000)
-                --> not working .averageValue(DeliveryRestDto.builder().build())
-                .createPersistedTo(new File("amv-trafficsoft-deliveries.chronicle.db"));
-    }*/
-
-    @Bean(destroyMethod = "close")
-    public DB db() {
-        return DBMaker
-                .fileDB("amv-trafficsoft-deliveries.mapdb.db")
-                .fileMmapEnableIfSupported()
-                .transactionEnable()
-                .make();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Bean(destroyMethod = "close")
-    public HTreeMap<Long, String> deliveriesMap() {
-        DB.HashMapMaker<Long, String> deliveries1 = db()
-                .hashMap("deliveries", Serializer.LONG, Serializer.STRING);
-        return deliveries1.createOrOpen();
-    }
-
     @Bean
-    public MapDbDeliverySink.DeliveryDatabase deliveryDatabase() {
-        return MapDbDeliverySink.DeliveryDatabase.builder()
-                .deliveriesMap(deliveriesMap())
-                .build();
-    }
-
-    /*
-    @Bean
-    public ChronicleMapDeliverySink chronicleMapDeliverySink() throws IOException {
-        return new ChronicleMapDeliverySink(asyncEventBus(), chronicleDeliveryRestDtoMap());
-    }*/
-
-    @Bean
-    public MapDbDeliverySink mapDbDeliverySink() {
-        return new MapDbDeliverySink(asyncEventBus(), deliveryDatabase());
-    }
-
-    @Bean
-    public LoggingDeliverySink LoggingDeliverySink() {
+    public LoggingDeliverySink loggingDeliverySink() {
         return new LoggingDeliverySink(asyncEventBus());
     }
-
 
     @Bean
     public XfcdConfirmDeliveriesService scheduledConfirmDelivieriesService(XfcdClient xfcdClient) {

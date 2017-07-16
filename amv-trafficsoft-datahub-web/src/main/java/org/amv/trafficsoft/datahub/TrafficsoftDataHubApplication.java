@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.restclient.demo;
+package org.amv.trafficsoft.datahub;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;

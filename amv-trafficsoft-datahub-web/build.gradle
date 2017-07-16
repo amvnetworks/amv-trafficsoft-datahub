@@ -4,7 +4,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd')
+    compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-starter')
 
     compile('org.springframework.boot:spring-boot-starter:2.0.0.M2');
     compile('org.springframework.boot:spring-boot-starter-webflux:2.0.0.M2');
