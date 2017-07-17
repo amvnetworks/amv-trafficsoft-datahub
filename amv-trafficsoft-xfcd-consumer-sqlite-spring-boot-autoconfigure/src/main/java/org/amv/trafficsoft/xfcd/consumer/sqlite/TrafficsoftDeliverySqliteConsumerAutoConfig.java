@@ -1,11 +1,9 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
-import com.google.common.eventbus.EventBus;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageSubscriberEventBusAdapter;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
-import org.reactivestreams.Subscriber;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -17,8 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.util.function.Supplier;
 
 @Slf4j
 @Configuration
@@ -36,21 +32,6 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
     @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    @ConditionalOnBean(EventBus.class)
-    @Bean("sqliteTrafficsoftDeliverySubscriberEventBusAdapter")
-    public TrafficsoftDeliveryPackageSubscriberEventBusAdapter deliverySubscriberEventBusAdapter(TrafficsoftDeliveryJdbcDao deliveryDao, EventBus eventBus) {
-        final Supplier<Subscriber<TrafficsoftDeliveryPackage>> trafficsoftDeliverySubscriberSupplier = () -> {
-            return new TrafficsoftDeliveryJdbcPackageSubscriberImpl(deliveryDao);
-        };
-        return new TrafficsoftDeliveryPackageSubscriberEventBusAdapter(trafficsoftDeliverySubscriberSupplier, eventBus);
-    }
-    
-    @Bean("sqliteTrafficsoftDeliveryJdbcVerticle")
-    public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryJdbcDao deliveryDao) {
-        return TrafficsoftDeliveryJdbcVerticle.builder()
-                .deliveryDao(deliveryDao)
-                .build();
-    }
 
     @ConditionalOnMissingBean
     @Bean("trafficsoftDeliveryRowMapper")

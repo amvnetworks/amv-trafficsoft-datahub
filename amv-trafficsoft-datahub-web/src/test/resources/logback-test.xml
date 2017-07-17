@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-
+    
     <logger name="org.amv.trafficsoft" level="DEBUG"/>
-    <logger name="org.amv.trafficsoft.datahub.xfcd.ConfirmDeliveriesVerticle" level="INFO"/>
-    <logger name="org.amv.trafficsoft.datahub.xfcd.XfcdGetDataVerticle" level="INFO"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.ConfirmDeliveriesVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.XfcdGetDataVerticle" level="DEBUG"/>
 
 </configuration>

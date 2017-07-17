@@ -1,59 +1,88 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.MessageProducer;
+import io.vertx.core.json.Json;
+import io.vertx.core.streams.Pump;
+import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Subscription;
+import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class XfcdGetDataVerticle extends AbstractVerticle {
+    private static final Scheduler scheduler = Schedulers.single();
 
-    private static AtomicReferenceFieldUpdater<XfcdGetDataVerticle, Subscription> S =
-            AtomicReferenceFieldUpdater.newUpdater(XfcdGetDataVerticle.class, Subscription.class, "subscription");
+    private Publisher<TrafficsoftDeliveryPackage> publisher;
 
-    private volatile Subscription subscription;
+    private final long intervalInSeconds;
 
-    private TrafficsoftDeliveryPackageHotFlux flux;
-
-    private TrafficsoftDeliveryPackageSubscriber subscriber;
+    private long periodicTimerId;
+    private long initTimerId;
 
     @Builder
-    XfcdGetDataVerticle(TrafficsoftDeliveryPackageHotFlux flux,
-                        TrafficsoftDeliveryPackageSubscriber subscriber) {
-        this.flux = requireNonNull(flux);
-        this.subscriber = requireNonNull(subscriber);
+    XfcdGetDataVerticle(Publisher<TrafficsoftDeliveryPackage> publisher,
+                        long intervalInSeconds) {
+        checkArgument(intervalInSeconds > 0L);
+        this.publisher = requireNonNull(publisher);
+        this.intervalInSeconds = intervalInSeconds;
     }
 
     @Override
     public void start() throws Exception {
-        flux.flux()
-                .publishOn(Schedulers.single())
-                .subscribeOn(Schedulers.single())
-                .retry()
-                .doOnNext(delivery -> {
-                    log.info("received delivery: {}", delivery);
-                })
-                .doOnComplete(() -> {
-                    log.info("ScheduledXfcdGetDataService completed.");
-                })
-                .doOnSubscribe(subscription -> {
-                    final Subscription previousSubscriptionOrNull = S.getAndSet(this, subscription);
-                    ofNullable(previousSubscriptionOrNull).ifPresent(Subscription::cancel);
-                })
-                .subscribe(subscriber);
+        final long intervalInMilliseconds = TimeUnit.SECONDS.toMillis(this.intervalInSeconds);
+
+        this.initTimerId = vertx.setTimer(TimeUnit.SECONDS.toMillis(1), timerId -> {
+            fetchDeliveriesAndPublishOnEventBus();
+
+            XfcdGetDataVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMilliseconds, foo -> {
+                fetchDeliveriesAndPublishOnEventBus();
+            });
+        });
+
     }
+
 
     @Override
     public void stop() throws Exception {
-        ofNullable(S.get(this))
-                .ifPresent(Subscription::cancel);
+        vertx.cancelTimer(this.initTimerId);
+        vertx.cancelTimer(this.periodicTimerId);
     }
 
+    private void fetchDeliveriesAndPublishOnEventBus() {
+        ReactiveReadStream<Object> rrs = ReactiveReadStream.readStream();
+
+        Flux.from(publisher)
+                .publishOn(scheduler)
+                .subscribeOn(scheduler)
+                .doOnError(t -> {
+                    log.error("{}", t.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.error("", t);
+                    }
+                })
+                // TODO on error Return Random -> REMOVE AFTER DEBUGGING
+                .onErrorReturn(TrafficsoftDeliveryPackageImpl.builder()
+                        .deliveries(DeliveryRestDtoMother.randomList())
+                        .build())
+                .map(Json::encode)
+                .subscribe(rrs);
+
+        MessageProducer<Object> messageProducer = vertx.getDelegate()
+                .eventBus().publisher(VertxEvents.deliveryPackage);
+
+        Pump pump = Pump.pump(rrs, messageProducer);
+
+        pump.start();
+    }
 }

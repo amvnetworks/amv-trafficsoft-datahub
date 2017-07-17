@@ -1,8 +1,6 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
 import com.google.common.eventbus.EventBus;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageSubscriberEventBusAdapter;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
@@ -17,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -37,16 +36,19 @@ public class TrafficsoftDeliverySqliteConsumerIT {
     @Autowired
     private TrafficsoftDeliveryJdbcDao deliveryDao;
 
-    @Autowired
-    private TrafficsoftDeliveryPackageSubscriberEventBusAdapter sut;
-
     @Test
     public void itShouldPersistToDatabase() throws Exception {
         final List<DeliveryRestDto> deliveries = DeliveryRestDtoMother.randomList();
 
-        sut.onNext(TrafficsoftDeliveryPackageImpl.builder()
-                .deliveries(deliveries)
-                .build());
+        final List<TrafficsoftDeliveryEntity> deliveryEntities = deliveries.stream()
+                .map(val -> TrafficsoftDeliveryEntity.builder()
+                        .id(val.getDeliveryId())
+                        .timestamp(val.getTimestamp().toInstant())
+                        .confirmedAt(null)
+                        .build())
+                .collect(toList());
+
+        deliveryDao.saveAll(deliveryEntities);
 
         final long deliveryId = deliveries.stream().findFirst()
                 .orElseThrow(IllegalStateException::new)

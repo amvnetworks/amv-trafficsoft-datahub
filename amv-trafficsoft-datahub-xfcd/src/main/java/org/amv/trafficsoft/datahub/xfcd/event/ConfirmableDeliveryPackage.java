@@ -1,23 +1,22 @@
-package org.amv.trafficsoft.datahub.xfcd;
+package org.amv.trafficsoft.datahub.xfcd.event;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Singular;
+import lombok.NonNull;
 import lombok.Value;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-
-import java.util.List;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = TrafficsoftDeliveryPackageImpl.Builder.class)
-public class TrafficsoftDeliveryPackageImpl implements TrafficsoftDeliveryPackage {
+@JsonDeserialize(builder = ConfirmableDeliveryPackage.Builder.class)
+public class ConfirmableDeliveryPackage {
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 
     }
 
-    @Singular("addDelivery")
-    private List<DeliveryRestDto> deliveries;
+    @NonNull
+    private TrafficsoftDeliveryPackage deliveryPackage;
 }
