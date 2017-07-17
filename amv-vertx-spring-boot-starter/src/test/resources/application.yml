@@ -9,3 +9,8 @@ logging.file: application.log
 logging.config: classpath:logback.xml
 logging.level.org.springframework: WARN
 
+
+vertx:
+  worker-pool-size: 42
+  internal-blocking-pool-size: 1337
+

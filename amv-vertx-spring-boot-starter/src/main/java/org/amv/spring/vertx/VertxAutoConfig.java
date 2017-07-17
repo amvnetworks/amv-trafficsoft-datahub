@@ -2,13 +2,16 @@ package org.amv.spring.vertx;
 
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
@@ -23,12 +26,18 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @ConditionalOnClass(Vertx.class)
 @ConditionalOnMissingClass("io.vertx.rxjava.core.Vertx")
-public class VertxAutoConfig {
+@EnableConfigurationProperties(VertxProperties.class)
+public class VertxAutoConfig extends AbstractVertxAutoConfig {
+
+    @Autowired
+    public VertxAutoConfig(VertxProperties properties) {
+        super(properties);
+    }
 
     @ConditionalOnMissingBean(Vertx.class)
     @Bean
-    public Vertx vertx() {
-        return Vertx.vertx();
+    public Vertx vertx(VertxOptions vertxOptions) {
+        return Vertx.vertx(vertxOptions);
     }
 
     @ConditionalOnMissingBean(VertxStartStopService.class)
