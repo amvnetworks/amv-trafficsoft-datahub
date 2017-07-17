@@ -4,15 +4,15 @@ import io.vertx.core.json.Json;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/data")
-public class LastDataController {
+public class UnconfirmedDataController {
 
     @Autowired
     TrafficsoftApiRestProperties apiRestProperties;
@@ -24,6 +24,6 @@ public class LastDataController {
     public String index() {
         final List<Long> idsOfUnconfirmedDeliveriesByBpcId = dao
                 .findIdsOfUnconfirmedDeliveriesByBpcId((int) apiRestProperties.getContractId());
-        return Json.encode(idsOfUnconfirmedDeliveriesByBpcId);
+        return Json.encodePrettily(idsOfUnconfirmedDeliveriesByBpcId);
     }
 }

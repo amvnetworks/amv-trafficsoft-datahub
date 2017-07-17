@@ -12,8 +12,7 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -22,20 +21,19 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.elastic();
 
-    private final TrafficsoftDeliveryJdbcDao deliveryDao;
+    private final TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao;
     private final boolean primaryDataStore;
 
     private volatile MessageConsumer<String> consumer;
 
     @Builder
-    TrafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryJdbcDao deliveryDao, boolean primaryDataStore) {
-        this.deliveryDao = requireNonNull(deliveryDao);
+    TrafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao, boolean primaryDataStore) {
+        this.deliveryPackageDao = requireNonNull(deliveryPackageDao);
         this.primaryDataStore = primaryDataStore;
     }
 
@@ -69,6 +67,7 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
     protected void onNext(TrafficsoftDeliveryPackage deliveryPackage) {
         requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
 
+
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
 
         if (log.isDebugEnabled()) {
@@ -79,14 +78,6 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
             return;
         }
 
-        final List<TrafficsoftDeliveryEntity> deliveryEntities = deliveries.stream()
-                .map(val -> TrafficsoftDeliveryEntity.builder()
-                        .id(val.getDeliveryId())
-                        .timestamp(val.getTimestamp().toInstant())
-                        .confirmedAt(null)
-                        .build())
-                .collect(toList());
-
-        deliveryDao.saveAll(deliveryEntities);
+        deliveryPackageDao.save(deliveryPackage);
     }
 }

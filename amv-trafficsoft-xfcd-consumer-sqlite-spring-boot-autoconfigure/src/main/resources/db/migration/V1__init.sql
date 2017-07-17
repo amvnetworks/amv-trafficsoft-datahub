@@ -16,7 +16,7 @@ create table if not exists `amv_trafficsoft_xfcd_node` (
     `SATCNT` integer,
     `SPEED` decimal(10,2),
     `TRIPID` bigint not null,
-    `V_ID` bigint not null,
+    `V_ID` bigint,
     `VDOP` decimal(10,1),
     `BPC_ID` integer not null,
     `IMXFCD_D_ID` bigint,

@@ -1,9 +1,7 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -32,7 +30,6 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
     @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-
     @ConditionalOnMissingBean
     @Bean("trafficsoftDeliveryRowMapper")
     public TrafficsoftDeliveryRowMapper deliveryRowMapper() {
@@ -40,7 +37,18 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
     }
 
     @Bean("sqliteTrafficsoftDeliveryJdbcDao")
-    public TrafficsoftDeliveryJdbcDao deliveryDao(TrafficsoftDeliveryRowMapper deliveryRowMapper) {
-        return new SqliteTrafficsoftDeliveryJdbcDao(namedJdbcTemplate, deliveryRowMapper);
+    public TrafficsoftDeliveryJdbcDao deliveryDao(TrafficsoftDeliveryRowMapper rowMapper) {
+        return new TrafficsoftDeliveryJdbcSqliteDaoImpl(namedJdbcTemplate, rowMapper);
+    }
+
+    @ConditionalOnMissingBean
+    @Bean("trafficsoftXfcdNodeRowMapper")
+    public TrafficsoftXfcdNodeRowMapper xfcdNodeRowMapper() {
+        return new TrafficsoftXfcdNodeRowMapper();
+    }
+
+    @Bean("sqliteTrafficsoftNodeJdbcDao")
+    public TrafficsoftXfcdNodeJdbcDao xfcdNodeDao(TrafficsoftXfcdNodeRowMapper rowMapper) {
+        return new TrafficsoftXfcdNodeJdbcDaoSqliteImpl(namedJdbcTemplate, rowMapper);
     }
 }

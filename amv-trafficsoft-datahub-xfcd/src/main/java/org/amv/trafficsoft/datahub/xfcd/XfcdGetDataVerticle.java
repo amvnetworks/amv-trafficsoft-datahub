@@ -8,7 +8,6 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
-import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
@@ -71,10 +70,6 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
                         log.error("", t);
                     }
                 })
-                // TODO on error Return Random -> REMOVE AFTER DEBUGGING
-                .onErrorReturn(TrafficsoftDeliveryPackageImpl.builder()
-                        .deliveries(DeliveryRestDtoMother.randomList())
-                        .build())
                 .map(Json::encode)
                 .subscribe(rrs);
 

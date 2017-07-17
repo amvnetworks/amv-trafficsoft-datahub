@@ -7,8 +7,8 @@ dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-starter')
     compile project(':amv-vertx-spring-boot-starter')
 
-    compile('org.springframework.boot:spring-boot-starter:2.0.0.M2');
-    compile('org.springframework.boot:spring-boot-starter-webflux:2.0.0.M2');
-    compile('org.springframework.boot:spring-boot-starter-jetty:2.0.0.M2');
+    compile('org.springframework.boot:spring-boot-starter:2.0.0.M2')
+    compile('org.springframework.boot:spring-boot-starter-web:2.0.0.M2')
+    //compile('org.springframework.boot:spring-boot-starter-jetty:2.0.0.M2')
 }
 

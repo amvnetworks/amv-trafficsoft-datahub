@@ -20,4 +20,6 @@ public class TrafficsoftDeliveryPackageImpl implements TrafficsoftDeliveryPackag
 
     @Singular("addDelivery")
     private List<DeliveryRestDto> deliveries;
+
+    private long contractId;
 }

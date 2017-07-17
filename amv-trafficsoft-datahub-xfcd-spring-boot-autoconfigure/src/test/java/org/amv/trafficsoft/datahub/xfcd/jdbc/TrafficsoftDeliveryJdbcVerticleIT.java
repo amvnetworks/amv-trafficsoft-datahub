@@ -9,7 +9,7 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @RunWith(VertxUnitRunner.class)
@@ -26,15 +25,15 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
     private Vertx vertx;
 
-    private TrafficsoftDeliveryJdbcDao jdbcDao;
+    private TrafficsoftDeliveryPackageJdbcDao dao;
 
     @Before
     public void setUp(TestContext context) throws IOException {
         this.vertx = Vertx.vertx();
-        this.jdbcDao = spy(TrafficsoftDeliveryJdbcDao.class);
+        this.dao = spy(TrafficsoftDeliveryPackageJdbcDao.class);
 
         final TrafficsoftDeliveryJdbcVerticle sut = TrafficsoftDeliveryJdbcVerticle.builder()
-                .deliveryDao(this.jdbcDao)
+                .deliveryPackageDao(this.dao)
                 .primaryDataStore(true)
                 .build();
 
@@ -49,7 +48,7 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
     @Test
     public void itShouldDoNothingOnEmptyList(TestContext context) throws Exception {
-        verifyNoMoreInteractions(jdbcDao);
+        verifyNoMoreInteractions(dao);
 
         final TrafficsoftDeliveryPackage deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(Collections.emptyList())
@@ -81,6 +80,6 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
         async.await();
 
-        verify(jdbcDao, times(1)).saveAll(anyList());
+        verify(dao, times(1)).save(eq(deliveryPackage));
     }
 }
