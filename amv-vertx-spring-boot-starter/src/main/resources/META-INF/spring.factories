@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.amv.spring.vertx.VertxRxAutoConfig,\
+org.amv.spring.vertx.VertxAutoConfig

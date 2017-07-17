@@ -3,12 +3,8 @@ package org.amv.trafficsoft.xfcd.consumer.sqlite;
 import com.google.common.eventbus.EventBus;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageSubscriber;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageSubscriberEventBusAdapter;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcPackageSubscriberImpl;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
 import org.reactivestreams.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,6 +43,13 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
             return new TrafficsoftDeliveryJdbcPackageSubscriberImpl(deliveryDao);
         };
         return new TrafficsoftDeliveryPackageSubscriberEventBusAdapter(trafficsoftDeliverySubscriberSupplier, eventBus);
+    }
+    
+    @Bean("sqliteTrafficsoftDeliveryJdbcVerticle")
+    public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryJdbcDao deliveryDao) {
+        return TrafficsoftDeliveryJdbcVerticle.builder()
+                .deliveryDao(deliveryDao)
+                .build();
     }
 
     @ConditionalOnMissingBean

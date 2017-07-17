@@ -32,5 +32,6 @@ public class SpringServiceManager extends AbstractIdleService implements
     @Override
     public void afterPropertiesSet() throws Exception {
         startUp();
+        delegate.awaitHealthy();
     }
 }

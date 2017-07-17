@@ -4,4 +4,7 @@ repositories {
 
 dependencies {
     compile 'org.amv.trafficsoft:amv-trafficsoft-rest-model:0.1.0-SNAPSHOT'
+
+    compile 'io.vertx:vertx-core:3.4.2'
+    compile 'io.vertx:vertx-rx-java:3.4.2', optional
 }

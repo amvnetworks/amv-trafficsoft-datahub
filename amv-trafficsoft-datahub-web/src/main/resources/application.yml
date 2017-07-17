@@ -1,7 +1,7 @@
 spring.application.name: 'amv-trafficsoft-datahub-demo'
 spring.profiles.active: demo
 
-server.port: 8090
+server.port: 9000
 
 amv.trafficsoft.api:
   rest:

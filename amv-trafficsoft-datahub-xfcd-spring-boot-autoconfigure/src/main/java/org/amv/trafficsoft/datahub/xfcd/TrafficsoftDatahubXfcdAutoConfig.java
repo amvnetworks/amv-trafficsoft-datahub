@@ -4,9 +4,13 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.ServiceManager;
+import io.vertx.core.json.Json;
+import io.vertx.rxjava.core.Vertx;
+import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
+import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
+@Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
 @ConditionalOnProperty("amv.trafficsoft.datahub.xfcd.enabled")
@@ -47,6 +52,51 @@ public class TrafficsoftDatahubXfcdAutoConfig {
                                             TrafficsoftApiRestProperties apiRestProperties) {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.apiRestProperties = requireNonNull(apiRestProperties);
+        }
+
+        @Bean
+        public ConfirmDeliveriesVerticle confirmDeliveriesVerticle() {
+            return ConfirmDeliveriesVerticle.builder()
+                    .build();
+        }
+
+        @Bean
+        public XfcdGetDataVerticle TrafficsoftDeliveryPackageEmitterVehicle(Vertx vertx, XfcdClient xfcdClient) {
+            return XfcdGetDataVerticle.builder()
+                    .flux(trafficsoftDeliveryPackageHotFlux(xfcdClient))
+                    .subscriber(new TrafficsoftDeliveryPackageSubscriber() {
+                        @Override
+                        public void onSubscribe(Subscription subscription) {
+                            log.info("onSubscribe");
+                            subscription.request(Long.MAX_VALUE);
+                        }
+
+                        @Override
+                        public void onNext(TrafficsoftDeliveryPackage trafficsoftDeliveryPackage) {
+                            log.info("onNext");
+                            vertx.eventBus().publish(VertxMessages.deliveryPackage, Json.encode(trafficsoftDeliveryPackage));
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            log.info("onError");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            log.info("onComplete");
+
+                        }
+                    })
+                    .build();
+        }
+
+        @Bean
+        public TrafficsoftDeliveryPackageHotFlux trafficsoftDeliveryPackageHotFlux(XfcdClient xfcdClient) {
+            return TrafficsoftDeliveryPackageHotFlux.builder()
+                    .xfcdClient(xfcdClient)
+                    .contractId(apiRestProperties.getContractId())
+                    .build();
         }
 
         @Bean

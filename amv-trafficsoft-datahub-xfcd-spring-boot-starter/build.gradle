@@ -5,6 +5,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':amv-vertx-spring-boot-starter')
     compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-autoconfigure')
     compile project(':amv-trafficsoft-xfcd-consumer-sqlite-spring-boot-autoconfigure')
 
