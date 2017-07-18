@@ -35,7 +35,13 @@ public class TrafficsoftDeliveryJdbcSqliteDaoImpl implements TrafficsoftDelivery
     public void saveAll(List<TrafficsoftDeliveryEntity> deliveries) {
         requireNonNull(deliveries);
 
-        String sql = "INSERT INTO `amv_trafficsoft_xfcd_delivery` " +
+        /**
+         * `INSERT OR IGNORE` is used here so no DuplicateKeyException is thrown
+         * if the delivery has already been saved.
+         * This might happen if a delivery has been saved but not confirmed
+         * for example due to an application shutdown.
+         */
+        String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_delivery` " +
                 "(`ID`, `TS`) " +
                 "VALUES (:id, :ts)";
 

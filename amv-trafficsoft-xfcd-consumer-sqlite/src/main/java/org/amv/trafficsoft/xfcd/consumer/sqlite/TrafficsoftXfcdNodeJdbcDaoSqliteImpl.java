@@ -31,7 +31,7 @@ public class TrafficsoftXfcdNodeJdbcDaoSqliteImpl implements TrafficsoftXfcdNode
     public void saveAll(List<TrafficsoftXfcdNodeEntity> nodes) throws DataAccessException {
         requireNonNull(nodes);
 
-        String sql = "INSERT INTO `amv_trafficsoft_xfcd_node` " +
+        String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_node` " +
                 "(`ID` ," +
                 "`ALTITUDE`," +
                 "`HEADING`," +
