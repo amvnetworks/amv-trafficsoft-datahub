@@ -50,8 +50,7 @@ public class VertxRxAutoConfig extends AbstractVertxAutoConfig {
                 .build();
     }
 
-    public static class VertxStartStopService implements InitializingBean,
-            DisposableBean {
+    public static class VertxStartStopService implements InitializingBean, DisposableBean {
 
         private final Vertx vertx;
         private final List<Verticle> verticles;

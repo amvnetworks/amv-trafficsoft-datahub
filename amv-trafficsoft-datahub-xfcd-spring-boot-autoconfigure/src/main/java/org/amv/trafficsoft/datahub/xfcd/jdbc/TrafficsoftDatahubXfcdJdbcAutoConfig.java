@@ -2,7 +2,7 @@ package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.DelegatingTrafficsoftDeliveryPackageDaoImpl;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.DelegatingTrafficsoftDeliveryPackageDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdNodeJdbcDao;
@@ -16,18 +16,17 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(TrafficsoftDatahubXfcdAutoConfig.class)
 public class TrafficsoftDatahubXfcdJdbcAutoConfig {
 
-
     @ConditionalOnMissingBean(TrafficsoftDeliveryPackageJdbcDao.class)
-    @Bean("sqliteTrafficsoftDeliveryPackageJdbcDao")
+    @Bean("delegatingTrafficsoftDeliveryPackageDao")
     public TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao,
                                                                 TrafficsoftXfcdNodeJdbcDao xfcdNodeDao) {
-        return DelegatingTrafficsoftDeliveryPackageDaoImpl.builder()
+        return DelegatingTrafficsoftDeliveryPackageDao.builder()
                 .deliveryDao(deliveryDao)
                 .nodeDao(xfcdNodeDao)
                 .build();
     }
 
-    @Bean("sqliteTrafficsoftDeliveryJdbcVerticle")
+    @Bean("trafficsoftDeliveryJdbcVerticle")
     public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
         return TrafficsoftDeliveryJdbcVerticle.builder()
                 .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)

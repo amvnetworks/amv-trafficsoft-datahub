@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class DelegatingTrafficsoftDeliveryPackageDaoImpl implements TrafficsoftDeliveryPackageJdbcDao {
+public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliveryPackageJdbcDao {
 
     private final TrafficsoftDeliveryJdbcDao deliveryDao;
     private final TrafficsoftXfcdNodeJdbcDao nodeDao;
 
     @Builder
-    DelegatingTrafficsoftDeliveryPackageDaoImpl(TrafficsoftDeliveryJdbcDao deliveryDao, TrafficsoftXfcdNodeJdbcDao nodeDao) {
+    DelegatingTrafficsoftDeliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao, TrafficsoftXfcdNodeJdbcDao nodeDao) {
         this.deliveryDao = requireNonNull(deliveryDao);
         this.nodeDao = requireNonNull(nodeDao);
     }

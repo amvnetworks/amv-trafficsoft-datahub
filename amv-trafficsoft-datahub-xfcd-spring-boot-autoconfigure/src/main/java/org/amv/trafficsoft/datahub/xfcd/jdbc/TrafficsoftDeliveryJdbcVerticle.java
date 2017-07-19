@@ -8,7 +8,6 @@ import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
@@ -41,7 +40,7 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
     public void start() throws Exception {
         this.consumer = vertx.eventBus().consumer(VertxEvents.deliveryPackage, new Handler<Message<String>>() {
             public void handle(Message<String> objectMessage) {
-                final TrafficsoftDeliveryPackageImpl trafficsoftDeliveryPackage = Json.decodeValue(objectMessage.body(), TrafficsoftDeliveryPackageImpl.class);
+                final TrafficsoftDeliveryPackage trafficsoftDeliveryPackage = Json.decodeValue(objectMessage.body(), TrafficsoftDeliveryPackage.class);
 
                 Flux.just(trafficsoftDeliveryPackage)
                         .subscribeOn(scheduler)
