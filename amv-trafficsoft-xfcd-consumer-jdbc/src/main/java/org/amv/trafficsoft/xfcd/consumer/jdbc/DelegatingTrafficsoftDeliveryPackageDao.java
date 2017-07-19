@@ -35,14 +35,17 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     }
 
     private void saveDelivery(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery) {
-        delivery.getTrack().stream()
-                .forEach(track -> saveTrack(deliveryPackage, delivery, track));
-
-        deliveryDao.save(TrafficsoftDeliveryEntity.builder()
+        final TrafficsoftDeliveryEntity deliveryEntity = TrafficsoftDeliveryEntity.builder()
                 .id(delivery.getDeliveryId())
                 .timestamp(delivery.getTimestamp().toInstant())
                 .confirmedAt(null)
-                .build());
+                .build();
+
+        deliveryDao.save(deliveryEntity);
+
+        delivery.getTrack().stream()
+                .forEach(track -> saveTrack(deliveryPackage, delivery, track));
+
     }
 
     private void saveTrack(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery, TrackRestDto track) {
@@ -50,7 +53,10 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                 .forEach(node -> saveNode(deliveryPackage, delivery, track, node));
     }
 
-    private void saveNode(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery, TrackRestDto track, NodeRestDto node) {
+    private void saveNode(TrafficsoftDeliveryPackage deliveryPackage,
+                          DeliveryRestDto delivery,
+                          TrackRestDto track,
+                          NodeRestDto node) {
         final TrafficsoftXfcdNodeEntity build = TrafficsoftXfcdNodeEntity.builder()
                 .id(node.getId())
                 .bpcId((int) deliveryPackage.getContractId())

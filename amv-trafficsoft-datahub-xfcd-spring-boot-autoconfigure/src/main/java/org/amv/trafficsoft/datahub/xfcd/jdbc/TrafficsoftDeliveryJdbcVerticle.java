@@ -63,7 +63,7 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
         scheduler.dispose();
     }
 
-    protected void onNext(TrafficsoftDeliveryPackage deliveryPackage) {
+    void onNext(TrafficsoftDeliveryPackage deliveryPackage) {
         requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
 
 

@@ -15,36 +15,39 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class XfcdGetDataVerticle extends AbstractVerticle {
+    private static final long INITIAL_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(1L);
+    private static final long INTERVAL_IN_MS = TimeUnit.MINUTES.toMillis(1L);
+
     private static final Scheduler scheduler = Schedulers.single();
 
     private Publisher<TrafficsoftDeliveryPackage> publisher;
 
-    private final long intervalInSeconds;
+    private long initialDelayInMs = TimeUnit.SECONDS.toMillis(1L);
+    private long intervalInMs = TimeUnit.MINUTES.toSeconds(1L);
 
-    private long periodicTimerId;
-    private long initTimerId;
+    private volatile long periodicTimerId;
+    private volatile long initTimerId;
 
     @Builder
     XfcdGetDataVerticle(Publisher<TrafficsoftDeliveryPackage> publisher,
-                        long intervalInSeconds) {
-        checkArgument(intervalInSeconds > 0L);
+                        long intervalInMs,
+                        long initialDelayInMs) {
+
         this.publisher = requireNonNull(publisher);
-        this.intervalInSeconds = intervalInSeconds;
+        this.initialDelayInMs = initialDelayInMs > 0L ? initialDelayInMs : INITIAL_DELAY_IN_MS;
+        this.intervalInMs = intervalInMs > 0L ? intervalInMs : INTERVAL_IN_MS;
     }
 
     @Override
     public void start() throws Exception {
-        final long intervalInMilliseconds = TimeUnit.SECONDS.toMillis(this.intervalInSeconds);
-
-        this.initTimerId = vertx.setTimer(TimeUnit.SECONDS.toMillis(1), timerId -> {
+        this.initTimerId = vertx.setTimer(initialDelayInMs, timerId -> {
             fetchDeliveriesAndPublishOnEventBus();
 
-            XfcdGetDataVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMilliseconds, foo -> {
+            XfcdGetDataVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMs, foo -> {
                 fetchDeliveriesAndPublishOnEventBus();
             });
         });

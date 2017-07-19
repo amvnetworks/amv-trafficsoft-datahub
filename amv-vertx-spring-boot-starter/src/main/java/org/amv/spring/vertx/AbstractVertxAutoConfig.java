@@ -2,6 +2,7 @@ package org.amv.spring.vertx;
 
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.core.metrics.MetricsOptions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
@@ -15,6 +16,13 @@ public abstract class AbstractVertxAutoConfig {
 
     public AbstractVertxAutoConfig(VertxProperties properties) {
         this.properties = requireNonNull(properties);
+    }
+
+    @ConditionalOnMissingBean(MetricsOptions.class)
+    @Bean
+    public MetricsOptions metricsOptions() {
+        return new MetricsOptions()
+                .setEnabled(false);
     }
 
     @ConditionalOnMissingBean(EventBusOptions.class)
@@ -44,7 +52,7 @@ public abstract class AbstractVertxAutoConfig {
 
     @ConditionalOnMissingBean(VertxOptions.class)
     @Bean
-    public VertxOptions vertxOptions(EventBusOptions eventBusOptions) {
+    public VertxOptions vertxOptions(EventBusOptions eventBusOptions, MetricsOptions metricsOptions) {
         return new VertxOptions()
                 .setBlockedThreadCheckInterval(properties.getBlockedThreadCheckInterval())
                 .setEventLoopPoolSize(properties.getEventLoopPoolSize())
@@ -57,7 +65,8 @@ public abstract class AbstractVertxAutoConfig {
                 .setWarningExceptionTime(properties.getWarningExceptionTime())
                 .setFileResolverCachingEnabled(properties.isFileResolverCachingEnabled())
                 .setHAEnabled(properties.isHaEnabled())
-                .setEventBusOptions(eventBusOptions);
+                .setEventBusOptions(eventBusOptions)
+                .setMetricsOptions(metricsOptions);
     }
 
 }

@@ -4,11 +4,15 @@ import io.vertx.core.Verticle;
 import io.vertx.core.VertxOptions;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.file.FileSystem;
+import io.vertx.rxjava.core.shareddata.SharedData;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @ConditionalOnClass(Vertx.class)
 @EnableConfigurationProperties(VertxProperties.class)
+@AutoConfigureAfter(VertxMetricsAutoConfig.class)
 public class VertxRxAutoConfig extends AbstractVertxAutoConfig {
 
     @Autowired
@@ -38,6 +43,24 @@ public class VertxRxAutoConfig extends AbstractVertxAutoConfig {
     @Bean
     public Vertx vertx(VertxOptions vertxOptions) {
         return Vertx.vertx(vertxOptions);
+    }
+
+    @ConditionalOnMissingBean(EventBus.class)
+    @Bean
+    public EventBus eventBus(Vertx vertx) {
+        return vertx.eventBus();
+    }
+
+    @ConditionalOnMissingBean(FileSystem.class)
+    @Bean
+    public FileSystem fileSystem(Vertx vertx) {
+        return vertx.fileSystem();
+    }
+
+    @ConditionalOnMissingBean(SharedData.class)
+    @Bean
+    public SharedData sharedData(Vertx vertx) {
+        return vertx.sharedData();
     }
 
     @ConditionalOnMissingBean(VertxStartStopService.class)

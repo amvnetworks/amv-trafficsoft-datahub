@@ -3,11 +3,16 @@ package org.amv.spring.vertx;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.shareddata.SharedData;
+import io.vertx.ext.healthchecks.HealthChecks;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -27,6 +32,7 @@ import static java.util.Objects.requireNonNull;
 @ConditionalOnClass(Vertx.class)
 @ConditionalOnMissingClass("io.vertx.rxjava.core.Vertx")
 @EnableConfigurationProperties(VertxProperties.class)
+@AutoConfigureAfter(VertxMetricsAutoConfig.class)
 public class VertxAutoConfig extends AbstractVertxAutoConfig {
 
     @Autowired
@@ -38,6 +44,30 @@ public class VertxAutoConfig extends AbstractVertxAutoConfig {
     @Bean
     public Vertx vertx(VertxOptions vertxOptions) {
         return Vertx.vertx(vertxOptions);
+    }
+
+    @ConditionalOnMissingBean(EventBus.class)
+    @Bean
+    public EventBus eventBus(Vertx vertx) {
+        return vertx.eventBus();
+    }
+
+    @ConditionalOnMissingBean(FileSystem.class)
+    @Bean
+    public FileSystem fileSystem(Vertx vertx) {
+        return vertx.fileSystem();
+    }
+
+    @ConditionalOnMissingBean(SharedData.class)
+    @Bean
+    public SharedData sharedData(Vertx vertx) {
+        return vertx.sharedData();
+    }
+
+    @ConditionalOnMissingBean(HealthChecks.class)
+    @Bean
+    public HealthChecks healthChecks(Vertx vertx) {
+        return HealthChecks.create(vertx);
     }
 
     @ConditionalOnMissingBean(VertxStartStopService.class)

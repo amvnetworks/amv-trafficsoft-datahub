@@ -11,6 +11,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.TimeUnit;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -61,7 +63,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         public XfcdGetDataVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdGetDataPublisher xfcdGetDataPublisher) {
             return XfcdGetDataVerticle.builder()
                     .publisher(xfcdGetDataPublisher)
-                    .intervalInSeconds(datahubXfcdProperties.getFetchIntervalInSeconds())
+                    .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
                     .build();
         }
 
