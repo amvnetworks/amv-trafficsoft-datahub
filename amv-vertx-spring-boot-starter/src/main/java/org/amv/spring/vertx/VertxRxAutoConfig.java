@@ -41,8 +41,14 @@ public class VertxRxAutoConfig extends AbstractVertxAutoConfig {
 
     @ConditionalOnMissingBean(Vertx.class)
     @Bean
-    public Vertx vertx(VertxOptions vertxOptions) {
+    public Vertx rxVertx(VertxOptions vertxOptions) {
         return Vertx.vertx(vertxOptions);
+    }
+
+    @ConditionalOnMissingBean(io.vertx.core.Vertx.class)
+    @Bean
+    public io.vertx.core.Vertx vertx(Vertx vertx) {
+        return vertx.getDelegate();
     }
 
     @ConditionalOnMissingBean(EventBus.class)

@@ -1,18 +1,14 @@
 package org.amv.trafficsoft.datahub.xfcd.experimental;
 
-import io.vertx.core.Handler;
-import io.vertx.core.json.Json;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.map.ChronicleMap;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
@@ -22,43 +18,42 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class TrafficsoftDeliveryChronicleMapVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.single();
 
     private final ChronicleMap<Long, DeliveryRestDto> deliveryDatabase;
+    private final XfcdEvents xfcdEvents;
 
-    private volatile MessageConsumer<String> consumer;
+    private BaseSubscriber<IncomingDeliveryEvent> subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
+        @Override
+        protected void hookOnNext(IncomingDeliveryEvent value) {
+            onIncomingDeliveryEvent(value);
+        }
+    };
 
     @Builder
-    TrafficsoftDeliveryChronicleMapVerticle(ChronicleMap<Long, DeliveryRestDto> deliveryDatabase) {
+    TrafficsoftDeliveryChronicleMapVerticle(XfcdEvents xfcdEvents, ChronicleMap<Long, DeliveryRestDto> deliveryDatabase) {
+        this.xfcdEvents = requireNonNull(xfcdEvents);
         this.deliveryDatabase = requireNonNull(deliveryDatabase);
     }
 
     @Override
     public void start() throws Exception {
-        this.consumer = vertx.eventBus().consumer(VertxEvents.deliveryPackage, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                final TrafficsoftDeliveryPackageImpl trafficsoftDeliveryPackage = Json.decodeValue(objectMessage.body(), TrafficsoftDeliveryPackageImpl.class);
-
-                Flux.just(trafficsoftDeliveryPackage)
-                        .subscribeOn(scheduler)
-                        .subscribe(next -> {
-                            onNext(trafficsoftDeliveryPackage);
-                        });
-            }
-        });
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, subscriber);
     }
 
     @Override
     public void stop() throws Exception {
-        ofNullable(consumer).ifPresent(MessageConsumer::unregister);
+        subscriber.dispose();
         scheduler.dispose();
     }
 
-    protected void onNext(TrafficsoftDeliveryPackage deliveryPackage) {
+    void onIncomingDeliveryEvent(IncomingDeliveryEvent event) {
+        requireNonNull(event, "`event` must not be null");
+
+        final TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
         requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
 
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();

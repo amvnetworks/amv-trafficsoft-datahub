@@ -1,13 +1,10 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import io.vertx.core.eventbus.MessageProducer;
-import io.vertx.core.json.Json;
-import io.vertx.core.streams.Pump;
-import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
@@ -24,19 +21,21 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
 
     private static final Scheduler scheduler = Schedulers.single();
 
-    private Publisher<TrafficsoftDeliveryPackage> publisher;
+    private final XfcdEvents xfcdEvents;
+    private final Publisher<TrafficsoftDeliveryPackage> publisher;
 
-    private long initialDelayInMs = TimeUnit.SECONDS.toMillis(1L);
-    private long intervalInMs = TimeUnit.MINUTES.toSeconds(1L);
+    private final long initialDelayInMs;
+    private final long intervalInMs;
 
     private volatile long periodicTimerId;
     private volatile long initTimerId;
 
     @Builder
-    XfcdGetDataVerticle(Publisher<TrafficsoftDeliveryPackage> publisher,
+    XfcdGetDataVerticle(XfcdEvents xfcdEvents,
+                        Publisher<TrafficsoftDeliveryPackage> publisher,
                         long intervalInMs,
                         long initialDelayInMs) {
-
+        this.xfcdEvents = requireNonNull(xfcdEvents);
         this.publisher = requireNonNull(publisher);
         this.initialDelayInMs = initialDelayInMs > 0L ? initialDelayInMs : INITIAL_DELAY_IN_MS;
         this.intervalInMs = intervalInMs > 0L ? intervalInMs : INTERVAL_IN_MS;
@@ -62,9 +61,7 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
     }
 
     private void fetchDeliveriesAndPublishOnEventBus() {
-        ReactiveReadStream<Object> rrs = ReactiveReadStream.readStream();
-
-        Flux.from(publisher)
+        final Flux<IncomingDeliveryEvent> events = Flux.from(publisher)
                 .publishOn(scheduler)
                 .subscribeOn(scheduler)
                 .doOnError(t -> {
@@ -73,14 +70,10 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
                         log.error("", t);
                     }
                 })
-                .map(Json::encode)
-                .subscribe(rrs);
+                .map(val -> IncomingDeliveryEvent.builder()
+                        .deliveryPackage(val)
+                        .build());
 
-        MessageProducer<Object> messageProducer = vertx.getDelegate()
-                .eventBus().publisher(VertxEvents.deliveryPackage);
-
-        Pump pump = Pump.pump(rrs, messageProducer);
-
-        pump.start();
+        xfcdEvents.publish(IncomingDeliveryEvent.class, events);
     }
 }

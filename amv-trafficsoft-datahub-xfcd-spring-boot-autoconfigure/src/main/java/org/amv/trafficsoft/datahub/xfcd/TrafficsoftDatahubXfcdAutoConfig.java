@@ -1,6 +1,8 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
+import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
@@ -46,22 +48,31 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public LoggingDeliveriesVerticle loggingDeliveriesVerticle() {
+        public XfcdEvents xfcdEvents(Vertx vertx) {
+            return new XfcdEvents(vertx);
+        }
+
+        @Bean
+        public LoggingDeliveriesVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
             return LoggingDeliveriesVerticle.builder()
+                    .xfcdEvents(xfcdEvents)
                     .build();
         }
 
         @Bean
-        public ConfirmDeliveriesVerticle confirmDeliveriesVerticle(XfcdClient xfcdClient) {
+        public ConfirmDeliveriesVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
             return ConfirmDeliveriesVerticle.builder()
+                    .xfcdEvents(xfcdEvents)
                     .contractId(apiRestProperties.getContractId())
                     .xfcdClient(xfcdClient)
                     .build();
         }
 
         @Bean
-        public XfcdGetDataVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdGetDataPublisher xfcdGetDataPublisher) {
+        public XfcdGetDataVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdEvents xfcdEvents,
+                                                                            XfcdGetDataPublisher xfcdGetDataPublisher) {
             return XfcdGetDataVerticle.builder()
+                    .xfcdEvents(xfcdEvents)
                     .publisher(xfcdGetDataPublisher)
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
                     .build();

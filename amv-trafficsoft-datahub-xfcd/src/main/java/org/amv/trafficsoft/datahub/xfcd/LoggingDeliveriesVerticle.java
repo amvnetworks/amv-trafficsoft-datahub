@@ -1,68 +1,63 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import io.vertx.core.Handler;
-import io.vertx.core.json.Json;
+import com.google.common.collect.Lists;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
+import reactor.core.publisher.BaseSubscriber;
 
-import static java.util.Optional.ofNullable;
+import java.util.List;
 
 @Slf4j
 public class LoggingDeliveriesVerticle extends AbstractVerticle {
-    private volatile MessageConsumer<String> deliveryPackageConsumer;
-    private volatile MessageConsumer<String> deliveryPackageInternallyConfirmedConsumer;
-    private volatile MessageConsumer<String> deliveryPackageSavedConsumer;
-    private volatile MessageConsumer<String> deliveryPackageServiceProviderConfirmedConsumer;
+    private final XfcdEvents xfcdEvents;
+
+    private final List<BaseSubscriber<?>> subscribers = Lists.newArrayList();
 
     @Builder
-    LoggingDeliveriesVerticle() {
+    LoggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
+        this.xfcdEvents = xfcdEvents;
     }
 
     @Override
     public void start() throws Exception {
-        this.deliveryPackageConsumer = vertx.eventBus().consumer(VertxEvents.deliveryPackage, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                TrafficsoftDeliveryPackageImpl deliveryPackage = Json.decodeValue(objectMessage.body(), TrafficsoftDeliveryPackageImpl.class);
-                log.info("received event '{}': {}", VertxEvents.deliveryPackage, deliveryPackage.getDelivieryIds());
-            }
-        });
+        final BaseSubscriber<IncomingDeliveryEvent> incomingDeliveryEventBaseSubscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(IncomingDeliveryEvent value) {
+                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
 
-        this.deliveryPackageInternallyConfirmedConsumer = vertx.eventBus().consumer(VertxEvents.deliveryPackageInternallyConfirmed, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                ConfirmableDeliveryPackage confirmableDeliveryPackage = Json.decodeValue(objectMessage.body(), ConfirmableDeliveryPackage.class);
-                log.info("received event '{}': {}", VertxEvents.deliveryPackageInternallyConfirmed, confirmableDeliveryPackage
-                        .getDeliveryPackage().getDelivieryIds());
             }
-        });
+        };
+        subscribers.add(incomingDeliveryEventBaseSubscriber);
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, incomingDeliveryEventBaseSubscriber);
 
-        this.deliveryPackageSavedConsumer = vertx.eventBus().consumer(VertxEvents.deliveryPackageSaved, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                ConfirmableDeliveryPackage confirmableDeliveryPackage = Json.decodeValue(objectMessage.body(), ConfirmableDeliveryPackage.class);
-                log.info("received event '{}': {}", VertxEvents.deliveryPackageSaved, confirmableDeliveryPackage
-                        .getDeliveryPackage().getDelivieryIds());
-            }
-        });
+        final BaseSubscriber<ConfirmableDeliveryEvent> confirmableDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(ConfirmableDeliveryEvent value) {
+                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
 
-        this.deliveryPackageServiceProviderConfirmedConsumer = vertx.eventBus().consumer(VertxEvents.deliveryPackageServiceProviderConfirmed, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                ConfirmableDeliveryPackage confirmableDeliveryPackage = Json.decodeValue(objectMessage.body(), ConfirmableDeliveryPackage.class);
-                log.info("received event '{}': {}", VertxEvents.deliveryPackageServiceProviderConfirmed, confirmableDeliveryPackage
-                        .getDeliveryPackage().getDelivieryIds());
             }
-        });
+        };
+        subscribers.add(confirmableDeliveryEventBaseSubscriber);
+        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, confirmableDeliveryEventBaseSubscriber);
+
+        final BaseSubscriber<ConfirmedDeliveryEvent> confirmedDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmedDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(ConfirmedDeliveryEvent value) {
+                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
+            }
+        };
+        subscribers.add(confirmedDeliveryEventBaseSubscriber);
+        xfcdEvents.subscribe(ConfirmedDeliveryEvent.class, confirmedDeliveryEventBaseSubscriber);
     }
+
 
     @Override
     public void stop() throws Exception {
-        ofNullable(deliveryPackageConsumer).ifPresent(MessageConsumer::unregister);
-        ofNullable(deliveryPackageInternallyConfirmedConsumer).ifPresent(MessageConsumer::unregister);
-        ofNullable(deliveryPackageSavedConsumer).ifPresent(MessageConsumer::unregister);
-        ofNullable(deliveryPackageServiceProviderConfirmedConsumer).ifPresent(MessageConsumer::unregister);
+        subscribers.forEach(BaseSubscriber::dispose);
     }
-
 }

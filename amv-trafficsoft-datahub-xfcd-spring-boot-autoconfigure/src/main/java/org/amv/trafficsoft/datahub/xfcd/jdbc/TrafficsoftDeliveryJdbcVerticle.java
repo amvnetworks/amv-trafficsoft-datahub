@@ -1,17 +1,15 @@
 package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
-import io.vertx.core.Handler;
-import io.vertx.core.json.Json;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -25,47 +23,53 @@ import static java.util.Optional.ofNullable;
 public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.elastic();
 
+    private final XfcdEvents xfcdEvents;
     private final TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao;
     private final boolean primaryDataStore;
 
-    private volatile MessageConsumer<String> consumer;
+    private volatile BaseSubscriber<IncomingDeliveryEvent> eventSubscriber;
 
     @Builder
-    TrafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao, boolean primaryDataStore) {
+    TrafficsoftDeliveryJdbcVerticle(XfcdEvents xfcdEvents, TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao, boolean primaryDataStore) {
+        this.xfcdEvents = requireNonNull(xfcdEvents);
         this.deliveryPackageDao = requireNonNull(deliveryPackageDao);
         this.primaryDataStore = primaryDataStore;
     }
 
     @Override
     public void start() throws Exception {
-        this.consumer = vertx.eventBus().consumer(VertxEvents.deliveryPackage, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                final TrafficsoftDeliveryPackage trafficsoftDeliveryPackage = Json.decodeValue(objectMessage.body(), TrafficsoftDeliveryPackage.class);
+        this.eventSubscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(IncomingDeliveryEvent event) {
+                onIncomingDeliveryPackage(event);
 
-                Flux.just(trafficsoftDeliveryPackage)
-                        .subscribeOn(scheduler)
-                        .subscribe(next -> {
-                            onNext(trafficsoftDeliveryPackage);
-
-                            if (primaryDataStore) {
-                                vertx.eventBus().publish(VertxEvents.deliveryPackageInternallyConfirmed, Json.encode(ConfirmableDeliveryPackage.builder()
-                                        .deliveryPackage(trafficsoftDeliveryPackage)
-                                        .build()));
-                            }
-                        });
+                if (primaryDataStore) {
+                    xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
+                            .deliveryPackage(event.getDeliveryPackage())
+                            .build()));
+                }
             }
-        });
+
+            @Override
+            protected void hookOnCancel() {
+                log.info("Cancelled subscription in {}", this.getClass().getName());
+            }
+        };
+
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, eventSubscriber);
     }
 
     @Override
     public void stop() throws Exception {
-        ofNullable(consumer).ifPresent(MessageConsumer::unregister);
+        ofNullable(eventSubscriber).ifPresent(BaseSubscriber::dispose);
         scheduler.dispose();
     }
 
-    void onNext(TrafficsoftDeliveryPackage deliveryPackage) {
-        requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
+    void onIncomingDeliveryPackage(IncomingDeliveryEvent incomingDeliveryEvent) {
+        requireNonNull(incomingDeliveryEvent, "`deliveryPackage` must not be null");
 
+        final TrafficsoftDeliveryPackage deliveryPackage = incomingDeliveryEvent
+                .getDeliveryPackage();
 
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
 

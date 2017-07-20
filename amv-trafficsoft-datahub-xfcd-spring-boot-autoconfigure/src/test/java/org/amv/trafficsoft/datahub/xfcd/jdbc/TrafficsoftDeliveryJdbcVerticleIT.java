@@ -1,19 +1,22 @@
 package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -27,24 +30,29 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
     private TrafficsoftDeliveryPackageJdbcDao dao;
 
+    private XfcdEvents xfcdEvents;
+
+
     @Before
     public void setUp(TestContext context) throws IOException {
         this.vertx = Vertx.vertx();
         this.dao = spy(TrafficsoftDeliveryPackageJdbcDao.class);
+        this.xfcdEvents = new XfcdEvents(vertx);
 
         final TrafficsoftDeliveryJdbcVerticle sut = TrafficsoftDeliveryJdbcVerticle.builder()
-                .deliveryPackageDao(this.dao)
+                .xfcdEvents(xfcdEvents)
+                .deliveryPackageDao(dao)
                 .primaryDataStore(true)
                 .build();
 
         vertx.deployVerticle(sut, context.asyncAssertSuccess());
+
     }
 
     @After
     public void tearDown(TestContext context) {
         vertx.close(context.asyncAssertSuccess());
     }
-
 
     @Test
     public void itShouldDoNothingOnEmptyList(TestContext context) throws Exception {
@@ -55,14 +63,18 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
                 .build();
 
         Async async = context.async();
-        vertx.eventBus().consumer(VertxEvents.deliveryPackage, msg -> {
-            async.complete();
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, new BaseSubscriber<IncomingDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(IncomingDeliveryEvent value) {
+                async.complete();
+            }
         });
 
-        vertx.eventBus().publish(VertxEvents.deliveryPackage, Json.encode(deliveryPackage));
+        xfcdEvents.publish(IncomingDeliveryEvent.class, Mono.just(IncomingDeliveryEvent.builder()
+                .deliveryPackage(deliveryPackage)
+                .build()));
 
         async.await();
-
     }
 
     @Test
@@ -72,11 +84,17 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
                 .build();
 
         Async async = context.async();
-        vertx.eventBus().consumer(VertxEvents.deliveryPackageInternallyConfirmed, msg -> {
-            async.complete();
+
+        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, new BaseSubscriber<ConfirmableDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(ConfirmableDeliveryEvent value) {
+                async.complete();
+            }
         });
 
-        vertx.eventBus().publish(VertxEvents.deliveryPackage, Json.encode(deliveryPackage));
+        xfcdEvents.publish(IncomingDeliveryEvent.class, Mono.just(IncomingDeliveryEvent.builder()
+                .deliveryPackage(deliveryPackage)
+                .build()));
 
         async.await();
 

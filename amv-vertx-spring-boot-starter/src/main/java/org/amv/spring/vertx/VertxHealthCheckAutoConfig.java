@@ -26,7 +26,7 @@ public class VertxHealthCheckAutoConfig {
     @ConditionalOnClass(io.vertx.rxjava.ext.healthchecks.HealthChecks.class)
     @ConditionalOnMissingBean(io.vertx.rxjava.ext.healthchecks.HealthChecks.class)
     @Bean
-    public io.vertx.rxjava.ext.healthchecks.HealthChecks healthChecks(io.vertx.rxjava.core.Vertx vertx) {
+    public io.vertx.rxjava.ext.healthchecks.HealthChecks rxHealthChecks(io.vertx.rxjava.core.Vertx vertx) {
         return io.vertx.rxjava.ext.healthchecks.HealthChecks.create(vertx);
     }
 

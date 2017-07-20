@@ -2,6 +2,7 @@ package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.DelegatingTrafficsoftDeliveryPackageDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
@@ -27,8 +28,10 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfig {
     }
 
     @Bean("trafficsoftDeliveryJdbcVerticle")
-    public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
+    public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(XfcdEvents xfcdEvents,
+                                                                           TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
         return TrafficsoftDeliveryJdbcVerticle.builder()
+                .xfcdEvents(xfcdEvents)
                 .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)
                 .primaryDataStore(true)
                 .build();

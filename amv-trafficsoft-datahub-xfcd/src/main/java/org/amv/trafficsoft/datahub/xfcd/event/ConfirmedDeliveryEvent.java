@@ -7,7 +7,7 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 
 @Value
 @Builder(builderClassName = "Builder")
-public class ConfirmedDeliveryPackage {
+public class ConfirmedDeliveryEvent implements XfcdEvent {
     @NonNull
     private TrafficsoftDeliveryPackage deliveryPackage;
 }

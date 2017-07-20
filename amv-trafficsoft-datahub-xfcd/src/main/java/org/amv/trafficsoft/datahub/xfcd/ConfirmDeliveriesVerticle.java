@@ -1,18 +1,16 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.collect.ImmutableList;
-import io.vertx.core.Handler;
-import io.vertx.core.json.Json;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.event.VertxEvents;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryEvent;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.Set;
@@ -20,41 +18,42 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class ConfirmDeliveriesVerticle extends AbstractVerticle {
+    private final XfcdEvents xfcdEvents;
     private final XfcdClient xfcdClient;
     private final long contractId;
 
-    private volatile MessageConsumer<String> consumer;
+    private final BaseSubscriber<ConfirmableDeliveryEvent> subscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
+        @Override
+        protected void hookOnNext(ConfirmableDeliveryEvent event) {
+            confirm(event);
+        }
+    };
 
     @Builder
-    ConfirmDeliveriesVerticle(XfcdClient xfcdClient,
+    ConfirmDeliveriesVerticle(XfcdEvents xfcdEvents,
+                              XfcdClient xfcdClient,
                               long contractId) {
+        this.xfcdEvents = requireNonNull(xfcdEvents);
         this.xfcdClient = requireNonNull(xfcdClient);
         this.contractId = contractId;
     }
 
     @Override
     public void start() throws Exception {
-        this.consumer = vertx.eventBus().consumer(VertxEvents.deliveryPackageInternallyConfirmed, new Handler<Message<String>>() {
-            public void handle(Message<String> objectMessage) {
-                final ConfirmableDeliveryPackage confirmableDeliveryPackage = Json.decodeValue(objectMessage.body(), ConfirmableDeliveryPackage.class);
-                confirm(confirmableDeliveryPackage);
-            }
-        });
+        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, subscriber);
     }
 
     @Override
     public void stop() throws Exception {
-        ofNullable(consumer).ifPresent(MessageConsumer::unregister);
+        subscriber.dispose();
     }
 
-
-    private void confirm(ConfirmableDeliveryPackage confirmableDeliveryPackage) {
-        Set<Long> deliveryIds = Stream.of(confirmableDeliveryPackage)
-                .map(ConfirmableDeliveryPackage::getDeliveryPackage)
+    private void confirm(ConfirmableDeliveryEvent confirmableDeliveryEvent) {
+        Set<Long> deliveryIds = Stream.of(confirmableDeliveryEvent)
+                .map(ConfirmableDeliveryEvent::getDeliveryPackage)
                 .map(TrafficsoftDeliveryPackage::getDeliveries)
                 .flatMap(Collection::stream)
                 .map(DeliveryRestDto::getDeliveryId)
@@ -62,15 +61,12 @@ public class ConfirmDeliveriesVerticle extends AbstractVerticle {
 
         xfcdClient.confirmDeliveries(contractId, ImmutableList.copyOf(deliveryIds))
                 .toObservable()
-                .map(foo -> confirmableDeliveryPackage)
-                .map(ConfirmableDeliveryPackage::getDeliveryPackage)
-                .map(deliveryPackage -> ConfirmedDeliveryPackage.builder()
+                .map(foo -> confirmableDeliveryEvent)
+                .map(ConfirmableDeliveryEvent::getDeliveryPackage)
+                .map(deliveryPackage -> ConfirmedDeliveryEvent.builder()
                         .deliveryPackage(deliveryPackage)
                         .build())
-                .map(Json::encode)
-                .subscribe(
-                        json -> vertx.eventBus().publish(VertxEvents.deliveryPackageServiceProviderConfirmed, json),
-                        t -> {
+                .subscribe(val -> xfcdEvents.publish(ConfirmedDeliveryEvent.class, Flux.just(val)), t -> {
                             log.error("error while confirming deliveries {}: {}", deliveryIds, t.getMessage());
                             if (log.isDebugEnabled()) {
                                 log.debug("", t);
