@@ -5,6 +5,7 @@ buildscript {
         jcenter()
     }
 }
+
 plugins {
     id 'findbugs'
 //    id 'checkstyle'
@@ -120,7 +121,7 @@ subprojects {
     }
 
     artifacts {
-        archives /*javadocJar, */sourcesJar, testJar
+        archives /*javadocJar, */ sourcesJar, testJar
     }
 
     /*checkstyle {

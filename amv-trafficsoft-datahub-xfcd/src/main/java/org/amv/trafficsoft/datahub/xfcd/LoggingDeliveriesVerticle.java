@@ -29,7 +29,6 @@ public class LoggingDeliveriesVerticle extends AbstractVerticle {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent value) {
                 log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
-
             }
         };
         subscribers.add(incomingDeliveryEventBaseSubscriber);

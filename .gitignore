@@ -1,3 +1,4 @@
+.attach_pid*
 application-dev.yml
 application-dev-*.yml
 *.db

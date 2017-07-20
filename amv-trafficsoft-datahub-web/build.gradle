@@ -1,3 +1,20 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.0.M2'
+    }
+    repositories {
+        maven { url 'https://repo.spring.io/libs-milestone' }
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+        jcenter()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
 repositories {
     jcenter()
 }
@@ -5,7 +22,7 @@ repositories {
 dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-starter')
     compile project(':amv-vertx-spring-boot-starter')
-    
+
     compile 'io.vertx:vertx-dropwizard-metrics:3.4.2'
     compile 'io.vertx:vertx-maven-service-factory:3.4.2'
     compile 'io.vertx:vertx-health-check:3.4.2'
@@ -13,5 +30,17 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter:2.0.0.M2')
     compile('org.springframework.boot:spring-boot-starter-web:2.0.0.M2')
     //compile('org.springframework.boot:spring-boot-starter-jetty:2.0.0.M2')
+}
+
+bootJar {
+    mainClass = 'org.amv.trafficsoft.datahub.TrafficsoftDataHubApplication'
+    launchScript {
+        included = true
+    }
+}
+
+bootRun {
+    //enables commandline args for bootRun
+    systemProperties = project.gradle.startParameter.systemPropertiesArgs
 }
 
