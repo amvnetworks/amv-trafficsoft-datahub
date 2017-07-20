@@ -37,3 +37,27 @@ create table `amv_trafficsoft_xfcd_xfcd` (
     `VALSTR` varchar(254),
     primary key (`IMXFCD_N_ID`, `TYPE`)
 );
+
+create table if not exists `amv_trafficsoft_xfcd_latest_fcd` (
+    `V_ID` bigint,
+    `BPC_ID` integer not null,
+    `TS` bigint not null,
+    `ALTITUDE` decimal(10,2),
+    `HEADING` decimal(10,6),
+    `HDOP` decimal(10,1),
+    `LATDEG` decimal(10,6) not null,
+    `LONDEG` decimal(10,6) not null,
+    `SATCNT` integer,
+    `SPEED` decimal(10,2),
+    `TRIPID` bigint not null,
+    `VDOP` decimal(10,1),
+    primary key (`V_ID`, `BPC_ID`)
+);
+
+create table if not exists `amv_trafficsoft_xfcd_latest_state` (
+    `V_ID` bigint,
+    `BPC_ID` integer not null,
+    `CD` varchar(10) not null,
+    `VAL` longtext,
+    primary key (`V_ID`, `BPC_ID`, `CD`)
+);

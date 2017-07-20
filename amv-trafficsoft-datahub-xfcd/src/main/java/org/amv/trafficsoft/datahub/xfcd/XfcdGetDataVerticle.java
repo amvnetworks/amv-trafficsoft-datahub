@@ -19,7 +19,7 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
     private static final long INITIAL_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(1L);
     private static final long INTERVAL_IN_MS = TimeUnit.MINUTES.toMillis(1L);
 
-    private static final Scheduler scheduler = Schedulers.single();
+    private final Scheduler scheduler = Schedulers.single();
 
     private final XfcdEvents xfcdEvents;
     private final Publisher<TrafficsoftDeliveryPackage> publisher;
@@ -50,14 +50,14 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
                 fetchDeliveriesAndPublishOnEventBus();
             });
         });
-
     }
-
 
     @Override
     public void stop() throws Exception {
         vertx.cancelTimer(this.initTimerId);
         vertx.cancelTimer(this.periodicTimerId);
+
+        scheduler.dispose();
     }
 
     private void fetchDeliveriesAndPublishOnEventBus() {
