@@ -36,9 +36,9 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
         return new TrafficsoftDeliveryRowMapper();
     }
 
-    @Bean("sqliteTrafficsoftDeliveryJdbcDao")
+    @Bean("sqliteTrafficsoftDeliveryDao")
     public TrafficsoftDeliveryJdbcDao deliveryDao(TrafficsoftDeliveryRowMapper rowMapper) {
-        return new TrafficsoftDeliveryJdbcSqliteDaoImpl(namedJdbcTemplate, rowMapper);
+        return new TrafficsoftDeliverySqliteDaoImpl(namedJdbcTemplate, rowMapper);
     }
 
     @ConditionalOnMissingBean
@@ -47,8 +47,30 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
         return new TrafficsoftXfcdNodeRowMapper();
     }
 
-    @Bean("sqliteTrafficsoftNodeJdbcDao")
+    @Bean("sqliteTrafficsoftNodeDao")
     public TrafficsoftXfcdNodeJdbcDao xfcdNodeDao(TrafficsoftXfcdNodeRowMapper rowMapper) {
-        return new TrafficsoftXfcdNodeJdbcDaoSqliteImpl(namedJdbcTemplate, rowMapper);
+        return new TrafficsoftXfcdNodeSqliteDaoImpl(namedJdbcTemplate, rowMapper);
+    }
+
+    @ConditionalOnMissingBean
+    @Bean("trafficsoftXfcdStateRowMapper")
+    public TrafficsoftXfcdStateRowMapper xfcdStateRowMapper() {
+        return new TrafficsoftXfcdStateRowMapper();
+    }
+
+    @Bean("sqliteTrafficsoftXfcdStateDao")
+    public TrafficsoftXfcdStateJdbcDao xfcdStateDao(TrafficsoftXfcdStateRowMapper rowMapper) {
+        return new TrafficsoftXfcdStateSqliteDaoImpl(namedJdbcTemplate, rowMapper);
+    }
+
+    @ConditionalOnMissingBean
+    @Bean("trafficsoftXfcdXfcdRowMapper")
+    public TrafficsoftXfcdXfcdRowMapper xfcdXfcdRowMapper() {
+        return new TrafficsoftXfcdXfcdRowMapper();
+    }
+
+    @Bean("sqliteTrafficsoftXfcdXfcdDao")
+    public TrafficsoftXfcdXfcdJdbcDao xfcdXfcdDao(TrafficsoftXfcdXfcdRowMapper rowMapper) {
+        return new TrafficsoftXfcdXfcdSqliteDaoImpl(namedJdbcTemplate, rowMapper);
     }
 }

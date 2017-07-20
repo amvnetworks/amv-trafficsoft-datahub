@@ -39,18 +39,18 @@ import static org.junit.Assert.assertThat;
         DbUnitTestExecutionListener.class
 })
 @Transactional
-public class TrafficsoftDeliveryJdbcSqliteDaoImplTest {
+public class TrafficsoftDeliverySqliteDaoImplTest {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private TrafficsoftDeliveryJdbcSqliteDaoImpl sut;
+    private TrafficsoftDeliverySqliteDaoImpl sut;
 
     @Before
     public void setUp() throws SQLException, IOException {
         TrafficsoftDeliveryRowMapper imTrafficsoftDeliveryRowMapper = new TrafficsoftDeliveryRowMapper();
 
-        this.sut = new TrafficsoftDeliveryJdbcSqliteDaoImpl(namedParameterJdbcTemplate,
+        this.sut = new TrafficsoftDeliverySqliteDaoImpl(namedParameterJdbcTemplate,
                 imTrafficsoftDeliveryRowMapper);
     }
 

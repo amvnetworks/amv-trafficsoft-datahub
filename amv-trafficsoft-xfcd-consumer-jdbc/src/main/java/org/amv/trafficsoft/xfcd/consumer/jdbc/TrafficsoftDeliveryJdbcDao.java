@@ -11,7 +11,7 @@ public interface TrafficsoftDeliveryJdbcDao {
 
     /**
      * @param deliveries a list of deliveries
-     * @throws DataAccessException in ca
+     * @throws DataAccessException
      */
     void saveAll(List<TrafficsoftDeliveryEntity> deliveries) throws DataAccessException;
 

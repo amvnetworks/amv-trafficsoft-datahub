@@ -20,12 +20,12 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class TrafficsoftDeliveryJdbcSqliteDaoImpl implements TrafficsoftDeliveryJdbcDao {
+public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbcDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<TrafficsoftDeliveryEntity> rowMapper;
 
-    public TrafficsoftDeliveryJdbcSqliteDaoImpl(NamedParameterJdbcTemplate jdbcTemplate,
-                                                RowMapper<TrafficsoftDeliveryEntity> rowMapper) {
+    public TrafficsoftDeliverySqliteDaoImpl(NamedParameterJdbcTemplate jdbcTemplate,
+                                            RowMapper<TrafficsoftDeliveryEntity> rowMapper) {
         this.jdbcTemplate = requireNonNull(jdbcTemplate);
         this.rowMapper = requireNonNull(rowMapper);
     }

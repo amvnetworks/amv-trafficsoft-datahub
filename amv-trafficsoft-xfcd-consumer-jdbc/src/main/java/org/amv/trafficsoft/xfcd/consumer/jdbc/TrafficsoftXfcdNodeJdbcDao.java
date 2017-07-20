@@ -10,7 +10,7 @@ public interface TrafficsoftXfcdNodeJdbcDao {
 
     /**
      * @param nodes a list of nodes
-     * @throws DataAccessException in ca
+     * @throws DataAccessException
      */
     void saveAll(List<TrafficsoftXfcdNodeEntity> nodes) throws DataAccessException;
 

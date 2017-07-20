@@ -17,12 +17,12 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class TrafficsoftXfcdNodeJdbcDaoSqliteImpl implements TrafficsoftXfcdNodeJdbcDao {
+public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbcDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<TrafficsoftXfcdNodeEntity> rowMapper;
 
-    public TrafficsoftXfcdNodeJdbcDaoSqliteImpl(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<TrafficsoftXfcdNodeEntity> rowMapper) {
+    public TrafficsoftXfcdNodeSqliteDaoImpl(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<TrafficsoftXfcdNodeEntity> rowMapper) {
         this.jdbcTemplate = requireNonNull(jdbcTemplate);
         this.rowMapper = requireNonNull(rowMapper);
     }
@@ -31,6 +31,12 @@ public class TrafficsoftXfcdNodeJdbcDaoSqliteImpl implements TrafficsoftXfcdNode
     public void saveAll(List<TrafficsoftXfcdNodeEntity> nodes) throws DataAccessException {
         requireNonNull(nodes);
 
+        /**
+         * `INSERT OR IGNORE` is used here so no DuplicateKeyException is thrown
+         * if the delivery has already been saved.
+         * This might happen if a delivery has been saved but not confirmed
+         * for example due to an application shutdown.
+         */
         String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_node` " +
                 "(`ID` ," +
                 "`ALTITUDE`," +
