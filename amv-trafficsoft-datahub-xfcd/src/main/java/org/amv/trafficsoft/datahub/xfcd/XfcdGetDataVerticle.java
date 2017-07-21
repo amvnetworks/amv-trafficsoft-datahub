@@ -4,7 +4,6 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
-import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;

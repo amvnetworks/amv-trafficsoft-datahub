@@ -2,7 +2,6 @@ package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
@@ -79,7 +78,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public XfcdGetDataPublisherImpl xfcdGetDataPublisher(XfcdClient xfcdClient) {
+        public XfcdGetDataPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
             return XfcdGetDataPublisherImpl.builder()
                     .xfcdClient(xfcdClient)
                     .contractId(apiRestProperties.getContractId())

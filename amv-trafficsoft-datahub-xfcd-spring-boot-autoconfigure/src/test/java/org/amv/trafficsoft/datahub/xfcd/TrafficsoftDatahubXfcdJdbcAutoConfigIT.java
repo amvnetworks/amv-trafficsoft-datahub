@@ -1,7 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
-import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.datahub.xfcd.jdbc.XfcdDataStoreJdbc;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;

@@ -2,7 +2,6 @@ package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
-import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Before;
 import org.junit.Test;

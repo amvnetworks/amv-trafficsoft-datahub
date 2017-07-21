@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub.xfcd.event;
+package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -7,6 +7,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.streams.Pump;
 import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
+import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.Flux;
