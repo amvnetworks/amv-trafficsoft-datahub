@@ -13,8 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A verticle that retrieves data from the AMV TrafficSoft xfcd API
+ * and publishes the response as {@link IncomingDeliveryEvent} on
+ * the vertx eventbus.
+ */
 @Slf4j
-public class XfcdGetDataVerticle extends AbstractVerticle {
+public class DeliveryRetrievalVerticle extends AbstractVerticle {
     private static final long INITIAL_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(1L);
     private static final long INTERVAL_IN_MS = TimeUnit.MINUTES.toMillis(1L);
 
@@ -30,10 +35,10 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
     private volatile long initTimerId;
 
     @Builder
-    XfcdGetDataVerticle(XfcdEvents xfcdEvents,
-                        Publisher<TrafficsoftDeliveryPackage> publisher,
-                        long intervalInMs,
-                        long initialDelayInMs) {
+    DeliveryRetrievalVerticle(XfcdEvents xfcdEvents,
+                              Publisher<TrafficsoftDeliveryPackage> publisher,
+                              long intervalInMs,
+                              long initialDelayInMs) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
         this.publisher = requireNonNull(publisher);
         this.initialDelayInMs = initialDelayInMs > 0L ? initialDelayInMs : INITIAL_DELAY_IN_MS;
@@ -45,7 +50,7 @@ public class XfcdGetDataVerticle extends AbstractVerticle {
         this.initTimerId = vertx.setTimer(initialDelayInMs, timerId -> {
             fetchDeliveriesAndPublishOnEventBus();
 
-            XfcdGetDataVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMs, foo -> {
+            DeliveryRetrievalVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMs, foo -> {
                 fetchDeliveriesAndPublishOnEventBus();
             });
         });

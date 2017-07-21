@@ -3,7 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <logger name="org.amv.trafficsoft" level="DEBUG"/>
-    <logger name="org.amv.trafficsoft.datahub.xfcd.ConfirmDeliveriesVerticle" level="DEBUG"/>
-    <logger name="org.amv.trafficsoft.datahub.xfcd.XfcdGetDataVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryConfirmationVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle" level="DEBUG"/>
 
 </configuration>

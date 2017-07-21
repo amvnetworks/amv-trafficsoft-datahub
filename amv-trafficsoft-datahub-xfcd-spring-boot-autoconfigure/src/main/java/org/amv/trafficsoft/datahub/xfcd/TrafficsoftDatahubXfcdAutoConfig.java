@@ -52,15 +52,15 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public LoggingDeliveriesVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
-            return LoggingDeliveriesVerticle.builder()
+        public XfcdEventLoggingVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
+            return XfcdEventLoggingVerticle.builder()
                     .xfcdEvents(xfcdEvents)
                     .build();
         }
 
         @Bean
-        public ConfirmDeliveriesVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
-            return ConfirmDeliveriesVerticle.builder()
+        public DeliveryConfirmationVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
+            return DeliveryConfirmationVerticle.builder()
                     .xfcdEvents(xfcdEvents)
                     .contractId(apiRestProperties.getContractId())
                     .xfcdClient(xfcdClient)
@@ -68,9 +68,9 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public XfcdGetDataVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdEvents xfcdEvents,
-                                                                            XfcdGetDataPublisher xfcdGetDataPublisher) {
-            return XfcdGetDataVerticle.builder()
+        public DeliveryRetrievalVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdEvents xfcdEvents,
+                                                                                  XfcdGetDataPublisher xfcdGetDataPublisher) {
+            return DeliveryRetrievalVerticle.builder()
                     .xfcdEvents(xfcdEvents)
                     .publisher(xfcdGetDataPublisher)
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))

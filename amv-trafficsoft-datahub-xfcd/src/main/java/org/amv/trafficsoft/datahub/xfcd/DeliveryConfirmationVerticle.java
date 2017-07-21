@@ -17,24 +17,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 
+/**
+ * A verticle that listens for {@link ConfirmableDeliveryEvent} representing
+ * a successfully processed {@link TrafficsoftDeliveryPackage} and
+ * and notifies AMV TrafficSoft xfcd API about it.
+ */
 @Slf4j
-public class ConfirmDeliveriesVerticle extends AbstractVerticle {
+public class DeliveryConfirmationVerticle extends AbstractVerticle {
     private final XfcdEvents xfcdEvents;
     private final XfcdClient xfcdClient;
     private final long contractId;
 
-    private final BaseSubscriber<ConfirmableDeliveryEvent> subscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
-        @Override
-        protected void hookOnNext(ConfirmableDeliveryEvent event) {
-            confirm(event);
-        }
-    };
+    private BaseSubscriber<ConfirmableDeliveryEvent> subscriber;
 
     @Builder
-    ConfirmDeliveriesVerticle(XfcdEvents xfcdEvents,
-                              XfcdClient xfcdClient,
-                              long contractId) {
+    DeliveryConfirmationVerticle(XfcdEvents xfcdEvents,
+                                 XfcdClient xfcdClient,
+                                 long contractId) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
         this.xfcdClient = requireNonNull(xfcdClient);
         this.contractId = contractId;
@@ -42,12 +43,19 @@ public class ConfirmDeliveriesVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, subscriber);
+        this.subscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(ConfirmableDeliveryEvent event) {
+                log.info("Notify AMV TrafficSoft about successfully processed deliveries");
+                confirm(event);
+            }
+        };
+        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, this.subscriber);
     }
 
     @Override
     public void stop() throws Exception {
-        subscriber.dispose();
+        ofNullable(this.subscriber).ifPresent(BaseSubscriber::dispose);
     }
 
     private void confirm(ConfirmableDeliveryEvent confirmableDeliveryEvent) {

@@ -12,13 +12,13 @@ import reactor.core.publisher.BaseSubscriber;
 import java.util.List;
 
 @Slf4j
-public class LoggingDeliveriesVerticle extends AbstractVerticle {
+public class XfcdEventLoggingVerticle extends AbstractVerticle {
     private final XfcdEvents xfcdEvents;
 
     private final List<BaseSubscriber<?>> subscribers = Lists.newArrayList();
 
     @Builder
-    LoggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
+    XfcdEventLoggingVerticle(XfcdEvents xfcdEvents) {
         this.xfcdEvents = xfcdEvents;
     }
 

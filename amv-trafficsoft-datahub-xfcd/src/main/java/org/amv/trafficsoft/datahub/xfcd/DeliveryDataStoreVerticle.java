@@ -16,6 +16,13 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
+/**
+ * A verticle that listens for {@link IncomingDeliveryEvent} representing
+ * an incoming delivery from AMV TrafficSoft xfcd API and stores
+ * it with a {@link XfcdDataStore}. If the data store is marked as "primary"
+ * a {@link ConfirmableDeliveryEvent} representing a successfully processed
+ * delivery is published on the vertx eventbus.
+ */
 @Slf4j
 public class DeliveryDataStoreVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.elastic();
@@ -23,7 +30,7 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
     private final XfcdEvents xfcdEvents;
     private final XfcdDataStore dataStore;
 
-    private volatile BaseSubscriber<IncomingDeliveryEvent> eventSubscriber;
+    private volatile BaseSubscriber<IncomingDeliveryEvent> subscriber;
 
     @Builder
     DeliveryDataStoreVerticle(XfcdEvents xfcdEvents, XfcdDataStore dataStore) {
@@ -33,9 +40,11 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        this.eventSubscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
+        this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
+                log.info("Save incoming delivery package in XfcdDataStore");
+
                 onIncomingDeliveryPackage(event);
 
                 if (dataStore.isPrimaryDataStore()) {
@@ -44,20 +53,15 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
                             .build()));
                 }
             }
-
-            @Override
-            protected void hookOnCancel() {
-                log.info("Cancelled subscription in {}", this.getClass().getName());
-            }
         };
 
-        xfcdEvents.subscribe(IncomingDeliveryEvent.class, eventSubscriber);
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, this.subscriber);
     }
 
     @Override
     public void stop() throws Exception {
-        ofNullable(eventSubscriber).ifPresent(BaseSubscriber::dispose);
-        scheduler.dispose();
+        ofNullable(this.subscriber).ifPresent(BaseSubscriber::dispose);
+        this.scheduler.dispose();
     }
 
     void onIncomingDeliveryPackage(IncomingDeliveryEvent incomingDeliveryEvent) {
