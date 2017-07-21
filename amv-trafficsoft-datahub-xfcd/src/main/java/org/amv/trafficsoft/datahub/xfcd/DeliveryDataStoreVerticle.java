@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 @Slf4j
-public class TrafficsoftDeliveryDataStoreVerticle extends AbstractVerticle {
+public class DeliveryDataStoreVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.elastic();
 
     private final XfcdEvents xfcdEvents;
@@ -26,7 +26,7 @@ public class TrafficsoftDeliveryDataStoreVerticle extends AbstractVerticle {
     private volatile BaseSubscriber<IncomingDeliveryEvent> eventSubscriber;
 
     @Builder
-    TrafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents, XfcdDataStore dataStore) {
+    DeliveryDataStoreVerticle(XfcdEvents xfcdEvents, XfcdDataStore dataStore) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
         this.dataStore = requireNonNull(dataStore);
     }

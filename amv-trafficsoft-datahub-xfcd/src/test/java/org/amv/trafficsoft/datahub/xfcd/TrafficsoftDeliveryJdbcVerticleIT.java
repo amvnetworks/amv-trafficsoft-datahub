@@ -34,7 +34,7 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
         this.dao = spy(XfcdDataStore.class);
         this.xfcdEvents = new XfcdEvents(vertx);
 
-        final TrafficsoftDeliveryDataStoreVerticle sut = TrafficsoftDeliveryDataStoreVerticle.builder()
+        final DeliveryDataStoreVerticle sut = DeliveryDataStoreVerticle.builder()
                 .xfcdEvents(xfcdEvents)
                 .dataStore(dao)
                 .build();

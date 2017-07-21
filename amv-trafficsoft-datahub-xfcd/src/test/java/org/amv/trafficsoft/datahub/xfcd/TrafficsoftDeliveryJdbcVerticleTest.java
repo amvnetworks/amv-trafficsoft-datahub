@@ -15,13 +15,13 @@ public class TrafficsoftDeliveryJdbcVerticleTest {
 
     private XfcdDataStore dao;
 
-    private TrafficsoftDeliveryDataStoreVerticle sut;
+    private DeliveryDataStoreVerticle sut;
 
     @Before
     public void setUp() throws IOException {
         this.dao = spy(XfcdDataStore.class);
 
-        this.sut = TrafficsoftDeliveryDataStoreVerticle.builder()
+        this.sut = DeliveryDataStoreVerticle.builder()
                 .xfcdEvents(new XfcdEvents(Vertx.vertx()))
                 .dataStore(this.dao)
                 .build();
