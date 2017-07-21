@@ -1,11 +1,9 @@
-package org.amv.trafficsoft.datahub.xfcd.jdbc;
+package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,17 +14,17 @@ import static org.mockito.Mockito.*;
 
 public class TrafficsoftDeliveryJdbcVerticleTest {
 
-    private TrafficsoftDeliveryPackageJdbcDao dao;
+    private XfcdDataStore dao;
 
-    private TrafficsoftDeliveryJdbcVerticle sut;
+    private TrafficsoftDeliveryDataStoreVerticle sut;
 
     @Before
     public void setUp() throws IOException {
-        this.dao = spy(TrafficsoftDeliveryPackageJdbcDao.class);
+        this.dao = spy(XfcdDataStore.class);
 
-        this.sut = TrafficsoftDeliveryJdbcVerticle.builder()
+        this.sut = TrafficsoftDeliveryDataStoreVerticle.builder()
                 .xfcdEvents(new XfcdEvents(Vertx.vertx()))
-                .deliveryPackageDao(this.dao)
+                .dataStore(this.dao)
                 .build();
     }
 

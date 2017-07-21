@@ -1,6 +1,5 @@
 package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
-import com.google.common.eventbus.EventBus;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
@@ -10,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -22,15 +20,11 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {
-        TrafficsoftDeliverySqliteConsumerIT.TestApplictaion.class
+        TrafficsoftDeliverySqliteAutoConfigIT.TestApplictaion.class
 })
-public class TrafficsoftDeliverySqliteConsumerIT {
+public class TrafficsoftDeliverySqliteAutoConfigIT {
     @SpringBootApplication
     public static class TestApplictaion {
-        @Bean
-        public EventBus eventBus() {
-            return new EventBus();
-        }
     }
 
     @Autowired

@@ -5,11 +5,13 @@ repositories {
 dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd')
 
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc'), optional
+
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:0.1.0-SNAPSHOT'
-    
+
     compile 'net.openhft:chronicle-map:3.13.0', optional
 
-    compile project(':amv-trafficsoft-xfcd-consumer-jdbc'), optional
 
     testCompile 'io.vertx:vertx-unit:3.4.2'
 }

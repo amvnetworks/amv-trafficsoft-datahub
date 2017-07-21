@@ -37,9 +37,9 @@ public class XfcdEvents {
         pump.start();
     }
 
-    public <T extends XfcdEvent> void subscribe(Class<T> clazz, Subscriber<T> eventSubscriber) {
+    public <T extends XfcdEvent> void subscribe(Class<T> clazz, Subscriber<T> subscriber) {
         requireNonNull(clazz);
-        requireNonNull(eventSubscriber);
+        requireNonNull(subscriber);
 
         final MessageConsumer<String> consumer = vertx.eventBus().consumer(clazz.getName());
 
@@ -47,7 +47,7 @@ public class XfcdEvents {
 
         Flux.from(rws)
                 .map(json -> Json.decodeValue(json, clazz))
-                .subscribe(eventSubscriber);
+                .subscribe(subscriber);
 
         Pump pump = Pump.pump(consumer.bodyStream(), rws);
 

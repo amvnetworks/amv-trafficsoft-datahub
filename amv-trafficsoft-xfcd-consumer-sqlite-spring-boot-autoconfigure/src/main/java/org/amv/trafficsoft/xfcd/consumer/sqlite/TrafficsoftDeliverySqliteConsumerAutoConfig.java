@@ -30,6 +30,20 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
     @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
+    @ConditionalOnMissingBean(TrafficsoftDeliveryPackageJdbcDao.class)
+    @Bean("delegatingTrafficsoftDeliveryPackageDao")
+    public TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao,
+                                                                TrafficsoftXfcdNodeJdbcDao xfcdNodeDao,
+                                                                TrafficsoftXfcdStateJdbcDao xfcdStateDao,
+                                                                TrafficsoftXfcdXfcdJdbcDao xfcdXfcdDao) {
+        return DelegatingTrafficsoftDeliveryPackageDao.builder()
+                .deliveryDao(deliveryDao)
+                .nodeDao(xfcdNodeDao)
+                .stateDao(xfcdStateDao)
+                .xfcdDao(xfcdXfcdDao)
+                .build();
+    }
+
     @ConditionalOnMissingBean
     @Bean("trafficsoftDeliveryRowMapper")
     public TrafficsoftDeliveryRowMapper deliveryRowMapper() {

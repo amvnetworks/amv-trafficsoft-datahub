@@ -1,0 +1,12 @@
+spring.profiles.active: production
+
+# LOGGING
+logging.path: ./var/log
+logging.file: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: WARN
+
+amv.trafficsoft.datahub.xfcd:
+  enabled: true
+  fetch-interval-in-seconds: 3600
+  primary-consumer: 'jdbc'

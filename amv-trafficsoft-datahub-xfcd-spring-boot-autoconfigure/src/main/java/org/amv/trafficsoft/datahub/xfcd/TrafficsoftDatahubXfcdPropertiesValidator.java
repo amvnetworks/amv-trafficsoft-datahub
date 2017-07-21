@@ -17,5 +17,7 @@ public class TrafficsoftDatahubXfcdPropertiesValidator implements Validator {
         checkArgument(supports(target.getClass()), "Unsupported type.");
 
         TrafficsoftDatahubXfcdProperties properties = (TrafficsoftDatahubXfcdProperties) target;
+
+
     }
 }

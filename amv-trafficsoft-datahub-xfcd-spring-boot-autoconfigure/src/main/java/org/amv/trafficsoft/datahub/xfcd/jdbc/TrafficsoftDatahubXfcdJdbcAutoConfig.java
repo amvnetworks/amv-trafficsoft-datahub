@@ -2,39 +2,51 @@ package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdProperties;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryDataStoreVerticle;
 import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 @Configuration
-@AutoConfigureAfter(TrafficsoftDatahubXfcdAutoConfig.class)
+@AutoConfigureAfter({
+        TrafficsoftDatahubXfcdAutoConfig.class,
+        TrafficsoftDeliveryJdbcConsumerAutoConfig.class
+})
 public class TrafficsoftDatahubXfcdJdbcAutoConfig {
 
-    @ConditionalOnMissingBean(TrafficsoftDeliveryPackageJdbcDao.class)
-    @Bean("delegatingTrafficsoftDeliveryPackageDao")
-    public TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao,
-                                                                TrafficsoftXfcdNodeJdbcDao xfcdNodeDao,
-                                                                TrafficsoftXfcdStateJdbcDao xfcdStateDao,
-                                                                TrafficsoftXfcdXfcdJdbcDao xfcdXfcdDao) {
-        return DelegatingTrafficsoftDeliveryPackageDao.builder()
-                .deliveryDao(deliveryDao)
-                .nodeDao(xfcdNodeDao)
-                .stateDao(xfcdStateDao)
-                .xfcdDao(xfcdXfcdDao)
+
+    private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
+
+    @Autowired
+    public TrafficsoftDatahubXfcdJdbcAutoConfig(TrafficsoftDatahubXfcdProperties datahubXfcdProperties) {
+        this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
+    }
+
+    @Bean("trafficsoftDeliveryDataStoreJdbcAdapter")
+    public XfcdDataStoreJdbc xfcdDataStoreJdbcAdapter(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
+        boolean isPrimaryDataStore = "jdbc".equals(datahubXfcdProperties.getPrimaryDataStore());
+
+        return XfcdDataStoreJdbc.builder()
+                .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)
+                .primaryDataStore(isPrimaryDataStore)
                 .build();
     }
 
-    @Bean("trafficsoftDeliveryJdbcVerticle")
-    public TrafficsoftDeliveryJdbcVerticle trafficsoftDeliveryJdbcVerticle(XfcdEvents xfcdEvents,
-                                                                           TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
-        return TrafficsoftDeliveryJdbcVerticle.builder()
+    @Bean("trafficsoftDeliveryDataStoreJdbcVerticle")
+    public TrafficsoftDeliveryDataStoreVerticle trafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents,
+                                                                                     XfcdDataStoreJdbc dataStoreJdbcAdapter) {
+        return TrafficsoftDeliveryDataStoreVerticle.builder()
                 .xfcdEvents(xfcdEvents)
-                .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)
-                .primaryDataStore(true)
+                .dataStore(dataStoreJdbcAdapter)
                 .build();
     }
 

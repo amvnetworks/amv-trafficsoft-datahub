@@ -13,6 +13,7 @@ amv.trafficsoft.api:
 amv.trafficsoft.datahub.xfcd:
   enabled: true
   fetch-interval-in-seconds: 10
+  primary-data-store: 'jdbc'
 
 amv.trafficsoft.xfcd.consumer.jdbc:
   enabled: true

@@ -1,14 +1,12 @@
-package org.amv.trafficsoft.datahub.xfcd.jdbc;
+package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.XfcdEvents;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
@@ -20,20 +18,18 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 @Slf4j
-public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
+public class TrafficsoftDeliveryDataStoreVerticle extends AbstractVerticle {
     private final Scheduler scheduler = Schedulers.elastic();
 
     private final XfcdEvents xfcdEvents;
-    private final TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao;
-    private final boolean primaryDataStore;
+    private final XfcdDataStore dataStore;
 
     private volatile BaseSubscriber<IncomingDeliveryEvent> eventSubscriber;
 
     @Builder
-    TrafficsoftDeliveryJdbcVerticle(XfcdEvents xfcdEvents, TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao, boolean primaryDataStore) {
+    TrafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents, XfcdDataStore dataStore) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
-        this.deliveryPackageDao = requireNonNull(deliveryPackageDao);
-        this.primaryDataStore = primaryDataStore;
+        this.dataStore = requireNonNull(dataStore);
     }
 
     @Override
@@ -43,7 +39,7 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
             protected void hookOnNext(IncomingDeliveryEvent event) {
                 onIncomingDeliveryPackage(event);
 
-                if (primaryDataStore) {
+                if (dataStore.isPrimaryDataStore()) {
                     xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
                             .deliveryPackage(event.getDeliveryPackage())
                             .build()));
@@ -81,6 +77,6 @@ public class TrafficsoftDeliveryJdbcVerticle extends AbstractVerticle {
             return;
         }
 
-        deliveryPackageDao.save(deliveryPackage);
+        dataStore.save(deliveryPackage);
     }
 }
