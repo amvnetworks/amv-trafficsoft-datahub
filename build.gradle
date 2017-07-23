@@ -20,10 +20,20 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.14.0'
 }
 
-
 apply plugin: 'maven'
 
+contacts {
+    'devlopment@amv-networks.com' {
+        moniker 'AMV Networks GmbH'
+        role 'owner'
+        github 'amvnetworks'
+    }
+}
+
 allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'java'
+
     repositories {
         mavenLocal()
         maven { url 'https://repo.spring.io/milestone' }
@@ -31,11 +41,8 @@ allprojects {
         jcenter()
     }
 
-    apply plugin: 'maven'
-    apply plugin: 'java'
+    group = 'org.amv.trafficsoft.datahub'
 
-    group = 'org.amv.trafficsoft'
-    
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
@@ -49,6 +56,7 @@ subprojects {
     apply plugin: 'nebula.lint'
     apply plugin: 'nebula.nebula-release'
     apply plugin: 'nebula.info'
+    apply plugin: 'nebula.project'
     apply plugin: 'nebula.optional-base'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'io.franzbecker.gradle-lombok'
