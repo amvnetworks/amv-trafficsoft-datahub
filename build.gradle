@@ -35,8 +35,7 @@ allprojects {
     apply plugin: 'java'
 
     group = 'org.amv.trafficsoft'
-    version = '0.0.5-SNAPSHOT'
-
+    
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
