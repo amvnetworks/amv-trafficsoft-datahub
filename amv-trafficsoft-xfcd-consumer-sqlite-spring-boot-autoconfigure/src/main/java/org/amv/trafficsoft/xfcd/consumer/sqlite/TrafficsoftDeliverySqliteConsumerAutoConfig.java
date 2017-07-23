@@ -5,6 +5,7 @@ import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftDeliveryJdbcConsumerAutoConfig.class)
+@AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
 @ConditionalOnClass(org.sqlite.JDBC.class)
 @ConditionalOnProperty(
         value = "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName",
@@ -30,7 +32,7 @@ public class TrafficsoftDeliverySqliteConsumerAutoConfig {
     @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    @ConditionalOnMissingBean(TrafficsoftDeliveryPackageJdbcDao.class)
+    //@ConditionalOnMissingBean(TrafficsoftDeliveryPackageJdbcDao.class)
     @Bean("delegatingTrafficsoftDeliveryPackageDao")
     public TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao,
                                                                 TrafficsoftXfcdNodeJdbcDao xfcdNodeDao,

@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,9 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @ConditionalOnProperty("amv.trafficsoft.xfcd.consumer.jdbc.enabled")
+@AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
 public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
+
     /**
      * Reasons for static declaration: created very early in the application’s lifecycle
      * allows the bean to be created without having to instantiate the @Configuration class

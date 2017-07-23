@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
+@ConditionalOnClass(HealthChecks.class)
 @AutoConfigureAfter({
         VertxAutoConfig.class,
         VertxRxAutoConfig.class

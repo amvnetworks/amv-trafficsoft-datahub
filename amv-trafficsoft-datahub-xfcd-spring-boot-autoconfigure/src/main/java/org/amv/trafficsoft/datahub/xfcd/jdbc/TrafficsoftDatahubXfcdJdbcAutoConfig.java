@@ -5,7 +5,7 @@ import org.amv.trafficsoft.datahub.xfcd.DeliveryDataStoreVerticle;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdProperties;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -17,13 +17,20 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@ConditionalOnBean(TrafficsoftDeliveryPackageJdbcDao.class)
 @AutoConfigureAfter({
         TrafficsoftDatahubXfcdAutoConfig.class,
-        TrafficsoftDeliveryJdbcConsumerAutoConfig.class
+        TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class
 })
+//@AutoConfigureOrder(TrafficsoftDatahubXfcdJdbcAutoConfig.PRIORITY)
+@ConditionalOnBean(TrafficsoftDeliveryPackageJdbcDao.class)
 public class TrafficsoftDatahubXfcdJdbcAutoConfig {
-
+    /**
+     * This is done to run after the auto configuration classes
+     * that provide {@link TrafficsoftDeliveryPackageJdbcDao} beans.
+     * This is a workaround because these configuration classes are
+     * not known in advance an can therefore not be used with @AutoConfigureAfter
+     */
+    static final int PRIORITY = 10_000;
 
     private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
 
