@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
 public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJdbcDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -26,7 +27,6 @@ public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJd
     }
 
     @Override
-    @Transactional
     public void saveAll(List<TrafficsoftXfcdStateEntity> entities) {
         requireNonNull(entities);
 
@@ -51,7 +51,6 @@ public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJd
     }
 
     @Override
-    @Transactional
     public List<TrafficsoftXfcdStateEntity> findByNodeId(long nodeId) {
         String sql = "SELECT `CD`, `VAL`, `IMXFCD_N_ID` " +
                 "FROM `IMXFCD_State` " +
@@ -66,7 +65,6 @@ public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJd
     }
 
     @Override
-    @Transactional
     public List<TrafficsoftXfcdStateEntity> findByNodeIds(List<Long> nodeIds) {
         requireNonNull(nodeIds, "`nodeIds` must not be null");
 

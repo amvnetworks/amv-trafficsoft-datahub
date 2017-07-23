@@ -20,6 +20,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
+@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
 public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbcDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<TrafficsoftDeliveryEntity> rowMapper;
@@ -31,7 +32,6 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
     }
 
     @Override
-    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
     public void saveAll(List<TrafficsoftDeliveryEntity> deliveries) {
         requireNonNull(deliveries);
 
@@ -54,7 +54,6 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
     }
 
     @Override
-    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
     public void confirmDeliveriesByIds(Collection<Long> ids) {
         requireNonNull(ids, "`ids` must not be null");
 
@@ -78,7 +77,6 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
     }
 
     @Override
-    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager", readOnly = true)
     public List<TrafficsoftDeliveryEntity> findByIds(List<Long> ids) {
         requireNonNull(ids, "`ids` must not be null");
 
@@ -98,7 +96,6 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
     }
 
     @Override
-    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager", readOnly = true)
     public Optional<TrafficsoftDeliveryEntity> findById(long id) {
         String sql = "SELECT `ID`, `TS`, `CONFIRMED` " +
                 "FROM `amv_trafficsoft_xfcd_delivery` " +
@@ -116,9 +113,7 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
         }
     }
 
-
     @Override
-    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager", readOnly = true)
     public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(int bpcId) {
         String sql = "SELECT DISTINCT d.`ID` AS `ID` FROM `amv_trafficsoft_xfcd_delivery` d, `amv_trafficsoft_xfcd_node` n " +
                 "WHERE d.`CONFIRMED` IS NULL AND " +

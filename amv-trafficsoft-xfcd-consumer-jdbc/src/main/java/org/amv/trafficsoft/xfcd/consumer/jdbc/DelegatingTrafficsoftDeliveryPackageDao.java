@@ -32,7 +32,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     }
 
     @Override
-    @Transactional
+    @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
     public void save(TrafficsoftDeliveryPackage deliveryPackage) throws DataAccessException {
         if (deliveryPackage.isEmpty()) {
             return;

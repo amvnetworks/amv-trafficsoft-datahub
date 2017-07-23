@@ -17,6 +17,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
+@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
 public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbcDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -77,7 +78,6 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
     }
 
     @Override
-    @Transactional
     public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(int bpcId, long deliveryId) {
         String sql = "SELECT n.`ID`, n.`IMXFCD_D_ID`, " +
                 "n.`BPC_ID`,  n.`V_ID`, n.`TRIPID`, n.`TS`, " +
@@ -97,7 +97,6 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
     }
 
     @Override
-    @Transactional
     public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(int bpcId, List<Long> deliveryIds) {
         requireNonNull(deliveryIds, "`deliveryIds` must not be null");
 
