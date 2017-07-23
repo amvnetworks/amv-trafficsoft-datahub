@@ -1,14 +1,15 @@
 package org.amv.trafficsoft.datahub.xfcd.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.DeliveryDataStoreVerticle;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdProperties;
-import org.amv.trafficsoft.datahub.xfcd.DeliveryDataStoreVerticle;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcConsumerAutoConfig;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
+@ConditionalOnBean(TrafficsoftDeliveryPackageJdbcDao.class)
 @AutoConfigureAfter({
         TrafficsoftDatahubXfcdAutoConfig.class,
         TrafficsoftDeliveryJdbcConsumerAutoConfig.class

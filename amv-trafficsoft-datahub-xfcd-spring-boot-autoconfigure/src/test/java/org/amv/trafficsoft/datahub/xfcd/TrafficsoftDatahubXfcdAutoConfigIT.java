@@ -41,7 +41,6 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
             return mock(XfcdClient.class);
         }
 
-
         @Bean
         public TrafficsoftDatahubXfcdProperties datahubXfcdProperties() {
             final TrafficsoftDatahubXfcdProperties properties = new TrafficsoftDatahubXfcdProperties();

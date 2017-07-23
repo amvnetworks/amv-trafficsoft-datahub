@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -30,7 +31,10 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
     @Before
     public void setUp(TestContext context) throws IOException {
-        this.vertx = Vertx.vertx();
+        this.vertx = Vertx.vertx(new VertxOptions()
+                .setEventLoopPoolSize(1)
+                .setInternalBlockingPoolSize(1));
+
         this.dao = spy(XfcdDataStore.class);
         this.xfcdEvents = new XfcdEvents(vertx);
 
@@ -78,9 +82,9 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
         Async async = context.async();
 
-        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, new BaseSubscriber<ConfirmableDeliveryEvent>() {
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
-            protected void hookOnNext(ConfirmableDeliveryEvent value) {
+            protected void hookOnNext(IncomingDeliveryEvent value) {
                 async.complete();
             }
         });

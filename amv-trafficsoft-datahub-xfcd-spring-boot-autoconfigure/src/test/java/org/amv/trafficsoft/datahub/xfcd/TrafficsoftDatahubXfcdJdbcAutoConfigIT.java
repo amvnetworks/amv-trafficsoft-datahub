@@ -34,11 +34,9 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
         }
 
         /**
-         * THis bean simulates an inclusion of an
+         * This bean simulates an inclusion of an
          * "consumer-jdbc-${technology}-autoconfigure module.
          * JdbcAutoConfig is triggered by availability of this bean.
-         *
-         * @return
          */
         @Bean
         public TrafficsoftDeliveryPackageJdbcDao deliveryPackageJdbcDao() {
