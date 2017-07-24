@@ -44,14 +44,19 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
                 log.info("Save incoming delivery package in XfcdDataStore");
+                vertx.executeBlocking(future -> {
+                    onIncomingDeliveryPackage(event);
+                    future.complete();
+                }, result -> {
+                    if (result.succeeded()) {
+                        if (dataStore.isPrimaryDataStore()) {
+                            xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
+                                    .deliveryPackage(event.getDeliveryPackage())
+                                    .build()));
+                        }
+                    }
+                });
 
-                onIncomingDeliveryPackage(event);
-
-                if (dataStore.isPrimaryDataStore()) {
-                    xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
-                            .deliveryPackage(event.getDeliveryPackage())
-                            .build()));
-                }
             }
         };
 
