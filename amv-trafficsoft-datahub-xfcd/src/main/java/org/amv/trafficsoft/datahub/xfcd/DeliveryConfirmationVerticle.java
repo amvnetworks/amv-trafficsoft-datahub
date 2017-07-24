@@ -46,7 +46,6 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
         this.subscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmableDeliveryEvent event) {
-                log.info("Notify AMV TrafficSoft about successfully processed deliveries");
                 confirm(event);
             }
         };
@@ -74,7 +73,7 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                         .deliveryPackage(deliveryPackage)
                         .build())
                 .subscribe(val -> xfcdEvents.publish(ConfirmedDeliveryEvent.class, Flux.just(val)), t -> {
-                            log.error("error while confirming deliveries {}: {}", deliveryIds, t.getMessage());
+                            log.error("Error while confirming deliveries {}: {}", deliveryIds, t.getMessage());
                             if (log.isDebugEnabled()) {
                                 log.debug("", t);
                             }

@@ -43,7 +43,6 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
-                log.info("Save incoming delivery package in XfcdDataStore");
                 vertx.executeBlocking(future -> {
                     onIncomingDeliveryPackage(event);
                     future.complete();
@@ -78,7 +77,7 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
 
         if (log.isDebugEnabled()) {
-            log.debug("saving {} deliveries", deliveries.size());
+            log.debug("Saving {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
         }
 
         if (deliveries.isEmpty()) {

@@ -27,7 +27,7 @@ public class XfcdEventLoggingVerticle extends AbstractVerticle {
         final BaseSubscriber<IncomingDeliveryEvent> incomingDeliveryEventBaseSubscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent value) {
-                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
+                log.info("Received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDeliveryIds());
             }
         };
         subscribers.add(incomingDeliveryEventBaseSubscriber);
@@ -36,7 +36,7 @@ public class XfcdEventLoggingVerticle extends AbstractVerticle {
         final BaseSubscriber<ConfirmableDeliveryEvent> confirmableDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmableDeliveryEvent value) {
-                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
+                log.info("Received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDeliveryIds());
 
             }
         };
@@ -46,7 +46,7 @@ public class XfcdEventLoggingVerticle extends AbstractVerticle {
         final BaseSubscriber<ConfirmedDeliveryEvent> confirmedDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmedDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmedDeliveryEvent value) {
-                log.info("received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDelivieryIds());
+                log.info("Received event '{}': {}", value.getClass(), value.getDeliveryPackage().getDeliveryIds());
             }
         };
         subscribers.add(confirmedDeliveryEventBaseSubscriber);

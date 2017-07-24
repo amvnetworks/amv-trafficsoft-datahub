@@ -17,7 +17,7 @@ public interface TrafficsoftDeliveryPackage {
     List<DeliveryRestDto> getDeliveries();
 
     @JsonIgnore
-    default List<Long> getDelivieryIds() {
+    default List<Long> getDeliveryIds() {
         return Optional.ofNullable(getDeliveries())
                 .orElse(Collections.emptyList()).stream()
                 .map(DeliveryRestDto::getDeliveryId)

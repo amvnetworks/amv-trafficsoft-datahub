@@ -74,6 +74,8 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
                         log.error("", t);
                     }
                 })
+                .doOnNext(val -> log.debug("Fetched {} deliveries: {}",
+                        val.getDeliveries().size(), val.getDeliveryIds()))
                 .map(val -> IncomingDeliveryEvent.builder()
                         .deliveryPackage(val)
                         .build());
