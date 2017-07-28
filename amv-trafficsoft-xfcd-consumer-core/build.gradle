@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-model:0.1.0-SNAPSHOT'
+    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-model:0.0.8'
 }
