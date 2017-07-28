@@ -1,7 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
-import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,12 +33,8 @@ public class TrafficsoftDeliveryJdbcVerticleTest {
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(Collections.emptyList())
                 .build();
-
-        final IncomingDeliveryEvent incomingDeliveryEvent = IncomingDeliveryEvent.builder()
-                .deliveryPackage(deliveryPackage)
-                .build();
-
-        sut.onIncomingDeliveryPackage(incomingDeliveryEvent);
+        
+        sut.persistDeliveryPackage(deliveryPackage);
     }
 
     @Test
@@ -48,11 +43,7 @@ public class TrafficsoftDeliveryJdbcVerticleTest {
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();
 
-        final IncomingDeliveryEvent incomingDeliveryEvent = IncomingDeliveryEvent.builder()
-                .deliveryPackage(deliveryPackage)
-                .build();
-
-        sut.onIncomingDeliveryPackage(incomingDeliveryEvent);
+        sut.persistDeliveryPackage(deliveryPackage);
 
         verify(dao, times(1)).save(eq(deliveryPackage));
     }

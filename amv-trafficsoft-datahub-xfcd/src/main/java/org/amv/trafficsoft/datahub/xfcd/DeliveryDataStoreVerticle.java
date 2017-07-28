@@ -43,19 +43,7 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
-                vertx.executeBlocking(future -> {
-                    onIncomingDeliveryPackage(event);
-                    future.complete();
-                }, result -> {
-                    if (result.succeeded()) {
-                        if (dataStore.isPrimaryDataStore()) {
-                            xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
-                                    .deliveryPackage(event.getDeliveryPackage())
-                                    .build()));
-                        }
-                    }
-                });
-
+                onIncomingDeliveryPackage(event);
             }
         };
 
@@ -68,11 +56,30 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         this.scheduler.dispose();
     }
 
-    void onIncomingDeliveryPackage(IncomingDeliveryEvent incomingDeliveryEvent) {
-        requireNonNull(incomingDeliveryEvent, "`deliveryPackage` must not be null");
+    void onIncomingDeliveryPackage(IncomingDeliveryEvent event) {
+        TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
 
-        final TrafficsoftDeliveryPackage deliveryPackage = incomingDeliveryEvent
-                .getDeliveryPackage();
+        vertx.executeBlocking(future -> {
+            persistDeliveryPackage(deliveryPackage);
+            future.complete();
+        }, result -> {
+            if (result.failed()) {
+                log.error("", result.cause());
+            }
+
+            if (result.succeeded()) {
+                if (dataStore.isPrimaryDataStore()) {
+                    xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
+                            .deliveryPackage(deliveryPackage)
+                            .build()));
+                }
+            }
+        });
+    }
+
+
+    void persistDeliveryPackage(TrafficsoftDeliveryPackage deliveryPackage) {
+        requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
 
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
 
@@ -85,5 +92,9 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         }
 
         dataStore.save(deliveryPackage);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Saved {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
+        }
     }
 }

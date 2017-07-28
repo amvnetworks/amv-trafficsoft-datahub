@@ -12,6 +12,7 @@ import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,13 +73,28 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                 .map(deliveryPackage -> ConfirmedDeliveryEvent.builder()
                         .deliveryPackage(deliveryPackage)
                         .build())
-                .subscribe(val -> xfcdEvents.publish(ConfirmedDeliveryEvent.class, Flux.just(val)), t -> {
-                            log.error("Error while confirming deliveries {}: {}", deliveryIds, t.getMessage());
+                .subscribe(val -> {
+                            xfcdEvents.publish(ConfirmedDeliveryEvent.class, Flux.just(val));
+                        },
+                        t -> {
+                            String message = t.getMessage();
+                            String causeMessage = Optional.ofNullable(t.getCause())
+                                    .map(Throwable::getMessage)
+                                    .orElse(null);
+
+                            log.error("Error while confirming deliveries: {}\n" +
+                                    "Origin: {}\n" +
+                                    "Cause: {}\n", deliveryIds, message, causeMessage);
+                            
                             if (log.isDebugEnabled()) {
-                                log.debug("", t);
+                                log.trace("", t);
                             }
                         },
-                        () -> log.info("Successfully confirmed deliveries {}", deliveryIds));
+                        () -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Successfully confirmed deliveries {}", deliveryIds);
+                            }
+                        });
     }
 
 
