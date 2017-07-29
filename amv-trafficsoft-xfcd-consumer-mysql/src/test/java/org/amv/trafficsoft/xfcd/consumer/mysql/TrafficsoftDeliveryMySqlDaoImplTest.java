@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.xfcd.consumer.sqlite;
+package org.amv.trafficsoft.xfcd.consumer.mysql;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
@@ -39,18 +39,18 @@ import static org.junit.Assert.assertThat;
         DbUnitTestExecutionListener.class
 })
 @Transactional
-public class TrafficsoftDeliverySqliteDaoImplTest {
+public class TrafficsoftDeliveryMySqlDaoImplTest {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private TrafficsoftDeliverySqliteDaoImpl sut;
+    private TrafficsoftDeliveryMySqlDaoImpl sut;
 
     @Before
     public void setUp() throws SQLException, IOException {
         TrafficsoftDeliveryRowMapper imTrafficsoftDeliveryRowMapper = new TrafficsoftDeliveryRowMapper();
 
-        this.sut = new TrafficsoftDeliverySqliteDaoImpl(namedParameterJdbcTemplate,
+        this.sut = new TrafficsoftDeliveryMySqlDaoImpl(namedParameterJdbcTemplate,
                 imTrafficsoftDeliveryRowMapper);
     }
 
@@ -105,6 +105,7 @@ public class TrafficsoftDeliverySqliteDaoImplTest {
     }
 
     @Test
+    @DatabaseSetup(value = "/sample_data_deliveries_bulk.xml")
     public void itShouldInsertDelivery() throws Exception {
         TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
 
@@ -112,6 +113,12 @@ public class TrafficsoftDeliverySqliteDaoImplTest {
 
         assertThat(trafficsoftDeliveryEntity, is(notNullValue()));
         assertThat(trafficsoftDeliveryEntity.getId(), is(greaterThanOrEqualTo(1L)));
+
+        final TrafficsoftDeliveryEntity refetchedEntity = this.sut.findById(trafficsoftDeliveryEntity.getId())
+                .orElseThrow(IllegalStateException::new);
+
+        assertThat(refetchedEntity, is(notNullValue()));
+        assertThat(refetchedEntity.getId(), is(trafficsoftDeliveryEntity.getId()));
     }
 
     @Test
@@ -150,7 +157,6 @@ public class TrafficsoftDeliverySqliteDaoImplTest {
     }
 
     @Test
-    @DatabaseSetup(value = "/sample_data_deliveries_bulk.xml")
     public void itShouldFindNoUnconfirmedDeliveryIdsForNonExistingBpc() {
         int nonExistingBpcId = 1;
 
@@ -168,5 +174,26 @@ public class TrafficsoftDeliverySqliteDaoImplTest {
         assertThat(result, is(notNullValue()));
         assertThat(result, hasSize(2));
         assertThat(result, contains(19613L, 21125L));
+    }
+
+
+    @Test
+    @DatabaseSetup(value = "/sample_data_deliveries_bulk.xml")
+    public void itShouldUpdateDeliveryIfExists() throws Exception {
+        TrafficsoftDeliveryEntity trafficsoftDeliveryEntity = TrafficsoftDeliveryEntityMother.randomUnconfirmed();
+
+        this.sut.save(trafficsoftDeliveryEntity);
+
+        assertThat(trafficsoftDeliveryEntity, is(notNullValue()));
+        assertThat(trafficsoftDeliveryEntity.getId(), is(greaterThanOrEqualTo(1L)));
+
+        // save again to set update flag
+        this.sut.save(trafficsoftDeliveryEntity);
+
+        final TrafficsoftDeliveryEntity refetchedEntity = this.sut.findById(trafficsoftDeliveryEntity.getId())
+                .orElseThrow(IllegalStateException::new);
+
+        assertThat(refetchedEntity, is(notNullValue()));
+        assertThat(refetchedEntity.getId(), is(trafficsoftDeliveryEntity.getId()));
     }
 }

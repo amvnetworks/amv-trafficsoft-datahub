@@ -11,7 +11,8 @@ dependencies {
 
     testCompile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     testCompile 'mysql:mysql-connector-java:5.1.8'
-    testCompile 'com.h2database:h2:1.4.195'
+    testCompile 'com.wix:wix-embedded-mysql:2.2.9'
+
     testCompile 'org.dbunit:dbunit:2.5.3'
     testCompile 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
 }

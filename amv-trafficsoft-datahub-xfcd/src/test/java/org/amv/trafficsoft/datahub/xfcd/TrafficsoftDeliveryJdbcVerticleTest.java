@@ -33,7 +33,7 @@ public class TrafficsoftDeliveryJdbcVerticleTest {
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(Collections.emptyList())
                 .build();
-        
+
         sut.persistDeliveryPackage(deliveryPackage);
     }
 
