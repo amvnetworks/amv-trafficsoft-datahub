@@ -12,4 +12,5 @@ include 'amv-trafficsoft-xfcd-consumer-sqlite-spring-boot-autoconfigure'
 include 'amv-trafficsoft-datahub-xfcd-spring-boot-autoconfigure'
 include 'amv-trafficsoft-datahub-xfcd-spring-boot-starter'
 include 'amv-vertx-spring-boot-starter'
+include 'amv-trafficsoft-xfcd-consumer-mysql-spring-boot-autoconfigure'
 

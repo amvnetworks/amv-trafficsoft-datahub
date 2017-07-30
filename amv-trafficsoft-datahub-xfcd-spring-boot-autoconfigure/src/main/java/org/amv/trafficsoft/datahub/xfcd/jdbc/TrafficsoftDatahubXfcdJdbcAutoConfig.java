@@ -21,16 +21,8 @@ import static java.util.Objects.requireNonNull;
         TrafficsoftDatahubXfcdAutoConfig.class,
         TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class
 })
-//@AutoConfigureOrder(TrafficsoftDatahubXfcdJdbcAutoConfig.PRIORITY)
 @ConditionalOnBean(TrafficsoftDeliveryPackageJdbcDao.class)
 public class TrafficsoftDatahubXfcdJdbcAutoConfig {
-    /**
-     * This is done to run after the auto configuration classes
-     * that provide {@link TrafficsoftDeliveryPackageJdbcDao} beans.
-     * This is a workaround because these configuration classes are
-     * not known in advance an can therefore not be used with @AutoConfigureAfter
-     */
-    static final int PRIORITY = 10_000;
 
     private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
 

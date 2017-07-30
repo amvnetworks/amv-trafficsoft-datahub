@@ -18,8 +18,16 @@ public class TrafficsoftXfcdJdbcProperties {
     private String flywayScriptsLocation;
     private boolean schemaMigrationEnabled = false;
 
+    private PoolProperties pool = new PoolProperties();
+
     public Optional<String> getDriverClassName() {
         return Optional.ofNullable(driverClassName)
                 .map(Strings::emptyToNull);
+    }
+
+    @Data
+    public static class PoolProperties {
+        private long initializationFailTimeout = 1;
+        private int maxPoolSize = 25;
     }
 }

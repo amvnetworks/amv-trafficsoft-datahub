@@ -1,5 +1,6 @@
 package org.amv.trafficsoft.xfcd.consumer.mysql;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +71,7 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
                 .build());
 
         if (log.isDebugEnabled()) {
-            log.debug("confirmDeliveriesByIds({}) affected {} row", ids, affectedRows);
+            log.debug("confirmDeliveriesByIds({}) affected {} row(s)", ids, affectedRows);
         }
     }
 
@@ -99,11 +101,11 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
                 "WHERE `ID` = :id";
 
         try {
-            TrafficsoftDeliveryEntity deliveryOrNull = jdbcTemplate.queryForObject(sql, ImmutableMap.<String, Object>builder()
+            TrafficsoftDeliveryEntity delivery = jdbcTemplate.queryForObject(sql, ImmutableMap.<String, Object>builder()
                     .put("id", id)
                     .build(), rowMapper);
 
-            return Optional.of(deliveryOrNull);
+            return Optional.of(delivery);
         } catch (EmptyResultDataAccessException e) {
             log.warn("", e);
             return Optional.empty();
@@ -127,5 +129,26 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
         }
 
         return unconfirmedDeliveryIds;
+    }
+
+    @VisibleForTesting
+    Optional<Instant> fetchUpdatedAtById(long id) {
+        String sql = "SELECT `UPDATED_AT` " +
+                "FROM `amv_trafficsoft_xfcd_delivery` " +
+                "WHERE `ID` = :id";
+
+        try {
+            Timestamp updatedAtOrNull = jdbcTemplate.queryForObject(sql, ImmutableMap.<String, Object>builder()
+                    .put("id", id)
+                    .build(), (rs, rowNum) -> {
+                return rs.getTimestamp("UPDATED_AT");
+            });
+
+            return Optional.ofNullable(updatedAtOrNull)
+                    .map(Timestamp::toInstant);
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("", e);
+            return Optional.empty();
+        }
     }
 }

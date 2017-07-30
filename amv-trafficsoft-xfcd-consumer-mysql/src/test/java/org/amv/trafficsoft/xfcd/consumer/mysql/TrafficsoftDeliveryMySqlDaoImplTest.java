@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -187,13 +188,16 @@ public class TrafficsoftDeliveryMySqlDaoImplTest {
         assertThat(trafficsoftDeliveryEntity, is(notNullValue()));
         assertThat(trafficsoftDeliveryEntity.getId(), is(greaterThanOrEqualTo(1L)));
 
+        final Instant updatedAtAfterSave = this.sut.fetchUpdatedAtById(trafficsoftDeliveryEntity.getId())
+                .orElse(null);
+
+        assertThat(updatedAtAfterSave, is(nullValue()));
+
         // save again to set update flag
         this.sut.save(trafficsoftDeliveryEntity);
 
-        final TrafficsoftDeliveryEntity refetchedEntity = this.sut.findById(trafficsoftDeliveryEntity.getId())
-                .orElseThrow(IllegalStateException::new);
-
-        assertThat(refetchedEntity, is(notNullValue()));
-        assertThat(refetchedEntity.getId(), is(trafficsoftDeliveryEntity.getId()));
+        final Instant updatedAt = this.sut.fetchUpdatedAtById(trafficsoftDeliveryEntity.getId())
+                .orElse(null);
+        assertThat(updatedAt, is(notNullValue()));
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.Collections;
@@ -61,17 +62,33 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
             final Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(15);
             paramMap.put("now", Date.from(Instant.now()));
             paramMap.put("id", node.getId());
-            paramMap.put("altitude", node.getAltitude().orElse(null));
-            paramMap.put("heading", node.getHeading().orElse(null));
-            paramMap.put("hdop", node.getHorizontalDilution().orElse(null));
-            paramMap.put("latdeg", node.getLatitude().orElse(null));
-            paramMap.put("londeg", node.getLongitude().orElse(null));
-            paramMap.put("ts", node.getTimestamp().orElse(Instant.now()));
+            paramMap.put("altitude", node.getAltitude()
+                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
+            paramMap.put("heading", node.getHeading()
+                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
+            paramMap.put("hdop", node.getHorizontalDilution()
+                    .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
+            paramMap.put("latdeg", node.getLatitude()
+                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
+            paramMap.put("londeg", node.getLongitude()
+                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
+            paramMap.put("ts", node.getTimestamp()
+                    .orElseGet(Instant::now)
+                    .toEpochMilli());
             paramMap.put("satcnt", node.getSatelliteCount());
-            paramMap.put("speed", node.getSpeed().orElse(null));
+            paramMap.put("speed", node.getSpeed()
+                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
             paramMap.put("tripid", node.getTripId());
             paramMap.put("vehicleId", node.getVehicleId());
-            paramMap.put("vdop", node.getVerticalDilution().orElse(null));
+            paramMap.put("vdop", node.getVerticalDilution()
+                    .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
+                    .orElse(null));
             paramMap.put("bpcId", node.getBpcId());
             paramMap.put("deliveryId", node.getDeliveryId());
 

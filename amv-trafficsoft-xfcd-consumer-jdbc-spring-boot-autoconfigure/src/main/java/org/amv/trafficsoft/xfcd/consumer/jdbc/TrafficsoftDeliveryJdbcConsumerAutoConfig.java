@@ -69,6 +69,9 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
                 config.setMetricRegistry(metricRegistry);
             }
 
+            config.setMaximumPoolSize(properties.getPool().getMaxPoolSize());
+            config.setInitializationFailTimeout(properties.getPool().getInitializationFailTimeout());
+
             // TODO: make configurable
             config.addDataSourceProperty("cachePrepStmts", String.valueOf(true));
             config.addDataSourceProperty("prepStmtCacheSize", String.valueOf(250));

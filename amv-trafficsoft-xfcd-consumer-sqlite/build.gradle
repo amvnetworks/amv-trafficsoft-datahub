@@ -7,7 +7,7 @@ dependencies {
 
     compileOnly 'org.xerial:sqlite-jdbc:3.19.3'
 
-    testCompile('org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.0.8')
+    testCompile('org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.0.9-SNAPSHOT')
 
     testCompile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     testCompile 'org.xerial:sqlite-jdbc:3.19.3'

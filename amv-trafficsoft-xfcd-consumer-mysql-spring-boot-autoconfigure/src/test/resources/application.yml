@@ -13,8 +13,10 @@ logging.level.org.springframework: WARN
 
 amv.trafficsoft.xfcd.consumer.jdbc:
   enabled: true
-  jdbcUrl: jdbc:sqlite:~amv-trafficsoft-xfcd-consumer-sqlite-test.db
-  driverClassName: org.sqlite.JDBC
+  jdbcUrl: will_be_set_programmatically_to_use_random_port_of_embedded_mysql
+  driverClassName: com.mysql.jdbc.Driver
+  username: any_user
+  password: any_password
   schemaMigrationEnabled: true
   flywayScriptsLocation: db/migration
   pool:

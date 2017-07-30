@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.Collections;
@@ -34,17 +35,22 @@ public class TrafficsoftXfcdXfcdMySqlDaoImpl implements TrafficsoftXfcdXfcdJdbcD
 
         String sql = "INSERT INTO `amv_trafficsoft_xfcd_xfcd` " +
                 "(`CREATED_AT`, `IMXFCD_N_ID`, `TYPE`, `VAL`, `VALSTR`) " +
-                "VALUES (:now, :nodeId, :type, :value, :valueAsString) " +
+                "VALUES (:now, :node_id, :val_type, :val, :val_as_string) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "`UPDATED_AT` = :now";
 
         entities.forEach(entity -> {
             Map<String, Object> paramMap = Maps.newHashMap();
             paramMap.put("now", Date.from(Instant.now()));
-            paramMap.put("nodeId", entity.getNodeId());
-            paramMap.put("type", entity.getType());
-            paramMap.put("value", entity.getValue().orElse(null));
-            paramMap.put("valueAsString", entity.getValueAsString().orElse(null));
+            paramMap.put("node_id", entity.getNodeId());
+            paramMap.put("val_type", entity.getType());
+
+            // TODO: if val is "null" it throws an exception
+            // even as "VAL" is declared "nullable" -> Investigate!
+            paramMap.put("val", entity.getValue()
+                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                    .orElse(BigDecimal.ZERO));
+            paramMap.put("val_as_string", entity.getValueAsString().orElse(null));
 
             jdbcTemplate.update(sql, paramMap);
         });
