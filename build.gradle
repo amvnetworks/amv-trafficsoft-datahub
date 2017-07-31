@@ -7,12 +7,12 @@ buildscript {
     repositories {
         jcenter()
     }
+    dependencies {
+        classpath 'nu.studer:gradle-credentials-plugin:1.0.3'
+    }
 }
 
 plugins {
-    id 'findbugs'
-//    id 'checkstyle'
-    id 'com.jfrog.bintray' version '1.7.3'
     id 'io.franzbecker.gradle-lombok' version '1.8'
     id 'nebula.lint' version '6.8.0'
     id 'nebula.release' version '6.0.0'
@@ -21,6 +21,9 @@ plugins {
     id 'nebula.project' version '3.4.0'
     id 'nebula.optional-base' version '3.2.0'
     id 'com.github.ben-manes.versions' version '0.14.0'
+    id 'findbugs'
+    id 'com.jfrog.bintray' version '1.7.3'
+//    id 'checkstyle'
 }
 
 apply plugin: 'maven'
@@ -34,8 +37,9 @@ contacts {
 }
 
 allprojects {
-    apply plugin: 'maven'
     apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'nu.studer.credentials'
 
     repositories {
         mavenLocal()
@@ -52,17 +56,21 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'findbugs'
-//    apply plugin: 'checkstyle'
-    apply plugin: 'jacoco'
+    apply plugin: 'java'
+    apply plugin: 'maven'
     apply plugin: 'nebula.dependency-lock'
     apply plugin: 'nebula.lint'
     apply plugin: 'nebula.nebula-release'
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.optional-base'
-    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'io.franzbecker.gradle-lombok'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'findbugs'
+    apply plugin: 'jacoco'
+//    apply plugin: 'checkstyle'
+
+    String nexusPwd = credentials.nexuspwd
 
     dependencies {
         compile 'com.google.guava:guava:21.0'
@@ -170,4 +178,20 @@ subprojects {
         finalizedBy jacocoTestReport
     }
 
+    // ---- upload into Nexus
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "${nexusUrl}/content/repositories/releases") {
+                    authentication(userName: nexusUsername, password: nexusPwd)
+                }
+                snapshotRepository(url: "${nexusUrl}/content/repositories/snapshots") {
+                    authentication(userName: nexusUsername, password: nexusPwd)
+                }
+                pom.version = project.version
+                pom.artifactId = project.name
+                pom.groupId = project.group
+            }
+        }
+    }
 }
