@@ -6,7 +6,9 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.*;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,11 @@ import static org.junit.Assert.assertThat;
 })
 @Transactional
 public class TrafficsoftDeliveryPackageSqliteDaoImplTest {
+
+    @BeforeClass
+    public static void skipWindowsOs() {
+        Assume.assumeFalse(System.getProperty("os.name").startsWith("Windows"));
+    }
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

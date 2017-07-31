@@ -7,7 +7,9 @@ import com.google.common.collect.ImmutableList;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntityMother;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,11 @@ import static org.junit.Assert.assertThat;
 })
 @Transactional
 public class TrafficsoftDeliveryMySqlDaoImplTest {
+    
+    @BeforeClass
+    public static void skipWindowsOs() {
+        Assume.assumeFalse(System.getProperty("os.name").startsWith("Windows"));
+    }
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

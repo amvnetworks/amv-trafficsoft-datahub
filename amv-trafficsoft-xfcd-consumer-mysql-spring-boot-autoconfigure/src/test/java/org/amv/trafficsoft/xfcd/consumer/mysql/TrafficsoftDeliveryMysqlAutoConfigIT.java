@@ -8,6 +8,8 @@ import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdJdbcProperties;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.InitializingBean;
@@ -36,6 +38,12 @@ import static org.junit.Assert.assertThat;
         DependencyInjectionTestExecutionListener.class
 })
 public class TrafficsoftDeliveryMysqlAutoConfigIT {
+
+    @BeforeClass
+    public static void skipWindowsOs() {
+        Assume.assumeFalse(System.getProperty("os.name").startsWith("Windows"));
+    }
+
     @SpringBootApplication
     @Import(EmbeddedDatabaseTestConfig.class)
     public static class TestApplictaion {
@@ -43,8 +51,8 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
         public InitializingBean setJdbcUrlForTests(EmbeddedMysql embeddedMysql,
                                                    TrafficsoftXfcdJdbcProperties properties) {
             final String url = String.format("jdbc:mysql://localhost:%d/%s?" +
-                    "profileSQL=true" +
-                    "&generateSimpleParameterMetadata=true",
+                            "profileSQL=true" +
+                            "&generateSimpleParameterMetadata=true",
                     embeddedMysql.getConfig().getPort(),
                     EmbeddedDatabaseTestConfig.SCHEMA_NAME);
 
