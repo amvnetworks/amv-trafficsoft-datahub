@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
@@ -85,7 +86,7 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
         xfcdEvents.subscribe(IncomingDeliveryEvent.class, new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent value) {
-                async.complete();
+                vertx.setTimer(TimeUnit.SECONDS.toMillis(1), i -> async.complete());
             }
         });
 

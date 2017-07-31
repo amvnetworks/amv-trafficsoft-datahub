@@ -1,6 +1,9 @@
 import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
+    ext {
+        trafficsoftRestVersion = '0.0.9'
+    }
     repositories {
         jcenter()
     }

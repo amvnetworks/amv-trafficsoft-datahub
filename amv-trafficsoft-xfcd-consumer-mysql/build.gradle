@@ -7,7 +7,7 @@ dependencies {
 
     compileOnly 'mysql:mysql-connector-java:5.1.8'
 
-    testCompile('org.amv.trafficsoft:amv-trafficsoft-rest-model-test:0.0.9-SNAPSHOT')
+    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
     testCompile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     testCompile 'mysql:mysql-connector-java:5.1.8'

@@ -8,7 +8,7 @@ dependencies {
     compile project(':amv-trafficsoft-xfcd-consumer-jdbc'), optional
 
     compile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
-    compile 'org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:0.0.9-SNAPSHOT'
+    compile "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:${trafficsoftRestVersion}"
 
     compile 'net.openhft:chronicle-map:3.13.0', optional
 
