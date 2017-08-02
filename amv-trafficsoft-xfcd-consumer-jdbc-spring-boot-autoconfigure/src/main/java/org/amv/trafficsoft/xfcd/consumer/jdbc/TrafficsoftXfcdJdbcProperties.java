@@ -1,9 +1,11 @@
 package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -19,6 +21,7 @@ public class TrafficsoftXfcdJdbcProperties {
     private boolean schemaMigrationEnabled = false;
 
     private PoolProperties pool = new PoolProperties();
+    private Map<String, String> dataSource = Maps.newHashMap();
 
     public Optional<String> getDriverClassName() {
         return Optional.ofNullable(driverClassName)

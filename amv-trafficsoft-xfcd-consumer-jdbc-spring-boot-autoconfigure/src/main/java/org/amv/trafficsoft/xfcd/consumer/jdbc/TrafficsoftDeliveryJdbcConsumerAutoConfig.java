@@ -18,6 +18,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
+import java.util.Properties;
 
 import static java.util.Objects.requireNonNull;
 
@@ -72,10 +74,10 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
             config.setMaximumPoolSize(properties.getPool().getMaxPoolSize());
             config.setInitializationFailTimeout(properties.getPool().getInitializationFailTimeout());
 
-            // TODO: make configurable
-            config.addDataSourceProperty("cachePrepStmts", String.valueOf(true));
-            config.addDataSourceProperty("prepStmtCacheSize", String.valueOf(250));
-            config.addDataSourceProperty("prepStmtCacheSqlLimit", String.valueOf(2048));
+            Map<String, String> dataSource = properties.getDataSource();
+            Properties dataSourceProperties = new Properties();
+            dataSourceProperties.putAll(dataSource);
+            config.setDataSourceProperties(dataSourceProperties);
 
             return config;
         }

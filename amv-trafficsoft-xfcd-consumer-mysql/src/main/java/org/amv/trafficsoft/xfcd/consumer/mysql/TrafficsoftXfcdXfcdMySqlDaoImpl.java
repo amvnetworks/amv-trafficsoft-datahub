@@ -49,7 +49,7 @@ public class TrafficsoftXfcdXfcdMySqlDaoImpl implements TrafficsoftXfcdXfcdJdbcD
             // even as "VAL" is declared "nullable" -> Investigate!
             paramMap.put("val", entity.getValue()
                     .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.ZERO));
+                    .orElse(BigDecimal.valueOf(-1L)));
             paramMap.put("val_as_string", entity.getValueAsString().orElse(null));
 
             jdbcTemplate.update(sql, paramMap);

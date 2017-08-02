@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.util.Map;
+
 @Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftDeliveryJdbcConsumerAutoConfig.class)
@@ -31,6 +33,33 @@ public class TrafficsoftDeliveryMySqlConsumerAutoConfig {
     @Autowired
     @Qualifier("trafficsoftDeliveryJdbcConsumerNamedTemplate")
     private NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    @Autowired
+    public TrafficsoftDeliveryMySqlConsumerAutoConfig(TrafficsoftXfcdJdbcProperties trafficsoftXfcdJdbcProperties) {
+        updateDataSourcePropertiesIfNecessary(trafficsoftXfcdJdbcProperties);
+    }
+
+    private void updateDataSourcePropertiesIfNecessary(TrafficsoftXfcdJdbcProperties trafficsoftXfcdJdbcProperties) {
+        Map<String, String> dataSourceProperties = trafficsoftXfcdJdbcProperties.getDataSource();
+        Map<String, String> enhencedDataSourceProperties = addMissingMySqlDefaultDataSourceProperties(dataSourceProperties);
+        trafficsoftXfcdJdbcProperties.setDataSource(enhencedDataSourceProperties);
+    }
+
+    private Map<String, String> addMissingMySqlDefaultDataSourceProperties(Map<String, String> dataSourcePropertiesMap) {
+        dataSourcePropertiesMap.putIfAbsent("cachePrepStmts", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("prepStmtCacheSize", String.valueOf(250));
+        dataSourcePropertiesMap.putIfAbsent("prepStmtCacheSqlLimit", String.valueOf(2048));
+        dataSourcePropertiesMap.putIfAbsent("useServerPrepStmts", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("useLocalSessionState", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("useLocalTransactionState", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("rewriteBatchedStatements", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("cacheResultSetMetadata", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("cacheServerConfiguration", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("elideSetAutoCommits", String.valueOf(true));
+        dataSourcePropertiesMap.putIfAbsent("maintainTimeStats", String.valueOf(false));
+
+        return dataSourcePropertiesMap;
+    }
 
     @Bean("delegatingTrafficsoftDeliveryPackageDao")
     public TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao(TrafficsoftDeliveryJdbcDao deliveryDao,
@@ -51,7 +80,7 @@ public class TrafficsoftDeliveryMySqlConsumerAutoConfig {
         return new TrafficsoftDeliveryRowMapper();
     }
 
-    @Bean("MySqlTrafficsoftDeliveryDao")
+    @Bean("mySqlTrafficsoftDeliveryDao")
     public TrafficsoftDeliveryJdbcDao deliveryDao(TrafficsoftDeliveryRowMapper rowMapper) {
         return new TrafficsoftDeliveryMySqlDaoImpl(namedJdbcTemplate, rowMapper);
     }
@@ -62,7 +91,7 @@ public class TrafficsoftDeliveryMySqlConsumerAutoConfig {
         return new TrafficsoftXfcdNodeRowMapper();
     }
 
-    @Bean("MySqlTrafficsoftNodeDao")
+    @Bean("mySqlTrafficsoftNodeDao")
     public TrafficsoftXfcdNodeJdbcDao xfcdNodeDao(TrafficsoftXfcdNodeRowMapper rowMapper) {
         return new TrafficsoftXfcdNodeMySqlDaoImpl(namedJdbcTemplate, rowMapper);
     }
@@ -73,7 +102,7 @@ public class TrafficsoftDeliveryMySqlConsumerAutoConfig {
         return new TrafficsoftXfcdStateRowMapper();
     }
 
-    @Bean("MySqlTrafficsoftXfcdStateDao")
+    @Bean("mySqlTrafficsoftXfcdStateDao")
     public TrafficsoftXfcdStateJdbcDao xfcdStateDao(TrafficsoftXfcdStateRowMapper rowMapper) {
         return new TrafficsoftXfcdStateMySqlDaoImpl(namedJdbcTemplate, rowMapper);
     }
@@ -84,7 +113,7 @@ public class TrafficsoftDeliveryMySqlConsumerAutoConfig {
         return new TrafficsoftXfcdXfcdRowMapper();
     }
 
-    @Bean("MySqlTrafficsoftXfcdXfcdDao")
+    @Bean("mySqlTrafficsoftXfcdXfcdDao")
     public TrafficsoftXfcdXfcdJdbcDao xfcdXfcdDao(TrafficsoftXfcdXfcdRowMapper rowMapper) {
         return new TrafficsoftXfcdXfcdMySqlDaoImpl(namedJdbcTemplate, rowMapper);
     }

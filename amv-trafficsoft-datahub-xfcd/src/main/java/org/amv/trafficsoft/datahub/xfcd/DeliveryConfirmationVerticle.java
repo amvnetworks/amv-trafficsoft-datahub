@@ -87,7 +87,7 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                                     "Cause: {}\n", deliveryIds, message, causeMessage);
                             
                             if (log.isDebugEnabled()) {
-                                log.trace("", t);
+                                log.debug("", t);
                             }
                         },
                         () -> {

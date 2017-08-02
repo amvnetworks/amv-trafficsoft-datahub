@@ -76,7 +76,7 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
                 })
                 .doOnNext(val -> {
                     if (log.isDebugEnabled()) {
-                        log.info("Retrieved {} deliveries: {}", val.getDeliveries().size(), val.getDeliveryIds());
+                        log.debug("Retrieved {} deliveries: {}", val.getDeliveries().size(), val.getDeliveryIds());
                     }
                 })
                 .map(val -> IncomingDeliveryEvent.builder()
