@@ -3,6 +3,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 buildscript {
     ext {
         trafficsoftRestVersion = '0.0.9'
+        vertxVersion = '3.4.2'
     }
     repositories {
         jcenter()
@@ -36,6 +37,8 @@ contacts {
     }
 }
 
+group = 'org.amv.trafficsoft.datahub'
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
@@ -47,8 +50,6 @@ allprojects {
         maven { url 'https://repo.spring.io/libs-milestone' }
         jcenter()
     }
-
-    group = 'org.amv.trafficsoft.datahub'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -120,15 +121,20 @@ subprojects {
         failOnError = false
     }
 
-    tasks.withType(Jar).all { jarTask ->
+    jar.doFirst {
+        // other manifest attributes will be populated by nebula.info plugin
+        // see https://github.com/nebula-plugins/gradle-info-plugin
+        def vendor = 'AMV Networks GmbH'
         manifest {
             attributes(
-                    'Artifact': project.name,
-                    'Group': rootProject.group,
-                    'Build-Version': rootProject.version
+                    'Specification-Title': project.description,
+                    'Specification-Version': project.version,
+                    'Specification-Vendor': vendor,
+                    'Implementation-Vendor': vendor
             )
         }
     }
+
     task sourcesJar(type: Jar) {
         from sourceSets.main.allSource
         classifier = 'sources'

@@ -1,14 +1,16 @@
+description = 'Please provide a meaningful description..'
+
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile 'io.vertx:vertx-core:3.4.2'
-    compile 'io.vertx:vertx-rx-java:3.4.2', optional
-    compile 'io.vertx:vertx-reactive-streams:3.4.2', optional
-    compile 'io.vertx:vertx-dropwizard-metrics:3.4.2', optional
-    compile 'io.vertx:vertx-maven-service-factory:3.4.2', optional
-    compile 'io.vertx:vertx-health-check:3.4.2', optional
+    compile "io.vertx:vertx-core:${vertxVersion}"
+    compile "io.vertx:vertx-rx-java:${vertxVersion}", optional
+    compile "io.vertx:vertx-reactive-streams:${vertxVersion}", optional
+    compile "io.vertx:vertx-dropwizard-metrics:${vertxVersion}", optional
+    compile "io.vertx:vertx-maven-service-factory:${vertxVersion}", optional
+    compile "io.vertx:vertx-health-check:${vertxVersion}", optional
 
 
 
