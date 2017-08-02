@@ -23,11 +23,12 @@ plugins {
     id 'nebula.optional-base' version '3.2.0'
     id 'com.github.ben-manes.versions' version '0.14.0'
     id 'findbugs'
-    id 'com.jfrog.bintray' version '1.7.3'
 //    id 'checkstyle'
 }
 
-apply plugin: 'maven'
+description = 'Please provide a meaningful description'
+
+group = 'org.amv.trafficsoft.datahub'
 
 contacts {
     'devlopment@amv-networks.com' {
@@ -37,12 +38,42 @@ contacts {
     }
 }
 
-group = 'org.amv.trafficsoft.datahub'
-
 allprojects {
+    apply plugin: 'nu.studer.credentials'
+
+    group 'org.amv.trafficsoft.datahub'
+}
+
+subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'nu.studer.credentials'
+    apply plugin: 'nebula.project'
+    apply plugin: 'nebula.info'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'nebula.dependency-lock'
+    apply plugin: 'nebula.lint'
+    apply plugin: 'io.franzbecker.gradle-lombok'
+    apply plugin: 'findbugs'
+    apply plugin: 'jacoco'
+//    apply plugin: 'checkstyle'
+
+    String nexusPwd = credentials.nexuspwd
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // ---- prepare task graph - disable long running tasks on demand
+    gradle.taskGraph.whenReady { graph ->
+        def isMinimalBuild = project.hasProperty("minimal")
+
+        def enableAdditionalLongRunningTasks = !isMinimalBuild
+
+        if (!enableAdditionalLongRunningTasks) {
+            findbugsMain.enabled = false
+            //checkstyleMain.enabled = false
+            javadoc.enabled = false
+        }
+    }
 
     repositories {
         mavenLocal()
@@ -50,28 +81,6 @@ allprojects {
         maven { url 'https://repo.spring.io/libs-milestone' }
         jcenter()
     }
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-}
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'nebula.dependency-lock'
-    apply plugin: 'nebula.lint'
-    apply plugin: 'nebula.nebula-release'
-    apply plugin: 'nebula.info'
-    apply plugin: 'nebula.project'
-    apply plugin: 'nebula.optional-base'
-    apply plugin: 'io.franzbecker.gradle-lombok'
-    apply plugin: 'com.jfrog.bintray'
-    apply plugin: 'findbugs'
-    apply plugin: 'jacoco'
-//    apply plugin: 'checkstyle'
-
-    String nexusPwd = credentials.nexuspwd
 
     dependencies {
         compile 'com.google.guava:guava:21.0'
