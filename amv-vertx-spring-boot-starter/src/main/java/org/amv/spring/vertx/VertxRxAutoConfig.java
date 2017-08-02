@@ -24,6 +24,8 @@ import rx.observables.BlockingObservable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import static java.util.Objects.requireNonNull;
 
@@ -103,8 +105,23 @@ public class VertxRxAutoConfig extends AbstractVertxAutoConfig {
 
         @Override
         public void destroy() throws Exception {
-            vertx.deploymentIDs()
-                    .forEach(vertx::undeploy);
+            Set<String> deploymentIds = vertx.deploymentIDs();
+
+            boolean hasDeployedVerticles = !deploymentIds.isEmpty();
+            if (hasDeployedVerticles) {
+                CountDownLatch countDownLatch = new CountDownLatch(deploymentIds.size());
+
+                deploymentIds.forEach(id -> vertx.rxUndeploy(id)
+                        .doOnSuccess(foo -> countDownLatch.countDown())
+                        .doOnError(e -> {
+                            log.error("", e);
+                            countDownLatch.countDown();
+                        })
+                        .subscribe());
+
+                countDownLatch.await();
+            }
+
             vertx.close();
         }
     }
