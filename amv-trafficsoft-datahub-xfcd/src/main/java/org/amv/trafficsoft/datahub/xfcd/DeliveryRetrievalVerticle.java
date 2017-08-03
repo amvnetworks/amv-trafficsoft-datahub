@@ -50,7 +50,7 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
         this.initTimerId = vertx.setTimer(initialDelayInMs, timerId -> {
             fetchDeliveriesAndPublishOnEventBus();
 
-            DeliveryRetrievalVerticle.this.periodicTimerId = vertx.setPeriodic(intervalInMs, foo -> {
+            this.periodicTimerId = vertx.setPeriodic(intervalInMs, foo -> {
                 fetchDeliveriesAndPublishOnEventBus();
             });
         });
@@ -68,6 +68,7 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
         final Flux<IncomingDeliveryEvent> events = Flux.from(publisher)
                 .publishOn(scheduler)
                 .subscribeOn(scheduler)
+                .retry()
                 .doOnError(t -> {
                     log.error("{}", t.getMessage());
                     if (log.isDebugEnabled()) {

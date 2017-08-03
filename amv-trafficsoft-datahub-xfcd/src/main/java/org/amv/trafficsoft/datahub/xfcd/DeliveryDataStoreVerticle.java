@@ -43,7 +43,11 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
         this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
-                onIncomingDeliveryPackage(event);
+                try {
+                    onIncomingDeliveryPackage(event);
+                } catch (Exception e) {
+                    log.error("", e);
+                }
             }
         };
 

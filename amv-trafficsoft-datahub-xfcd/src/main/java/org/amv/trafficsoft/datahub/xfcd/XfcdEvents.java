@@ -29,6 +29,7 @@ public class XfcdEvents {
 
         Flux.from(publisher)
                 .map(Json::encode)
+                .retry()
                 .subscribe(rrs);
 
         MessageProducer<Object> messageProducer = vertx.eventBus().publisher(clazz.getName());
@@ -48,6 +49,7 @@ public class XfcdEvents {
 
         Flux.from(rws)
                 .map(json -> Json.decodeValue(json, clazz))
+                .retry()
                 .subscribe(subscriber);
 
         Pump pump = Pump.pump(consumer.bodyStream(), rws);

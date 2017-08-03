@@ -47,7 +47,11 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
         this.subscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmableDeliveryEvent event) {
-                confirm(event);
+                try {
+                    onConfirmableDeliveryEvent(event);
+                } catch (Exception e) {
+                    log.error("", e);
+                }
             }
         };
         xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, this.subscriber);
@@ -58,7 +62,11 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
         ofNullable(this.subscriber).ifPresent(BaseSubscriber::dispose);
     }
 
-    private void confirm(ConfirmableDeliveryEvent confirmableDeliveryEvent) {
+    private void onConfirmableDeliveryEvent(ConfirmableDeliveryEvent confirmableDeliveryEvent) {
+        confirmDeliveries(confirmableDeliveryEvent);
+    }
+
+    private void confirmDeliveries(ConfirmableDeliveryEvent confirmableDeliveryEvent) {
         Set<Long> deliveryIds = Stream.of(confirmableDeliveryEvent)
                 .map(ConfirmableDeliveryEvent::getDeliveryPackage)
                 .map(TrafficsoftDeliveryPackage::getDeliveries)
@@ -85,7 +93,7 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                             log.error("Error while confirming deliveries: {}\n" +
                                     "Origin: {}\n" +
                                     "Cause: {}\n", deliveryIds, message, causeMessage);
-                            
+
                             if (log.isDebugEnabled()) {
                                 log.debug("", t);
                             }
