@@ -4,6 +4,7 @@ buildscript {
     ext {
         trafficsoftRestVersion = '0.0.9'
         vertxVersion = '3.4.2'
+        jacksonVersion = '2.8.9'
     }
     repositories {
         jcenter()

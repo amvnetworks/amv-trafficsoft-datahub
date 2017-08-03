@@ -25,8 +25,6 @@ import static java.util.Optional.ofNullable;
  */
 @Slf4j
 public class DeliveryDataStoreVerticle extends AbstractVerticle {
-    private final Scheduler scheduler = Schedulers.elastic();
-
     private final XfcdEvents xfcdEvents;
     private final XfcdDataStore dataStore;
 
@@ -57,7 +55,6 @@ public class DeliveryDataStoreVerticle extends AbstractVerticle {
     @Override
     public void stop() throws Exception {
         ofNullable(this.subscriber).ifPresent(BaseSubscriber::dispose);
-        this.scheduler.dispose();
     }
 
     void onIncomingDeliveryPackage(IncomingDeliveryEvent event) {

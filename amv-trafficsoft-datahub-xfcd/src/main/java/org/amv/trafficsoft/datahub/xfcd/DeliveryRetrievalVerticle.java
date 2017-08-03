@@ -68,7 +68,6 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
         final Flux<IncomingDeliveryEvent> events = Flux.from(publisher)
                 .publishOn(scheduler)
                 .subscribeOn(scheduler)
-                .retry()
                 .doOnError(t -> {
                     log.error("{}", t.getMessage());
                     if (log.isDebugEnabled()) {

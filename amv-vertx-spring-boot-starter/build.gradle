@@ -12,6 +12,9 @@ dependencies {
     compile "io.vertx:vertx-maven-service-factory:${vertxVersion}", optional
     compile "io.vertx:vertx-health-check:${vertxVersion}", optional
 
+    compile  "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}", optional
+    compile  "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}", optional
+    compile  "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}", optional
 
 
     compile('org.springframework.boot:spring-boot-starter:2.0.0.M2') {
