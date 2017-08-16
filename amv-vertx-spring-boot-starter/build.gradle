@@ -17,7 +17,7 @@ dependencies {
     compile  "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}", optional
 
 
-    compile('org.springframework.boot:spring-boot-starter:2.0.0.M2') {
+    compile("org.springframework.boot:spring-boot-starter:${springBootVersion}") {
         exclude module: 'spring-boot-starter-logging'
     }
 }

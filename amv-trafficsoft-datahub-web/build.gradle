@@ -1,9 +1,6 @@
 description = 'Please provide a meaningful description..'
 
 buildscript {
-    ext {
-        springBootVersion = '2.0.0.M2'
-    }
     repositories {
         maven { url 'https://repo.spring.io/libs-milestone' }
         maven { url 'https://repo.spring.io/libs-snapshot' }
@@ -29,9 +26,15 @@ dependencies {
     compile "io.vertx:vertx-maven-service-factory:${vertxVersion}"
     compile "io.vertx:vertx-health-check:${vertxVersion}"
 
-    compile('org.springframework.boot:spring-boot-starter:2.0.0.M2')
-    compile('org.springframework.boot:spring-boot-starter-web:2.0.0.M2')
-    //compile('org.springframework.boot:spring-boot-starter-jetty:2.0.0.M2')
+    compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-json'
+    }
+    compile("org.springframework.boot:spring-boot-starter-json:${springBootVersion}") {
+        // kotlin produces a NoClassDefFoundError at the moment (16.08.17)
+        exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-kotlin'
+    }
+    //compile("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
 }
 
 bootJar {
