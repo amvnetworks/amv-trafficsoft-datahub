@@ -83,7 +83,7 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
                 "n.`BPC_ID`,  n.`V_ID`, n.`TRIPID`, n.`TS`, " +
                 "n.`LONDEG`, n.`LATDEG`, n.`SPEED`, n.`HEADING`, " +
                 "n.`ALTITUDE`, n.`SATCNT`, n.`HDOP`, n.`VDOP` " +
-                "FROM `IMXFCD_Node` n " +
+                "FROM `amv_trafficsoft_xfcd_node` n " +
                 "WHERE n.`BPC_ID` = :bpcId AND " +
                 "n.`IMXFCD_D_ID` = :deliveryId " +
                 "ORDER BY n.`IMXFCD_D_ID`, n.`V_ID`, n.`TRIPID`, n.`ID`";
@@ -108,7 +108,7 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
                 "n.`BPC_ID`,  n.`V_ID`, n.`TRIPID`, n.`TS`, " +
                 "n.`LONDEG`, n.`LATDEG`, n.`SPEED`, n.`HEADING`, " +
                 "n.`ALTITUDE`, n.`SATCNT`, n.`HDOP`, n.`VDOP` " +
-                "FROM `IMXFCD_Node` n " +
+                "FROM `amv_trafficsoft_xfcd_node` n " +
                 "WHERE n.`BPC_ID` = :bpcId AND " +
                 "n.`IMXFCD_D_ID` IN(:deliveryIds) " +
                 "ORDER BY n.`IMXFCD_D_ID`, n.`V_ID`, n.`TRIPID`, n.`ID`";
