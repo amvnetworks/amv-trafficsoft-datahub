@@ -86,7 +86,8 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
 
         String sql = "SELECT `ID`, `TS`, `CONFIRMED` " +
                 "FROM `amv_trafficsoft_xfcd_delivery` " +
-                "WHERE `ID` in (:ids)";
+                "WHERE `ID` in (:ids) " +
+                "ORDER BY `ID` ASC";
 
         List<TrafficsoftDeliveryEntity> deliveries = jdbcTemplate.query(sql, ImmutableMap.<String, Object>builder()
                 .put("ids", ids)
