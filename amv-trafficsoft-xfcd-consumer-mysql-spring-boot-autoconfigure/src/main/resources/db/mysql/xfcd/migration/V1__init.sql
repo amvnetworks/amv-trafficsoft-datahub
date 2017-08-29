@@ -5,7 +5,7 @@ create table if not exists `amv_trafficsoft_xfcd_delivery` (
     `CONFIRMED` datetime,
     `TS` datetime not null,
     primary key (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `amv_trafficsoft_xfcd_node` (
     `CREATED_AT` datetime,
@@ -25,7 +25,7 @@ create table if not exists `amv_trafficsoft_xfcd_node` (
     `BPC_ID` integer not null,
     `IMXFCD_D_ID` bigint,
     primary key (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `amv_trafficsoft_xfcd_state` (
     `CREATED_AT` datetime,
@@ -34,7 +34,7 @@ create table if not exists `amv_trafficsoft_xfcd_state` (
     `CD` varchar(10) not null,
     `VAL` longtext,
     primary key (`IMXFCD_N_ID`, `CD`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `amv_trafficsoft_xfcd_xfcd` (
     `CREATED_AT` datetime,
@@ -44,7 +44,7 @@ create table if not exists `amv_trafficsoft_xfcd_xfcd` (
     `VAL` decimal(14,6),
     `VALSTR` varchar(254),
     primary key (`IMXFCD_N_ID`, `TYPE`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `amv_trafficsoft_xfcd_latest_fcd` (
     `CREATED_AT` datetime,
@@ -62,7 +62,7 @@ create table if not exists `amv_trafficsoft_xfcd_latest_fcd` (
     `TRIPID` bigint not null,
     `VDOP` decimal(10,1),
     primary key (`V_ID`, `BPC_ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `amv_trafficsoft_xfcd_latest_state` (
     `CREATED_AT` datetime,
@@ -72,4 +72,4 @@ create table if not exists `amv_trafficsoft_xfcd_latest_state` (
     `CD` varchar(10) not null,
     `VAL` longtext,
     primary key (`V_ID`, `BPC_ID`, `CD`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
