@@ -76,7 +76,6 @@ public class TrafficsoftDatahubXfcdAutoConfig {
                     .xfcdEvents(xfcdEvents)
                     .publisher(xfcdGetDataPublisher)
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
-                    .maxAmountOfNodesPerDelivery(datahubXfcdProperties.getMaxAmountOfNodesPerDelivery())
                     .build();
         }
 
