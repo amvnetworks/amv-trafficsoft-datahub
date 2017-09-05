@@ -36,6 +36,10 @@ public class VertxEventBusReactorAdapter<E> {
         Pump pump = Pump.pump(rrs, messageProducer);
 
         pump.start();
+
+        rrs.endHandler(event -> {
+            pump.stop();
+        });
     }
 
     public <T extends E> void subscribe(Class<T> clazz, Subscriber<T> subscriber) {
@@ -46,13 +50,18 @@ public class VertxEventBusReactorAdapter<E> {
 
         ReactiveWriteStream<String> rws = ReactiveWriteStream.writeStream(vertx);
 
+        Pump pump = Pump.pump(consumer.bodyStream(), rws);
+
         Flux.from(rws)
+                .doOnSubscribe(subscription -> {
+                    pump.start();
+                })
+                .doOnComplete(() -> {
+                    pump.stop();
+                    rws.close();
+                })
                 .map(json -> Json.decodeValue(json, clazz))
                 .retry()
                 .subscribe(subscriber);
-
-        Pump pump = Pump.pump(consumer.bodyStream(), rws);
-
-        pump.start();
     }
 }
