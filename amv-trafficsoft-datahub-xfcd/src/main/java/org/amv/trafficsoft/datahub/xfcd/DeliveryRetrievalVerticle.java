@@ -34,13 +34,14 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
     private final Publisher<TrafficsoftDeliveryPackage> publisher;
     private final long maxAmountOfNodesPerDelivery;
     private final boolean refetchImmediatelyOnDeliveryWithMaxAmountOfNodes;
-    private BaseSubscriber<ConfirmedDeliveryEvent> subscriber;
 
     private final long initialDelayInMs;
     private final long intervalInMs;
 
     private volatile long periodicTimerId;
     private volatile long initTimerId;
+
+    private BaseSubscriber<ConfirmedDeliveryEvent> subscriber;
 
     @Builder
     DeliveryRetrievalVerticle(XfcdEvents xfcdEvents,
