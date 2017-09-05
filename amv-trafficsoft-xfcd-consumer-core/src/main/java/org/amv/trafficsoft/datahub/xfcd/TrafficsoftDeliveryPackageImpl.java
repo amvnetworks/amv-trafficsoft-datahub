@@ -10,7 +10,7 @@ import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import java.util.List;
 
 @Value
-@Builder(builderClassName = "Builder")
+@Builder(builderClassName = "Builder", toBuilder = true)
 @JsonDeserialize(builder = TrafficsoftDeliveryPackageImpl.Builder.class)
 public class TrafficsoftDeliveryPackageImpl implements TrafficsoftDeliveryPackage {
     @JsonPOJOBuilder(withPrefix = "")

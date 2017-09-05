@@ -70,12 +70,13 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public DeliveryRetrievalVerticle trafficsoftDeliveryPackageEmitterVehicle(XfcdEvents xfcdEvents,
-                                                                                  XfcdGetDataPublisher xfcdGetDataPublisher) {
+        public DeliveryRetrievalVerticle deliveryRetrievalVerticle(XfcdEvents xfcdEvents,
+                                                                   XfcdGetDataPublisher xfcdGetDataPublisher) {
             return DeliveryRetrievalVerticle.builder()
                     .xfcdEvents(xfcdEvents)
                     .publisher(xfcdGetDataPublisher)
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
+                    .maxAmountOfNodesPerDelivery(datahubXfcdProperties.getMaxAmountOfNodesPerDelivery())
                     .build();
         }
 

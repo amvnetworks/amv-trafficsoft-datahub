@@ -1,14 +1,19 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
+import com.google.common.collect.ImmutableList;
 import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -20,8 +25,9 @@ import static java.util.Objects.requireNonNull;
  */
 @Slf4j
 public class DeliveryRetrievalVerticle extends AbstractVerticle {
-    private static final long INITIAL_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(1L);
-    private static final long INTERVAL_IN_MS = TimeUnit.MINUTES.toMillis(1L);
+    private static final long DEFAULT_INITIAL_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(1L);
+    private static final long DEFAULT_INTERVAL_IN_MS = TimeUnit.MINUTES.toMillis(1L);
+    private static final int DEFAULT_MAX_AMOUNT_OF_NODES_PER_DELIVERY = 5_000;
 
     private final Scheduler scheduler = Schedulers.single();
 
@@ -30,6 +36,7 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
 
     private final long initialDelayInMs;
     private final long intervalInMs;
+    private final int maxAmountOfNodesPerDelivery;
 
     private volatile long periodicTimerId;
     private volatile long initTimerId;
@@ -38,11 +45,13 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
     DeliveryRetrievalVerticle(XfcdEvents xfcdEvents,
                               Publisher<TrafficsoftDeliveryPackage> publisher,
                               long intervalInMs,
-                              long initialDelayInMs) {
+                              long initialDelayInMs,
+                              int maxAmountOfNodesPerDelivery) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
         this.publisher = requireNonNull(publisher);
-        this.initialDelayInMs = initialDelayInMs > 0L ? initialDelayInMs : INITIAL_DELAY_IN_MS;
-        this.intervalInMs = intervalInMs > 0L ? intervalInMs : INTERVAL_IN_MS;
+        this.initialDelayInMs = initialDelayInMs > 0L ? initialDelayInMs : DEFAULT_INITIAL_DELAY_IN_MS;
+        this.intervalInMs = intervalInMs > 0L ? intervalInMs : DEFAULT_INTERVAL_IN_MS;
+        this.maxAmountOfNodesPerDelivery = maxAmountOfNodesPerDelivery > 0 ? maxAmountOfNodesPerDelivery : DEFAULT_MAX_AMOUNT_OF_NODES_PER_DELIVERY;
     }
 
     @Override
@@ -65,7 +74,7 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
     }
 
     private void fetchDeliveriesAndPublishOnEventBus() {
-        final Flux<IncomingDeliveryEvent> events = Flux.from(publisher)
+        final Flux<IncomingDeliveryEvent> events = fetchDeliveriesRecursively()
                 .publishOn(scheduler)
                 .subscribeOn(scheduler)
                 .doOnError(t -> {
@@ -86,5 +95,32 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
                         .build());
 
         xfcdEvents.publish(IncomingDeliveryEvent.class, events);
+    }
+
+    private Flux<TrafficsoftDeliveryPackage> fetchDeliveriesRecursively() {
+        Callable<List<TrafficsoftDeliveryPackage>> fetchDeliveriesRecursivelyCallable = () -> {
+            ImmutableList.Builder<TrafficsoftDeliveryPackage> listBuilder = ImmutableList.builder();
+
+            Optional<TrafficsoftDeliveryPackage> deliveryPackageOptional = Optional.of(Mono.from(publisher))
+                    .map(Mono::block);
+
+            if (deliveryPackageOptional.isPresent()) {
+                TrafficsoftDeliveryPackage deliveryPackage = deliveryPackageOptional.get();
+
+                listBuilder.add(deliveryPackage);
+
+                int amountOfNodes = deliveryPackage.getAmountOfNodes();
+                boolean fetchMoreDeliveries = amountOfNodes >= maxAmountOfNodesPerDelivery;
+                if (fetchMoreDeliveries) {
+                    listBuilder.addAll(fetchDeliveriesRecursively().toIterable());
+                }
+            }
+
+            return listBuilder.build();
+        };
+
+        return Mono.fromCallable(fetchDeliveriesRecursivelyCallable)
+                .flux()
+                .flatMap(Flux::fromIterable);
     }
 }
