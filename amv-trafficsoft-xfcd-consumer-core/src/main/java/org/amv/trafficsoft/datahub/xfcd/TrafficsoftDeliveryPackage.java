@@ -3,6 +3,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
+import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,5 +30,15 @@ public interface TrafficsoftDeliveryPackage {
         return Optional.ofNullable(getDeliveries())
                 .map(Collection::isEmpty)
                 .orElse(true);
+    }
+
+    @JsonIgnore
+    default int getAmountOfNodes() {
+        return getDeliveries().stream()
+                .map(DeliveryRestDto::getTrack)
+                .flatMap(Collection::stream)
+                .map(TrackRestDto::getNodes)
+                .mapToInt(Collection::size)
+                .sum();
     }
 }
