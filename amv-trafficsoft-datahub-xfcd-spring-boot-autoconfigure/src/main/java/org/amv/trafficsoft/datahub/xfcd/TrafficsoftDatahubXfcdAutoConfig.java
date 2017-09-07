@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
-@ConditionalOnProperty("amv.trafficsoft.datahub.xfcd.enabled")
+@EnableConfigurationProperties(TrafficsoftDatahubXfcdProperties.class)
 public class TrafficsoftDatahubXfcdAutoConfig {
     /**
      * Reasons for static declaration: created very early in the application’s lifecycle
@@ -34,7 +34,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
     }
 
     @Configuration
-    @EnableConfigurationProperties(TrafficsoftDatahubXfcdProperties.class)
+    @ConditionalOnProperty("amv.trafficsoft.datahub.xfcd.enabled")
     public class TrafficsoftDatahubXfcdConfig {
 
         private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
@@ -46,7 +46,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.apiRestProperties = requireNonNull(apiRestProperties);
         }
-
+        
         @Bean
         public XfcdEvents xfcdEvents(Vertx vertx) {
             return new XfcdEvents(vertx);

@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.Matchers.is;
@@ -22,9 +23,10 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {
-        TrafficsoftDatahubXfcdAutoConfigIT.TestApplictaion.class,
+        TrafficsoftDatahubXfcdAutoConfigDisabledIT.TestApplictaion.class,
 })
-public class TrafficsoftDatahubXfcdAutoConfigIT {
+@TestPropertySource(locations="classpath:application-it-disabled.properties")
+public class TrafficsoftDatahubXfcdAutoConfigDisabledIT {
     @SpringBootApplication
     @Import(TrafficsoftDatahubXfcdAutoConfig.class)
     public static class TestApplictaion {
@@ -53,13 +55,6 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
     }
 
     @Test
-    public void xfcdEventsBeanExists() throws Exception {
-        final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
-
-        assertThat(xfcdEvents, is(notNullValue()));
-    }
-
-    @Test
     public void datahubXfcdPropertiesBeanExists() throws Exception {
         final TrafficsoftDatahubXfcdProperties datahubXfcdProperties = applicationContext
                 .getBean(TrafficsoftDatahubXfcdProperties.class);
@@ -67,20 +62,27 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
         assertThat(datahubXfcdProperties, is(notNullValue()));
     }
 
-    @Test
-    public void deliveryRetrievalVerticleBeanExists() throws Exception {
+    @Test(expected = NoSuchBeanDefinitionException.class)
+    public void xfcdEventsBeanDoesNotExist() throws Exception {
+        final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
+
+        Assert.fail("Should have thrown exception");
+    }
+
+    @Test(expected = NoSuchBeanDefinitionException.class)
+    public void deliveryRetrievalVerticleBeanDoesNotExist() throws Exception {
         final DeliveryRetrievalVerticle deliveryRetrievalVerticle = applicationContext
                 .getBean(DeliveryRetrievalVerticle.class);
 
-        assertThat(deliveryRetrievalVerticle, is(notNullValue()));
+        Assert.fail("Should have thrown exception");
     }
 
-    @Test
-    public void deliveryConfirmationVerticleBeanExists() throws Exception {
+    @Test(expected = NoSuchBeanDefinitionException.class)
+    public void deliveryConfirmationVerticleBeanDoesNotExist() throws Exception {
         final DeliveryConfirmationVerticle deliveryConfirmationVerticle = applicationContext
                 .getBean(DeliveryConfirmationVerticle.class);
 
-        assertThat(deliveryConfirmationVerticle, is(notNullValue()));
+        Assert.fail("Should have thrown exception");
     }
 
     @Test(expected = NoSuchBeanDefinitionException.class)
