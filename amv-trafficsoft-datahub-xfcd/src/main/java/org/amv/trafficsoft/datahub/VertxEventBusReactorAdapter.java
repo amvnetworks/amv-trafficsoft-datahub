@@ -28,7 +28,7 @@ public class VertxEventBusReactorAdapter<E> {
 
         Flux.from(publisher)
                 .map(Json::encode)
-                .retry()
+                .retry(3)
                 .subscribe(rrs);
 
         MessageProducer<Object> messageProducer = vertx.eventBus().publisher(clazz.getName());
@@ -61,7 +61,7 @@ public class VertxEventBusReactorAdapter<E> {
                     rws.close();
                 })
                 .map(json -> Json.decodeValue(json, clazz))
-                .retry()
+                .retry(3)
                 .subscribe(subscriber);
     }
 }
