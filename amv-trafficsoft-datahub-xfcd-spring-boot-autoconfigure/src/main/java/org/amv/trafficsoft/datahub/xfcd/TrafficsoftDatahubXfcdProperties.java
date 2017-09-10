@@ -14,7 +14,6 @@ public class TrafficsoftDatahubXfcdProperties {
     private long fetchIntervalInSeconds = TimeUnit.MINUTES.toSeconds(1);
     private int maxAmountOfNodesPerDelivery = 5_000;
     private boolean refetchImmediatelyOnDeliveryWithMaxAmountOfNodes = true;
-    private String primaryDataStore;
 
     public long getFetchIntervalInSeconds() {
         return Math.max(fetchIntervalInSeconds, MIN_INTERVAL_IN_SECONDS);

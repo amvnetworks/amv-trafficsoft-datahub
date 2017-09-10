@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.Mockito.*;
 
 @RunWith(VertxUnitRunner.class)
-public class TrafficsoftDeliveryJdbcVerticleIT {
+public class XfcdDataConsumerVerticleIT {
 
     private Vertx vertx;
 
-    private XfcdDataStore dao;
+    private XfcdDataConsumer dao;
 
     private XfcdEvents xfcdEvents;
 
@@ -36,10 +36,10 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
                 .setEventLoopPoolSize(1)
                 .setInternalBlockingPoolSize(1));
 
-        this.dao = spy(XfcdDataStore.class);
+        this.dao = spy(XfcdDataConsumer.class);
         this.xfcdEvents = new XfcdEvents(vertx);
 
-        final DeliveryDataStoreVerticle sut = DeliveryDataStoreVerticle.builder()
+        final XfcdDataConsumerVerticle sut = XfcdDataConsumerVerticle.builder()
                 .xfcdEvents(xfcdEvents)
                 .dataStore(dao)
                 .build();
@@ -53,7 +53,7 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
     }
 
     @Test
-    public void itShouldDoNothingOnEmptyList(TestContext context) throws Exception {
+    public void itShouldDoNothingOnEmptyDelivery(TestContext context) throws Exception {
         verifyNoMoreInteractions(dao);
 
         final TrafficsoftDeliveryPackage deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
@@ -73,6 +73,8 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
                 .build()));
 
         async.await();
+
+        verifyZeroInteractions(dao);
     }
 
     @Test
@@ -101,7 +103,7 @@ public class TrafficsoftDeliveryJdbcVerticleIT {
 
     @Test
     public void itShouldCallSendConfirmableDeliveryEventIfItHoldsPrimaryDataStore(TestContext context) throws Exception {
-        when(this.dao.isPrimaryDataStore()).thenReturn(true);
+        when(this.dao.sendsConfirmationEvents()).thenReturn(true);
 
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(DeliveryRestDtoMother.randomList())

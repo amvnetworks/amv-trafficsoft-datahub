@@ -5,8 +5,8 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
     compile project(':amv-trafficsoft-xfcd-consumer-sqlite')
+    compile project(':amv-trafficsoft-xfcd-consumer-jdbc-spring-boot-autoconfigure')
 
     compile 'org.xerial:sqlite-jdbc:3.19.3', optional
 

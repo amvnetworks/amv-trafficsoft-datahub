@@ -3,10 +3,8 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -81,13 +79,5 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
                 .getBean(DeliveryConfirmationVerticle.class);
 
         assertThat(deliveryConfirmationVerticle, is(notNullValue()));
-    }
-
-    @Test(expected = NoSuchBeanDefinitionException.class)
-    public void deliveryDataStoreVerticleBeanDoesNotExist() throws Exception {
-        final DeliveryDataStoreVerticle deliveryDataStoreVerticle = applicationContext
-                .getBean(DeliveryDataStoreVerticle.class);
-
-        Assert.fail("Should have thrown exception");
     }
 }

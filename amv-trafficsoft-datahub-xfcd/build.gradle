@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-xfcd-consumer-core')
+    compile project(':amv-vertx-spring-boot-starter')
 
     compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-rx-java:${vertxVersion}"

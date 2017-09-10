@@ -18,6 +18,7 @@ public class TrafficsoftXfcdJdbcProperties {
     private String password;
     private String driverClassName;
     private String flywayScriptsLocation;
+    private boolean sendConfirmationEvents;
     private boolean schemaMigrationEnabled = false;
 
     private PoolProperties pool = new PoolProperties();

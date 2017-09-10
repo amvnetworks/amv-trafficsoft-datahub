@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig,\
-org.amv.trafficsoft.datahub.xfcd.jdbc.TrafficsoftDatahubXfcdJdbcAutoConfig
+org.amv.trafficsoft.datahub.xfcd.TrafficsoftDatahubXfcdAutoConfig

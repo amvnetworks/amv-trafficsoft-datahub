@@ -29,7 +29,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
      */
     @Bean
-    public static TrafficsoftDatahubXfcdPropertiesValidator configurationPropertiesValidator() {
+    public static TrafficsoftDatahubXfcdPropertiesValidator datahubXfcdPropertiesValidator() {
         return new TrafficsoftDatahubXfcdPropertiesValidator();
     }
 

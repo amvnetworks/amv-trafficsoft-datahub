@@ -5,5 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
+    compile project(':amv-trafficsoft-datahub-xfcd')
+
+    //compile "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 }

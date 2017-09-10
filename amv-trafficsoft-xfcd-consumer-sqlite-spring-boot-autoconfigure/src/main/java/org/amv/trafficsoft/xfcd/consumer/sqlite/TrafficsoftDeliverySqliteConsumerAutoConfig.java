@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
 @Configuration
-@AutoConfigureAfter(TrafficsoftDeliveryJdbcConsumerAutoConfig.class)
+@AutoConfigureAfter(JdbcXfcdDataConsumerAutoConfig.class)
 @AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
 @ConditionalOnClass(org.sqlite.JDBC.class)
 @ConditionalOnProperty(

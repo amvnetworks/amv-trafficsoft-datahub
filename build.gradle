@@ -102,6 +102,7 @@ subprojects {
         // only used for RandomUtils in tests
         compile 'org.apache.commons:commons-lang3:3.5'
 
+        testCompile "io.vertx:vertx-unit:${vertxVersion}"
         testCompile "io.projectreactor:reactor-test:${reactorVersion}"
 
         testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")

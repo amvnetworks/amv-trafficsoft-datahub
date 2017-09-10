@@ -84,12 +84,4 @@ public class TrafficsoftDatahubXfcdAutoConfigDisabledIT {
 
         Assert.fail("Should have thrown exception");
     }
-
-    @Test(expected = NoSuchBeanDefinitionException.class)
-    public void deliveryDataStoreVerticleBeanDoesNotExist() throws Exception {
-        final DeliveryDataStoreVerticle deliveryDataStoreVerticle = applicationContext
-                .getBean(DeliveryDataStoreVerticle.class);
-
-        Assert.fail("Should have thrown exception");
-    }
 }

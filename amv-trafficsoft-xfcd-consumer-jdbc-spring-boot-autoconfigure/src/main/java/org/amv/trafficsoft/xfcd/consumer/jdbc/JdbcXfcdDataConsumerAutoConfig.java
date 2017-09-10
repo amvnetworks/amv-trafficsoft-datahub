@@ -25,9 +25,9 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty("amv.trafficsoft.xfcd.consumer.jdbc.enabled")
+@EnableConfigurationProperties(TrafficsoftXfcdJdbcProperties.class)
 @AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
-public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
+public class JdbcXfcdDataConsumerAutoConfig {
 
     /**
      * Reasons for static declaration: created very early in the application’s lifecycle
@@ -41,8 +41,8 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfig {
     }
 
     @Configuration
-    @EnableConfigurationProperties(TrafficsoftXfcdJdbcProperties.class)
     @EnableTransactionManagement
+    @ConditionalOnProperty("amv.trafficsoft.xfcd.consumer.jdbc.enabled")
     public class TrafficsoftDeliveryJdbcConsumerConfig {
 
         private final TrafficsoftXfcdJdbcProperties properties;

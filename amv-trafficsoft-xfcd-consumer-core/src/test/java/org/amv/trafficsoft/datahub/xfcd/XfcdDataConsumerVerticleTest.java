@@ -10,17 +10,17 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
-public class TrafficsoftDeliveryJdbcVerticleTest {
+public class XfcdDataConsumerVerticleTest {
 
-    private XfcdDataStore dao;
+    private XfcdDataConsumer dao;
 
-    private DeliveryDataStoreVerticle sut;
+    private XfcdDataConsumerVerticle sut;
 
     @Before
     public void setUp() throws IOException {
-        this.dao = spy(XfcdDataStore.class);
+        this.dao = spy(XfcdDataConsumer.class);
 
-        this.sut = DeliveryDataStoreVerticle.builder()
+        this.sut = XfcdDataConsumerVerticle.builder()
                 .xfcdEvents(new XfcdEvents(Vertx.vertx()))
                 .dataStore(this.dao)
                 .build();
@@ -35,6 +35,8 @@ public class TrafficsoftDeliveryJdbcVerticleTest {
                 .build();
 
         sut.persistDeliveryPackage(deliveryPackage);
+
+        verifyZeroInteractions(dao);
     }
 
     @Test

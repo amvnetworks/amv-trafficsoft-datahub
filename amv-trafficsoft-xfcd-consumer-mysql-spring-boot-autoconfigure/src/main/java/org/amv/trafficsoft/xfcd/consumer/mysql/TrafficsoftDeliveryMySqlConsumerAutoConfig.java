@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@AutoConfigureAfter(TrafficsoftDeliveryJdbcConsumerAutoConfig.class)
+@AutoConfigureAfter(JdbcXfcdDataConsumerAutoConfig.class)
 @AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
 @ConditionalOnClass(com.mysql.jdbc.Driver.class)
 @ConditionalOnProperty(

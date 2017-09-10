@@ -8,11 +8,11 @@ package org.amv.trafficsoft.datahub.xfcd;
  * the AMV TrafficSoft API can be notified about successfully saved
  * {@link TrafficsoftDeliveryPackage} objects.
  */
-public interface XfcdDataStore {
+public interface XfcdDataConsumer {
     void save(TrafficsoftDeliveryPackage deliveryPackage);
 
     /**
-     * @return true if the object is the primary data store
+     * @return true if the store will confirm saved deliveries
      */
-    boolean isPrimaryDataStore();
+    boolean sendsConfirmationEvents();
 }

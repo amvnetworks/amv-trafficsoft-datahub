@@ -14,4 +14,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}") {
         exclude module: 'spring-boot-starter-logging'
     }
+
+    testCompile project(':amv-trafficsoft-datahub-xfcd-spring-boot-autoconfigure')
+
+    testCompile 'org.xerial:sqlite-jdbc:3.19.3'
 }

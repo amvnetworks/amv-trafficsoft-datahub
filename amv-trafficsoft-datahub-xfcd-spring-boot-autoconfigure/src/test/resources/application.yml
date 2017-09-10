@@ -9,5 +9,4 @@ logging.level.org.springframework: WARN
 amv.trafficsoft.datahub.xfcd:
   enabled: true
   fetch-interval-in-seconds: 3600
-  primary-consumer: 'jdbc'
 

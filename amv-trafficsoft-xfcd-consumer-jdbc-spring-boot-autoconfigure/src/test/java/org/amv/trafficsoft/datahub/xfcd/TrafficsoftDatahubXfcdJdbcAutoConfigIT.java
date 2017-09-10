@@ -1,9 +1,10 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
-import org.amv.trafficsoft.datahub.xfcd.jdbc.XfcdDataStoreJdbc;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumer;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumerAutoConfig;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.mock;
 })
 public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
     @SpringBootApplication
-    @Import(TrafficsoftDatahubXfcdAutoConfig.class)
+    @Import(JdbcXfcdDataConsumerAutoConfig.class)
     public static class TestApplictaion {
         @Bean
         public Vertx vertx() {
@@ -52,14 +53,6 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
         public XfcdClient xfcdClient() {
             return mock(XfcdClient.class);
         }
-
-
-        @Bean
-        public TrafficsoftDatahubXfcdProperties datahubXfcdProperties() {
-            final TrafficsoftDatahubXfcdProperties properties = new TrafficsoftDatahubXfcdProperties();
-            properties.setEnabled(true);
-            return properties;
-        }
     }
 
     @Autowired
@@ -67,7 +60,7 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
 
     @Test
     public void contextLoads() throws Exception {
-        final XfcdDataStoreJdbc dataStoreJdbc = applicationContext.getBean(XfcdDataStoreJdbc.class);
+        final JdbcXfcdDataConsumer dataStoreJdbc = applicationContext.getBean(JdbcXfcdDataConsumer.class);
         final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
 
         assertThat(dataStoreJdbc, is(notNullValue()));
