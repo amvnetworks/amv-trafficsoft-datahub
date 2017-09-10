@@ -1,0 +1,16 @@
+description = 'Please provide a meaningful description..'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':amv-trafficsoft-datahub-xfcd-consumer-sqlite')
+    compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
+
+    compile 'org.xerial:sqlite-jdbc:3.19.3', optional
+
+    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+
+    testCompile 'org.xerial:sqlite-jdbc:3.19.3'
+}
