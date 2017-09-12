@@ -4,6 +4,15 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/main/resources',
+                    '../amv-trafficsoft-datahub-xfcd-consumer-mysql/src/main/resources'
+        }
+    }
+}
+
 dependencies {
     compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
     compile project(':amv-trafficsoft-datahub-xfcd-consumer-mysql')
