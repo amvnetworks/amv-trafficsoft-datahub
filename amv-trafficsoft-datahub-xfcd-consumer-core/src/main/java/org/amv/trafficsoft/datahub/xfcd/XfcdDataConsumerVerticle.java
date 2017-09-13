@@ -24,14 +24,14 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class XfcdDataConsumerVerticle extends AbstractVerticle {
     private final XfcdEvents xfcdEvents;
-    private final XfcdDataConsumer dataStore;
+    private final XfcdDataConsumer xfcdDataConsumer;
 
     private volatile BaseSubscriber<IncomingDeliveryEvent> subscriber;
 
     @Builder
-    XfcdDataConsumerVerticle(XfcdEvents xfcdEvents, XfcdDataConsumer dataStore) {
+    XfcdDataConsumerVerticle(XfcdEvents xfcdEvents, XfcdDataConsumer xfcdDataConsumer) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
-        this.dataStore = requireNonNull(dataStore);
+        this.xfcdDataConsumer = requireNonNull(xfcdDataConsumer);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class XfcdDataConsumerVerticle extends AbstractVerticle {
         TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
 
         vertx.executeBlocking(future -> {
-            persistDeliveryPackage(deliveryPackage);
+            consumeDeliveryPackage(deliveryPackage);
             future.complete();
         }, result -> {
             if (result.failed()) {
@@ -67,7 +67,7 @@ public class XfcdDataConsumerVerticle extends AbstractVerticle {
             }
 
             if (result.succeeded()) {
-                if (dataStore.sendsConfirmationEvents()) {
+                if (xfcdDataConsumer.sendsConfirmationEvents()) {
                     xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
                             .deliveryPackage(deliveryPackage)
                             .build()));
@@ -77,7 +77,7 @@ public class XfcdDataConsumerVerticle extends AbstractVerticle {
     }
 
 
-    void persistDeliveryPackage(TrafficsoftDeliveryPackage deliveryPackage) {
+    void consumeDeliveryPackage(TrafficsoftDeliveryPackage deliveryPackage) {
         requireNonNull(deliveryPackage, "`deliveryPackage` must not be null");
 
         final List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
@@ -90,7 +90,7 @@ public class XfcdDataConsumerVerticle extends AbstractVerticle {
             return;
         }
 
-        dataStore.save(deliveryPackage);
+        xfcdDataConsumer.consume(deliveryPackage);
 
         if (log.isDebugEnabled()) {
             log.debug("Saved {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());

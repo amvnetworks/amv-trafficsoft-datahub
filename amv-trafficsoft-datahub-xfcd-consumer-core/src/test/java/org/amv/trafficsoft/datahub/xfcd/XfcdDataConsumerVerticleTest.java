@@ -34,7 +34,7 @@ public class XfcdDataConsumerVerticleTest {
                 .deliveries(Collections.emptyList())
                 .build();
 
-        sut.persistDeliveryPackage(deliveryPackage);
+        sut.consumeDeliveryPackage(deliveryPackage);
 
         verifyZeroInteractions(dao);
     }
@@ -45,8 +45,8 @@ public class XfcdDataConsumerVerticleTest {
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();
 
-        sut.persistDeliveryPackage(deliveryPackage);
+        sut.consumeDeliveryPackage(deliveryPackage);
 
-        verify(dao, times(1)).save(eq(deliveryPackage));
+        verify(dao, times(1)).consume(eq(deliveryPackage));
     }
 }

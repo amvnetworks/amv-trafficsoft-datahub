@@ -9,7 +9,7 @@ package org.amv.trafficsoft.datahub.xfcd;
  * {@link TrafficsoftDeliveryPackage} objects.
  */
 public interface XfcdDataConsumer {
-    void save(TrafficsoftDeliveryPackage deliveryPackage);
+    void consume(TrafficsoftDeliveryPackage deliveryPackage);
 
     /**
      * @return true if the store will confirm saved deliveries

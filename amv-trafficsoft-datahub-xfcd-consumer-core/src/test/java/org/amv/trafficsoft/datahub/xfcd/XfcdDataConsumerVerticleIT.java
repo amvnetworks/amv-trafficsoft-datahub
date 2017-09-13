@@ -98,7 +98,7 @@ public class XfcdDataConsumerVerticleIT {
 
         async.await();
 
-        verify(dao, times(1)).save(eq(deliveryPackage));
+        verify(dao, times(1)).consume(eq(deliveryPackage));
     }
 
     @Test
@@ -124,6 +124,6 @@ public class XfcdDataConsumerVerticleIT {
 
         async.await();
 
-        verify(dao, times(1)).save(eq(deliveryPackage));
+        verify(dao, times(1)).consume(eq(deliveryPackage));
     }
 }

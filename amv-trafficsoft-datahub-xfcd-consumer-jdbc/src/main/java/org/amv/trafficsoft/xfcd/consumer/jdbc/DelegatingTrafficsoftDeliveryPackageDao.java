@@ -34,6 +34,8 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     @Override
     @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
     public void save(TrafficsoftDeliveryPackage deliveryPackage) throws DataAccessException {
+        requireNonNull(deliveryPackage);
+
         if (deliveryPackage.isEmpty()) {
             return;
         }
@@ -43,6 +45,8 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     }
 
     private void saveDelivery(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery) {
+        requireNonNull(delivery);
+
         final TrafficsoftDeliveryEntity deliveryEntity = TrafficsoftDeliveryEntity.builder()
                 .id(delivery.getDeliveryId())
                 .timestamp(delivery.getTimestamp().toInstant())
@@ -57,6 +61,8 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     }
 
     private void saveTrack(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery, TrackRestDto track) {
+        requireNonNull(track);
+
         track.getNodes().forEach(node -> saveNode(deliveryPackage, delivery, track, node));
     }
 
@@ -64,7 +70,9 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                           DeliveryRestDto delivery,
                           TrackRestDto track,
                           NodeRestDto node) {
-        final TrafficsoftXfcdNodeEntity build = TrafficsoftXfcdNodeEntity.builder()
+        requireNonNull(node);
+
+        final TrafficsoftXfcdNodeEntity nodeEntity = TrafficsoftXfcdNodeEntity.builder()
                 .id(node.getId())
                 .bpcId((int) deliveryPackage.getContractId())
                 .deliveryId(delivery.getDeliveryId())
@@ -80,7 +88,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                 .vehicleId(track.getVehicleId())
                 .build();
 
-        nodeDao.save(build);
+        nodeDao.save(nodeEntity);
 
         node.getStates()
                 .forEach(state -> saveState(deliveryPackage, delivery, track, node, state));
@@ -93,6 +101,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                            TrackRestDto track,
                            NodeRestDto node,
                            ParameterRestDto state) {
+        requireNonNull(state);
 
         final TrafficsoftXfcdStateEntity stateEntity = TrafficsoftXfcdStateEntity.builder()
                 .nodeId(node.getId())
@@ -109,6 +118,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                           TrackRestDto track,
                           NodeRestDto node,
                           ParameterRestDto xfcd) {
+        requireNonNull(xfcd);
 
         final TrafficsoftXfcdXfcdEntity xfcdEntity = TrafficsoftXfcdXfcdEntity.builder()
                 .nodeId(node.getId())

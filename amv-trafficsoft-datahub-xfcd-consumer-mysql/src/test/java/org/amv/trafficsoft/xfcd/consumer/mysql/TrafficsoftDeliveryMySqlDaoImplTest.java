@@ -200,7 +200,7 @@ public class TrafficsoftDeliveryMySqlDaoImplTest {
 
         assertThat(updatedAtAfterSave, is(nullValue()));
 
-        // save again to set update flag
+        // consume again to set update flag
         this.sut.save(trafficsoftDeliveryEntity);
 
         final Instant updatedAt = this.sut.fetchUpdatedAtById(trafficsoftDeliveryEntity.getId())

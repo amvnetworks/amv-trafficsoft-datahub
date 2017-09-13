@@ -18,7 +18,7 @@ public class JdbcXfcdDataConsumer implements XfcdDataConsumer {
     }
 
     @Override
-    public void save(TrafficsoftDeliveryPackage deliveryPackage) {
+    public void consume(TrafficsoftDeliveryPackage deliveryPackage) {
         deliveryPackageDao.save(deliveryPackage);
     }
 
