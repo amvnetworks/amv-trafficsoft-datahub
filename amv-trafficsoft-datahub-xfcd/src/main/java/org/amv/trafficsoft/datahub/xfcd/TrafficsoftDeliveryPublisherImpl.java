@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Builder
-public class XfcdGetDataPublisherImpl implements XfcdGetDataPublisher {
+public class TrafficsoftDeliveryPublisherImpl implements TrafficsoftDeliveryPublisher {
 
     private final XfcdClient xfcdClient;
     private final long contractId;

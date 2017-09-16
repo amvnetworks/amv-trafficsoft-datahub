@@ -46,7 +46,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.apiRestProperties = requireNonNull(apiRestProperties);
         }
-        
+
         @Bean
         public XfcdEvents xfcdEvents(Vertx vertx) {
             return new XfcdEvents(vertx);
@@ -71,10 +71,10 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Bean
         public DeliveryRetrievalVerticle deliveryRetrievalVerticle(XfcdEvents xfcdEvents,
-                                                                   XfcdGetDataPublisher xfcdGetDataPublisher) {
+                                                                   TrafficsoftDeliveryPublisher trafficsoftDeliveryPublisher) {
             return DeliveryRetrievalVerticle.builder()
                     .xfcdEvents(xfcdEvents)
-                    .publisher(xfcdGetDataPublisher)
+                    .publisher(trafficsoftDeliveryPublisher)
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
                     .maxAmountOfNodesPerDelivery(datahubXfcdProperties.getMaxAmountOfNodesPerDelivery())
                     .refetchImmediatelyOnDeliveryWithMaxAmountOfNodes(datahubXfcdProperties.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes())
@@ -82,8 +82,8 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public XfcdGetDataPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
-            return XfcdGetDataPublisherImpl.builder()
+        public TrafficsoftDeliveryPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
+            return TrafficsoftDeliveryPublisherImpl.builder()
                     .xfcdClient(xfcdClient)
                     .contractId(apiRestProperties.getContractId())
                     .build();

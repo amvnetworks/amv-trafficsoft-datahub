@@ -9,7 +9,6 @@ import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumer;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryJdbcDao;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdJdbcProperties;
@@ -75,7 +74,7 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
     }
 
     @Autowired
-    private JdbcXfcdDataConsumer jdbcXfcdDataConsumer;
+    private TrafficsoftXfcdJdbcProperties properties;
 
     @Autowired
     private TrafficsoftDeliveryJdbcDao deliveryDao;
@@ -85,7 +84,7 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
 
     @Test
     public void itShouldPersistToDatabase() throws Exception {
-        assertThat(jdbcXfcdDataConsumer.sendsConfirmationEvents(), is(true));
+        assertThat(properties.isSendConfirmationEvents(), is(true));
 
         CountDownLatch latch = new CountDownLatch(1);
 

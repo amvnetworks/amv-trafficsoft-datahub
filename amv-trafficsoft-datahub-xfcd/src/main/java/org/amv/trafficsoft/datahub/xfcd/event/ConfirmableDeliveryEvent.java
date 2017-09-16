@@ -14,7 +14,7 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 @Value
 @Builder(builderClassName = "Builder")
 @JsonDeserialize(builder = ConfirmableDeliveryEvent.Builder.class)
-public class ConfirmableDeliveryEvent implements XfcdDeliveryEvent {
+public class ConfirmableDeliveryEvent implements TrafficsoftDeliveryEvent {
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 

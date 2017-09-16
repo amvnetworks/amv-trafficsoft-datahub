@@ -5,7 +5,7 @@
     <logger name="org.amv.trafficsoft" level="INFO"/>
 
     <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle" level="DEBUG"/>
-    <logger name="org.amv.trafficsoft.datahub.xfcd.XfcdDataConsumerVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.IncomingDeliveryConsumerVerticle" level="DEBUG"/>
     <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryConfirmationVerticle" level="DEBUG"/>
 
 </configuration>

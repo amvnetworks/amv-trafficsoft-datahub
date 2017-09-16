@@ -34,7 +34,9 @@ public interface TrafficsoftDeliveryPackage {
 
     @JsonIgnore
     default int getAmountOfNodes() {
-        return getDeliveries().stream()
+        return Optional.ofNullable(getDeliveries())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(DeliveryRestDto::getTrack)
                 .flatMap(Collection::stream)
                 .map(TrackRestDto::getNodes)

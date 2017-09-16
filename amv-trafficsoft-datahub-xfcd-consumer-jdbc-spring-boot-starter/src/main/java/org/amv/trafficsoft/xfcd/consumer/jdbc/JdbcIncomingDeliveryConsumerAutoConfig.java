@@ -26,8 +26,8 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(TrafficsoftXfcdJdbcProperties.class)
-@AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
-public class JdbcXfcdDataConsumerAutoConfig {
+@AutoConfigureBefore(JdbcIncomingDeliveryConsumerAutoConfigCompleted.class)
+public class JdbcIncomingDeliveryConsumerAutoConfig {
 
     /**
      * Reasons for static declaration: created very early in the application’s lifecycle

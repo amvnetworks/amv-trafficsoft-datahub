@@ -19,8 +19,8 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@AutoConfigureAfter(JdbcXfcdDataConsumerAutoConfig.class)
-@AutoConfigureBefore(TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted.class)
+@AutoConfigureAfter(JdbcIncomingDeliveryConsumerAutoConfig.class)
+@AutoConfigureBefore(JdbcIncomingDeliveryConsumerAutoConfigCompleted.class)
 @ConditionalOnClass(com.mysql.jdbc.Driver.class)
 @ConditionalOnProperty(
         value = "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName",

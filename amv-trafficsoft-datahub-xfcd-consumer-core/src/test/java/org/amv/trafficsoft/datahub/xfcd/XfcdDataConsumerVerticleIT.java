@@ -26,7 +26,7 @@ public class XfcdDataConsumerVerticleIT {
 
     private Vertx vertx;
 
-    private XfcdDataConsumer dao;
+    private DeliveryConsumer dao;
 
     private XfcdEvents xfcdEvents;
 
@@ -36,12 +36,15 @@ public class XfcdDataConsumerVerticleIT {
                 .setEventLoopPoolSize(1)
                 .setInternalBlockingPoolSize(1));
 
-        this.dao = spy(XfcdDataConsumer.class);
+        this.dao = spy(DeliveryConsumer.class);
         this.xfcdEvents = new XfcdEvents(vertx);
 
-        final XfcdDataConsumerVerticle sut = XfcdDataConsumerVerticle.builder()
+        final IncomingDeliveryConsumerVerticle sut = IncomingDeliveryConsumerVerticle.builder()
                 .xfcdEvents(xfcdEvents)
-                .dataStore(dao)
+                .incomingDeliveryEventConsumer(ConfirmingDeliveryConsumer.builder()
+                        .deliveryConsumer(this.dao)
+                        .confirmDelivery(true)
+                        .build())
                 .build();
 
         vertx.deployVerticle(sut, context.asyncAssertSuccess());
@@ -103,8 +106,6 @@ public class XfcdDataConsumerVerticleIT {
 
     @Test
     public void itShouldCallSendConfirmableDeliveryEventIfItHoldsPrimaryDataStore(TestContext context) throws Exception {
-        when(this.dao.sendsConfirmationEvents()).thenReturn(true);
-
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();

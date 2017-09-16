@@ -3,7 +3,9 @@ package org.amv.trafficsoft.xfcd.consumer.jdbc;
 import com.codahale.metrics.MetricRegistry;
 import com.zaxxer.hikari.HikariConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.XfcdDataConsumerVerticle;
+import org.amv.trafficsoft.datahub.xfcd.ConfirmingDeliveryConsumer;
+import org.amv.trafficsoft.datahub.xfcd.IncomingDeliveryConsumerVerticle;
+import org.amv.trafficsoft.datahub.xfcd.IncomingDeliveryEventConsumer;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +18,7 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Configuration
 @ConditionalOnProperty("amv.trafficsoft.xfcd.consumer.jdbc.enabled")
-public class TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted {
+public class JdbcIncomingDeliveryConsumerAutoConfigCompleted {
 
     @Autowired
     @Qualifier("trafficsoftDeliveryJdbcConsumerHikariConfig")
@@ -45,21 +47,27 @@ public class TrafficsoftDeliveryJdbcConsumerAutoConfigCompleted {
                 hikariConfig.getMaximumPoolSize());
     }
 
-
-    @Bean("trafficsoftJdbcXfcdDataConsumer")
+    @Bean("jdbcXfcdDataConsumer")
     public JdbcXfcdDataConsumer jdbcXfcdDataConsumer(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
         return JdbcXfcdDataConsumer.builder()
                 .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)
-                .sendConfirmationEvents(properties.isSendConfirmationEvents())
+                .build();
+    }
+
+    @Bean("trafficsoftJdbcXfcdDataConsumer")
+    public IncomingDeliveryEventConsumer trafficsoftJdbcXfcdDataConsumer(JdbcXfcdDataConsumer jdbcXfcdDataConsumer) {
+        return ConfirmingDeliveryConsumer.builder()
+                .confirmDelivery(properties.isSendConfirmationEvents())
+                .deliveryConsumer(jdbcXfcdDataConsumer)
                 .build();
     }
 
     @Bean("trafficsoftDeliveryDataStoreJdbcVerticle")
-    public XfcdDataConsumerVerticle trafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents,
-                                                                         JdbcXfcdDataConsumer dataStoreJdbcAdapter) {
-        return XfcdDataConsumerVerticle.builder()
+    public IncomingDeliveryConsumerVerticle trafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents,
+                                                                                 IncomingDeliveryEventConsumer confirmableXfcdDataConsumer) {
+        return IncomingDeliveryConsumerVerticle.builder()
                 .xfcdEvents(xfcdEvents)
-                .dataStore(dataStoreJdbcAdapter)
+                .incomingDeliveryEventConsumer(confirmableXfcdDataConsumer)
                 .build();
     }
 }

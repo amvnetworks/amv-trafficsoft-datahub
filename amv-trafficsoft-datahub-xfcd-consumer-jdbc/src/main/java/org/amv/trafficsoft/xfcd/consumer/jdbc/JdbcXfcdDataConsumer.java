@@ -2,19 +2,17 @@ package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import lombok.Builder;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.XfcdDataConsumer;
+import org.amv.trafficsoft.datahub.xfcd.DeliveryConsumer;
 
 import static java.util.Objects.requireNonNull;
 
-public class JdbcXfcdDataConsumer implements XfcdDataConsumer {
+public class JdbcXfcdDataConsumer implements DeliveryConsumer {
 
     private final TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao;
-    private final boolean sendConfirmationEvents;
 
     @Builder
-    JdbcXfcdDataConsumer(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao, boolean sendConfirmationEvents) {
+    JdbcXfcdDataConsumer(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao) {
         this.deliveryPackageDao = requireNonNull(deliveryPackageDao);
-        this.sendConfirmationEvents = sendConfirmationEvents;
     }
 
     @Override
@@ -22,8 +20,4 @@ public class JdbcXfcdDataConsumer implements XfcdDataConsumer {
         deliveryPackageDao.save(deliveryPackage);
     }
 
-    @Override
-    public boolean sendsConfirmationEvents() {
-        return sendConfirmationEvents;
-    }
 }

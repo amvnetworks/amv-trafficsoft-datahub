@@ -15,7 +15,7 @@ import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 @Value
 @Builder(builderClassName = "Builder")
 @JsonDeserialize(builder = IncomingDeliveryEvent.Builder.class)
-public class IncomingDeliveryEvent implements XfcdDeliveryEvent {
+public class IncomingDeliveryEvent implements TrafficsoftDeliveryEvent {
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 

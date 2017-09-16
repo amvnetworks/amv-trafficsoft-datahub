@@ -10,6 +10,8 @@ import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -35,13 +37,26 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
     @Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
     public void save(TrafficsoftDeliveryPackage deliveryPackage) throws DataAccessException {
         requireNonNull(deliveryPackage);
-
         if (deliveryPackage.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Skip saving empty delivery package");
+            }
             return;
+        }
+
+        List<DeliveryRestDto> deliveries = deliveryPackage.getDeliveries();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Saving {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
         }
 
         deliveryPackage.getDeliveries()
                 .forEach(delivery -> saveDelivery(deliveryPackage, delivery));
+
+        if (log.isDebugEnabled()) {
+            log.debug("Saved {} deliveries with {} nodes", deliveries.size(), deliveryPackage.getAmountOfNodes());
+        }
+
     }
 
     private void saveDelivery(TrafficsoftDeliveryPackage deliveryPackage, DeliveryRestDto delivery) {

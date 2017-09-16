@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,19 +11,22 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
-public class XfcdDataConsumerVerticleTest {
+public class IncomingDeliveryConsumerVerticleTest {
 
-    private XfcdDataConsumer dao;
+    private DeliveryConsumer dao;
 
-    private XfcdDataConsumerVerticle sut;
+    private IncomingDeliveryConsumerVerticle sut;
 
     @Before
     public void setUp() throws IOException {
-        this.dao = spy(XfcdDataConsumer.class);
+        this.dao = spy(DeliveryConsumer.class);
 
-        this.sut = XfcdDataConsumerVerticle.builder()
+        this.sut = IncomingDeliveryConsumerVerticle.builder()
                 .xfcdEvents(new XfcdEvents(Vertx.vertx()))
-                .dataStore(this.dao)
+                .incomingDeliveryEventConsumer(ConfirmingDeliveryConsumer.builder()
+                        .deliveryConsumer(this.dao)
+                        .confirmDelivery(true)
+                        .build())
                 .build();
     }
 
@@ -34,7 +38,9 @@ public class XfcdDataConsumerVerticleTest {
                 .deliveries(Collections.emptyList())
                 .build();
 
-        sut.consumeDeliveryPackage(deliveryPackage);
+        sut.consumeIncomingDeliveryEvent(IncomingDeliveryEvent.builder()
+                .deliveryPackage(deliveryPackage)
+                .build());
 
         verifyZeroInteractions(dao);
     }
@@ -45,7 +51,11 @@ public class XfcdDataConsumerVerticleTest {
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();
 
-        sut.consumeDeliveryPackage(deliveryPackage);
+        final IncomingDeliveryEvent event = IncomingDeliveryEvent.builder()
+                .deliveryPackage(deliveryPackage)
+                .build();
+
+        sut.consumeIncomingDeliveryEvent(event);
 
         verify(dao, times(1)).consume(eq(deliveryPackage));
     }

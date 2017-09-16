@@ -1,6 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd.event;
 
 
-public interface XfcdEvent {
+public interface TrafficsoftEvent {
     // marker interface
 }

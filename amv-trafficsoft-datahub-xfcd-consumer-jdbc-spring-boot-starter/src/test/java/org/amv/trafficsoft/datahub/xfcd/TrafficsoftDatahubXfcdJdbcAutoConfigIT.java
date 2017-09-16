@@ -4,7 +4,7 @@ import io.vertx.core.Vertx;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumer;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumerAutoConfig;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcIncomingDeliveryConsumerAutoConfig;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 })
 public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
     @SpringBootApplication
-    @Import(JdbcXfcdDataConsumerAutoConfig.class)
+    @Import(JdbcIncomingDeliveryConsumerAutoConfig.class)
     public static class TestApplictaion {
         @Bean
         public Vertx vertx() {
