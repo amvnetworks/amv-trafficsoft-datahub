@@ -84,7 +84,7 @@ public class DaoDbUnitTestConfig {
     public DataSource dataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(org.sqlite.JDBC.class.getName());
-        dataSourceBuilder.url("jdbc:sqlite:~amv-trafficsoft-datahub-xfcd-consumer-sqlite-test.db");
+        dataSourceBuilder.url("jdbc:sqlite:build/tmp/~amv-trafficsoft-datahub-xfcd-consumer-sqlite-test.db");
         return dataSourceBuilder.build();
     }
 
