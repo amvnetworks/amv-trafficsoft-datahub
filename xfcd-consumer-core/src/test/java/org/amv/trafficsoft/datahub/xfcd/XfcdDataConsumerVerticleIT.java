@@ -67,7 +67,7 @@ public class XfcdDataConsumerVerticleIT {
         xfcdEvents.subscribe(IncomingDeliveryEvent.class, new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent value) {
-                async.complete();
+                vertx.setTimer(TimeUnit.SECONDS.toMillis(1), i -> async.complete());
             }
         });
 
@@ -75,13 +75,13 @@ public class XfcdDataConsumerVerticleIT {
                 .deliveryPackage(deliveryPackage)
                 .build()));
 
-        async.await();
+        async.await(TimeUnit.SECONDS.toMillis(10));
 
         verifyZeroInteractions(dao);
     }
 
     @Test
-    public void itShouldCallSaveActionOnDelivery(TestContext context) throws Exception {
+    public void itShouldCallConsumerOnIncomingDelivery(TestContext context) throws Exception {
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();
@@ -99,13 +99,13 @@ public class XfcdDataConsumerVerticleIT {
                 .deliveryPackage(deliveryPackage)
                 .build()));
 
-        async.await();
+        async.await(TimeUnit.SECONDS.toMillis(10));
 
         verify(dao, times(1)).consume(eq(deliveryPackage));
     }
 
     @Test
-    public void itShouldCallSendConfirmableDeliveryEventIfItHoldsPrimaryDataStore(TestContext context) throws Exception {
+    public void itShouldCallSendConfirmableDeliveryEvent(TestContext context) throws Exception {
         final TrafficsoftDeliveryPackageImpl deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(DeliveryRestDtoMother.randomList())
                 .build();
@@ -115,7 +115,7 @@ public class XfcdDataConsumerVerticleIT {
         xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, new BaseSubscriber<ConfirmableDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmableDeliveryEvent value) {
-                async.complete();
+                vertx.setTimer(TimeUnit.SECONDS.toMillis(1), i -> async.complete());
             }
         });
 
@@ -123,7 +123,7 @@ public class XfcdDataConsumerVerticleIT {
                 .deliveryPackage(deliveryPackage)
                 .build()));
 
-        async.await();
+        async.await(TimeUnit.SECONDS.toMillis(10));
 
         verify(dao, times(1)).consume(eq(deliveryPackage));
     }
