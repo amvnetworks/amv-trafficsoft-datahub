@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-spring-boot-starter')
+    compile project(':xfcd-spring-boot-starter')
     compile project(':amv-vertx-spring-boot-starter')
 
     compile "io.vertx:vertx-dropwizard-metrics:${vertxVersion}"

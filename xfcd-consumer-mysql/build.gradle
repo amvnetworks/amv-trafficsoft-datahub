@@ -5,13 +5,13 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc')
+    compile project(':xfcd-consumer-jdbc')
 
     compileOnly 'mysql:mysql-connector-java:5.1.8'
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
-    testCompile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
+    testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
     testCompile 'mysql:mysql-connector-java:5.1.8'
     testCompile 'com.wix:wix-embedded-mysql:2.2.9'
 

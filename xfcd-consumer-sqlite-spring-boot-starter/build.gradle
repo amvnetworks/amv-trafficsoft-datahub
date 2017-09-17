@@ -14,8 +14,8 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-sqlite')
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
+    compile project(':xfcd-consumer-sqlite')
+    compile project(':xfcd-consumer-jdbc-spring-boot-starter')
 
     compile 'org.xerial:sqlite-jdbc:3.19.3', optional
 

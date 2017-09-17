@@ -14,8 +14,8 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-mysql')
+    compile project(':xfcd-consumer-jdbc-spring-boot-starter')
+    compile project(':xfcd-consumer-mysql')
 
     compile 'mysql:mysql-connector-java:5.1.8', optional
 

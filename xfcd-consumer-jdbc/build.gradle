@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-core')
+    compile project(':xfcd-consumer-core')
 
     compile('com.zaxxer:HikariCP:2.6.3')
     compile('org.flywaydb:flyway-core:4.2.0')

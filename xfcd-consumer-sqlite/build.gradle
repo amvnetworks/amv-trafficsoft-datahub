@@ -5,13 +5,13 @@ repositories {
 }
 
 dependencies {
-    compile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc')
+    compile project(':xfcd-consumer-jdbc')
 
     compileOnly 'org.xerial:sqlite-jdbc:3.19.3'
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
-    testCompile project(':amv-trafficsoft-datahub-xfcd-consumer-jdbc-spring-boot-starter')
+    testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
     testCompile 'org.xerial:sqlite-jdbc:3.19.3'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.dbunit:dbunit:2.5.3'
