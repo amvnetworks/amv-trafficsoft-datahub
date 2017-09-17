@@ -1,10 +1,11 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.collect.Lists;
+import io.prometheus.client.Counter;
+import io.prometheus.client.Summary;
 import io.vertx.rxjava.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import reactor.core.publisher.BaseSubscriber;
@@ -14,13 +15,31 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class XfcdEventLoggingVerticle extends AbstractVerticle {
+public class XfcdEventMetricsVerticle extends AbstractVerticle {
+    private static final Summary incomingDeliveryNodeCountSummary = Summary.build()
+            .name("datahub_incoming_delivery_nodes")
+            .help("Summary of amount of incoming nodes")
+            .quantile(0.5, 0.05)   // Add 50th percentile (= median) with 5% tolerated error
+            .quantile(0.9, 0.01)   // Add 90th percentile with 1% tolerated error
+            .quantile(0.99, 0.001) // Add 99th percentile with 0.1% tolerated error
+            .register();
+
+    private static final Counter incomingDeliveryCounter = Counter.build()
+            .name("datahub_incoming_delivery_count")
+            .help("Counter of incoming deliveries")
+            .register();
+
+    private static final Counter confirmedDeliveryCounter = Counter.build()
+            .name("datahub_confirmed_delivery_count")
+            .help("Counter of confirmed deliveries")
+            .register();
+
     private final XfcdEvents xfcdEvents;
 
     private final List<BaseSubscriber<?>> subscribers = Lists.newArrayList();
 
     @Builder
-    XfcdEventLoggingVerticle(XfcdEvents xfcdEvents) {
+    XfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
     }
 
@@ -29,30 +48,21 @@ public class XfcdEventLoggingVerticle extends AbstractVerticle {
         final BaseSubscriber<IncomingDeliveryEvent> incomingDeliveryEventBaseSubscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent value) {
-                final TrafficsoftDeliveryPackage deliveryPackage = value.getDeliveryPackage();
-                final int amountOfNodes = deliveryPackage.getAmountOfNodes();
+                incomingDeliveryCounter.inc();
 
-                log.info("Received event '{}' with {} nodes: {}", value.getClass().getSimpleName(),
-                        amountOfNodes,
-                        deliveryPackage.getDeliveryIds());
+                TrafficsoftDeliveryPackage deliveryPackage = value.getDeliveryPackage();
+                int amountOfNodes = deliveryPackage.getAmountOfNodes();
+
+                incomingDeliveryNodeCountSummary.observe(amountOfNodes);
             }
         };
         subscribers.add(incomingDeliveryEventBaseSubscriber);
         xfcdEvents.subscribe(IncomingDeliveryEvent.class, incomingDeliveryEventBaseSubscriber);
 
-        final BaseSubscriber<ConfirmableDeliveryEvent> confirmableDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmableDeliveryEvent>() {
-            @Override
-            protected void hookOnNext(ConfirmableDeliveryEvent value) {
-                log.info("Received event '{}': {}", value.getClass().getSimpleName(), value.getDeliveryPackage().getDeliveryIds());
-            }
-        };
-        subscribers.add(confirmableDeliveryEventBaseSubscriber);
-        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, confirmableDeliveryEventBaseSubscriber);
-
         final BaseSubscriber<ConfirmedDeliveryEvent> confirmedDeliveryEventBaseSubscriber = new BaseSubscriber<ConfirmedDeliveryEvent>() {
             @Override
             protected void hookOnNext(ConfirmedDeliveryEvent value) {
-                log.info("Received event '{}': {}", value.getClass().getSimpleName(), value.getDeliveryPackage().getDeliveryIds());
+                confirmedDeliveryCounter.inc();
             }
         };
         subscribers.add(confirmedDeliveryEventBaseSubscriber);

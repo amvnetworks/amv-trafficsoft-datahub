@@ -1,8 +1,11 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
+import io.prometheus.client.CollectorRegistry;
 import io.vertx.core.Vertx;
+import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
+import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Flux;
+
+import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -79,5 +86,38 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
                 .getBean(DeliveryConfirmationVerticle.class);
 
         assertThat(deliveryConfirmationVerticle, is(notNullValue()));
+    }
+
+    @Test
+    public void itShouldCollectBasicMetrics() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
+
+        assertThat(xfcdEvents, is(notNullValue()));
+
+        xfcdEvents.subscribe(IncomingDeliveryEvent.class, new BaseSubscriber<IncomingDeliveryEvent>() {
+            @Override
+            protected void hookOnNext(IncomingDeliveryEvent event) {
+                Vertx.vertx().setTimer(1, foo -> latch.countDown());
+            }
+        });
+
+        xfcdEvents.publish(IncomingDeliveryEvent.class, Flux.just(IncomingDeliveryEvent.builder()
+                .deliveryPackage(TrafficsoftDeliveryPackageImpl.builder()
+                        .deliveries(DeliveryRestDtoMother.randomList())
+                        .build())
+                .build()));
+
+        latch.await();
+
+        final Double incomingDeliveryCount = CollectorRegistry.defaultRegistry
+                .getSampleValue("datahub_incoming_delivery_count");
+
+        assertThat(incomingDeliveryCount, is(1d));
+
+        final Double confirmedDeliveryCount = CollectorRegistry.defaultRegistry
+                .getSampleValue("datahub_confirmed_delivery_count");
+
+        assertThat(confirmedDeliveryCount, is(0d));
     }
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.Mockito.*;
 
 @RunWith(VertxUnitRunner.class)
-public class XfcdDataConsumerVerticleIT {
+public class IncomingDeliveryConsumerVerticleIT {
 
     private Vertx vertx;
 

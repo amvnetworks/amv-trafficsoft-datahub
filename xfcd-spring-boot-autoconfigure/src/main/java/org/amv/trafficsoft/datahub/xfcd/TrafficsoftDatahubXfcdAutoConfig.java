@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,9 +52,15 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        @Profile("debug")
         public XfcdEventLoggingVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
             return XfcdEventLoggingVerticle.builder()
+                    .xfcdEvents(xfcdEvents)
+                    .build();
+        }
+
+        @Bean
+        public XfcdEventMetricsVerticle xfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
+            return XfcdEventMetricsVerticle.builder()
                     .xfcdEvents(xfcdEvents)
                     .build();
         }
