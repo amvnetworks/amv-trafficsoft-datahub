@@ -47,27 +47,26 @@ public class JdbcIncomingDeliveryConsumerAutoConfigCompleted {
                 hikariConfig.getMaximumPoolSize());
     }
 
-    @Bean("jdbcXfcdDataConsumer")
-    public JdbcXfcdDataConsumer jdbcXfcdDataConsumer(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
-        return JdbcXfcdDataConsumer.builder()
+    @Bean("trafficsoftJdbcDeliveryConsumer")
+    public JdbcDeliveryConsumer jdbcDeliveryConsumer(TrafficsoftDeliveryPackageJdbcDao trafficsoftDeliveryPackageJdbcDao) {
+        return JdbcDeliveryConsumer.builder()
                 .deliveryPackageDao(trafficsoftDeliveryPackageJdbcDao)
                 .build();
     }
 
-    @Bean("trafficsoftJdbcXfcdDataConsumer")
-    public IncomingDeliveryEventConsumer trafficsoftJdbcXfcdDataConsumer(JdbcXfcdDataConsumer jdbcXfcdDataConsumer) {
+    @Bean("trafficsoftIncomingDeliveryEventConsumerJdbc")
+    public IncomingDeliveryEventConsumer incomingDeliveryEventConsumer(JdbcDeliveryConsumer jdbcDeliveryConsumer) {
         return ConfirmingDeliveryConsumer.builder()
                 .confirmDelivery(properties.isSendConfirmationEvents())
-                .deliveryConsumer(jdbcXfcdDataConsumer)
+                .deliveryConsumer(jdbcDeliveryConsumer)
                 .build();
     }
 
-    @Bean("trafficsoftDeliveryDataStoreJdbcVerticle")
-    public IncomingDeliveryConsumerVerticle trafficsoftDeliveryDataStoreVerticle(XfcdEvents xfcdEvents,
-                                                                                 IncomingDeliveryEventConsumer confirmableXfcdDataConsumer) {
+    @Bean("trafficsoftIncomingDeliveryConsumerVerticleJdbc")
+    public IncomingDeliveryConsumerVerticle incomingDeliveryConsumerVerticle(XfcdEvents xfcdEvents, IncomingDeliveryEventConsumer eventConsumer) {
         return IncomingDeliveryConsumerVerticle.builder()
                 .xfcdEvents(xfcdEvents)
-                .incomingDeliveryEventConsumer(confirmableXfcdDataConsumer)
+                .incomingDeliveryEventConsumer(eventConsumer)
                 .build();
     }
 }

@@ -6,12 +6,12 @@ import org.amv.trafficsoft.datahub.xfcd.DeliveryConsumer;
 
 import static java.util.Objects.requireNonNull;
 
-public class JdbcXfcdDataConsumer implements DeliveryConsumer {
+public class JdbcDeliveryConsumer implements DeliveryConsumer {
 
     private final TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao;
 
     @Builder
-    JdbcXfcdDataConsumer(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao) {
+    JdbcDeliveryConsumer(TrafficsoftDeliveryPackageJdbcDao deliveryPackageDao) {
         this.deliveryPackageDao = requireNonNull(deliveryPackageDao);
     }
 

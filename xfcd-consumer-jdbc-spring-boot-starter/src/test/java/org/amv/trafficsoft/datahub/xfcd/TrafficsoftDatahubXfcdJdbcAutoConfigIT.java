@@ -3,7 +3,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
-import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcXfcdDataConsumer;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcDeliveryConsumer;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcIncomingDeliveryConsumerAutoConfig;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
 
     @Test
     public void contextLoads() throws Exception {
-        final JdbcXfcdDataConsumer dataStoreJdbc = applicationContext.getBean(JdbcXfcdDataConsumer.class);
+        final JdbcDeliveryConsumer dataStoreJdbc = applicationContext.getBean(JdbcDeliveryConsumer.class);
         final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
 
         assertThat(dataStoreJdbc, is(notNullValue()));
