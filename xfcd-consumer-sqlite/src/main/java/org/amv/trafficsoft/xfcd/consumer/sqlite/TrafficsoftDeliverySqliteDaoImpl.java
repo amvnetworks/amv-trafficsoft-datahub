@@ -118,10 +118,12 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
 
     @Override
     public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(int bpcId) {
-        String sql = "SELECT DISTINCT d.`ID` AS `ID` FROM `amv_trafficsoft_xfcd_delivery` d, `amv_trafficsoft_xfcd_node` n " +
-                "WHERE d.`CONFIRMED` IS NULL AND " +
-                "n.`BPC_ID` = :bpcId AND " +
-                "d.`ID` = n.`IMXFCD_D_ID` " +
+        String sql = "SELECT DISTINCT d.`ID` AS `ID` " +
+                "FROM `amv_trafficsoft_xfcd_delivery` d " +
+                "INNER JOIN `amv_trafficsoft_xfcd_node` n " +
+                "ON d.`ID` = n.`IMXFCD_D_ID` " +
+                "WHERE n.`BPC_ID` = :bpcId AND " +
+                "d.`CONFIRMED` IS NULL " +
                 "ORDER BY `ID`";
 
         List<Long> unconfirmedDeliveryIds = jdbcTemplate.queryForList(sql, ImmutableMap.<String, Object>builder()
