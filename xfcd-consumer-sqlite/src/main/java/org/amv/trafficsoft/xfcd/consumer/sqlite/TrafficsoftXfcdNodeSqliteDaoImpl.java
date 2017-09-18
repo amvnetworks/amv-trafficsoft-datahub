@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,8 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
          * for example due to an application shutdown.
          */
         String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_node` " +
-                "(`ID` ," +
+                "(`CREATED_AT`, " +
+                "`ID` ," +
                 "`ALTITUDE`," +
                 "`HEADING`," +
                 "`HDOP`," +
@@ -53,12 +55,13 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
                 "`VDOP`," +
                 "`BPC_ID`," +
                 "`IMXFCD_D_ID`) " +
-                "VALUES (:id, :altitude, :heading, :hdop, :latdeg, :londeg, :ts," +
+                "VALUES (:createdAt, :id, :altitude, :heading, :hdop, :latdeg, :londeg, :ts," +
                 " :satcnt, :speed, :tripid, :vehicleId, :vdop, :bpcId, :deliveryId)";
 
 
         nodes.forEach(node -> {
             jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
+                    .put("createdAt", Timestamp.from(Instant.now()))
                     .put("id", node.getId())
                     .put("altitude", node.getAltitude().orElse(null))
                     .put("heading", node.getHeading().orElse(null))

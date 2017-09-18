@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,11 +43,12 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
          * for example due to an application shutdown.
          */
         String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_delivery` " +
-                "(`ID`, `TS`) " +
-                "VALUES (:id, :ts)";
+                "(`CREATED_AT`, `ID`, `TS`) " +
+                "VALUES (:createdAt, :id, :ts)";
 
         deliveries.forEach(delivery -> {
             jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
+                    .put("createdAt", Timestamp.from(Instant.now()))
                     .put("id", delivery.getId())
                     .put("ts", Date.from(delivery.getTimestamp()))
                     .build());
@@ -67,7 +69,7 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
                 "`ID` IN(:ids)";
 
         int affectedRows = jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
-                .put("now", Date.from(Instant.now()))
+                .put("now", Timestamp.from(Instant.now()))
                 .put("ids", ids)
                 .build());
 

@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +39,12 @@ public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJd
          * for example due to an application shutdown.
          */
         String sql = "INSERT OR IGNORE INTO `amv_trafficsoft_xfcd_state` " +
-                "(`IMXFCD_N_ID`, `CD`, `VAL`) " +
-                "VALUES (:nodeId, :code, :value)";
+                "(`CREATED_AT`, `IMXFCD_N_ID`, `CD`, `VAL`) " +
+                "VALUES (:createdAt, :nodeId, :code, :value)";
 
         entities.forEach(entity -> {
             Map<String, Object> paramMap = Maps.newHashMap();
+            paramMap.put("createdAt", Timestamp.from(Instant.now()));
             paramMap.put("nodeId", entity.getNodeId());
             paramMap.put("code", entity.getCode());
             paramMap.put("value", entity.getValue().orElse(null));
