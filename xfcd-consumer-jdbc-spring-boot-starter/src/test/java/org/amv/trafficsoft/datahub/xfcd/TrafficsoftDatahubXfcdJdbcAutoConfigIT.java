@@ -1,6 +1,5 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import io.vertx.core.Vertx;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcDeliveryConsumer;
@@ -29,14 +28,9 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
     @SpringBootApplication
     @Import(JdbcIncomingDeliveryConsumerAutoConfig.class)
     public static class TestApplictaion {
-        @Bean
-        public Vertx vertx() {
-            return Vertx.vertx();
-        }
-
         /**
          * This bean simulates an inclusion of an
-         * "consumer-jdbc-${technology}-autoconfigure module.
+         * "xfcd-consumer-jdbc-${technology}-autoconfigure module.
          * JdbcAutoConfig is triggered by availability of this bean.
          */
         @Bean

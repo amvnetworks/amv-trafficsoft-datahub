@@ -34,11 +34,6 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
     @Import(TrafficsoftDatahubXfcdAutoConfig.class)
     public static class TestApplictaion {
         @Bean
-        public Vertx vertx() {
-            return Vertx.vertx();
-        }
-
-        @Bean
         public TrafficsoftApiRestProperties apiRestProperties() {
             return new TrafficsoftApiRestProperties();
         }
