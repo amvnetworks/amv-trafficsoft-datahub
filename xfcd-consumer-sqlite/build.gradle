@@ -6,6 +6,7 @@ repositories {
 
 dependencies {
     compile project(':xfcd-consumer-jdbc')
+    testCompile project(':xfcd-consumer-jdbc-test')
 
     compileOnly 'org.xerial:sqlite-jdbc:3.19.3'
 

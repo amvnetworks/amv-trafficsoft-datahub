@@ -1,0 +1,17 @@
+description = 'Please provide a meaningful description..'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':xfcd-consumer-jdbc')
+
+    compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    compile 'junit:junit:4.12'
+    compile 'org.hamcrest:hamcrest-all:1.3'
+    compile 'pl.pragmatists:JUnitParams:1.0.6'
+
+    compile 'org.dbunit:dbunit:2.5.3'
+    compile 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
+}
