@@ -30,7 +30,7 @@ public class TrafficsoftXfcdNodeRowMapper implements RowMapper<TrafficsoftXfcdNo
 
         return TrafficsoftXfcdNodeEntity.builder()
                 .id(id)
-                .bpcId(bpcId)
+                .businessPartnerId(bpcId)
                 .deliveryId(deliveryId)
                 .vehicleId(vehicleId)
                 .tripId(tripId)

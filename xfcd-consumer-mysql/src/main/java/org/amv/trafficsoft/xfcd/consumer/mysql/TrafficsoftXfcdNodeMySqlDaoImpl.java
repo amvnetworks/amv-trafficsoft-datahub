@@ -53,7 +53,7 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
                 "`BPC_ID`," +
                 "`IMXFCD_D_ID`) " +
                 "VALUES (:now, :id, :altitude, :heading, :hdop, :latdeg, :londeg, :ts," +
-                " :satcnt, :speed, :tripid, :vehicleId, :vdop, :bpcId, :deliveryId) " +
+                " :satcnt, :speed, :tripId, :vehicleId, :vdop, :bpcId, :deliveryId) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "`UPDATED_AT` = :now";
 
@@ -64,8 +64,8 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
             paramMap.put("id", node.getId());
             paramMap.put("deliveryId", node.getDeliveryId());
             paramMap.put("vehicleId", node.getVehicleId());
-            paramMap.put("bpcId", node.getBpcId());
-            paramMap.put("tripid", node.getTripId());
+            paramMap.put("bpcId", node.getBusinessPartnerId());
+            paramMap.put("tripId", node.getTripId());
             paramMap.put("altitude", node.getAltitude()
                     .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
                     .orElse(BigDecimal.valueOf(-1L)));

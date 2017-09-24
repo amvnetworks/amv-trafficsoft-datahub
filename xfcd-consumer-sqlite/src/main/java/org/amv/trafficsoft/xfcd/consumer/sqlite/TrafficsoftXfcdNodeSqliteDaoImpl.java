@@ -74,7 +74,7 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
                     .put("tripid", node.getTripId())
                     .put("vehicleId", node.getVehicleId())
                     .put("vdop", node.getVerticalDilution().orElse(null))
-                    .put("bpcId", node.getBpcId())
+                    .put("bpcId", node.getBusinessPartnerId())
                     .put("deliveryId", node.getDeliveryId())
                     .build());
         });

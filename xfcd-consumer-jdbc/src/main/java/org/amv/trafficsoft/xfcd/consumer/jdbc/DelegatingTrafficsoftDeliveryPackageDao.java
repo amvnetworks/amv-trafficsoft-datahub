@@ -89,7 +89,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
 
         final TrafficsoftXfcdNodeEntity nodeEntity = TrafficsoftXfcdNodeEntity.builder()
                 .id(node.getId())
-                .bpcId((int) deliveryPackage.getContractId())
+                .businessPartnerId((int) deliveryPackage.getContractId())
                 .deliveryId(delivery.getDeliveryId())
                 .tripId(track.getId())
                 .timestamp(node.getTimestamp().toInstant())

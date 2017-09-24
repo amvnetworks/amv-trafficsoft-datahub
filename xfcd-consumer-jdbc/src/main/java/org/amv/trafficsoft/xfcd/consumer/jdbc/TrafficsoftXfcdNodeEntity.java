@@ -11,7 +11,7 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 public class TrafficsoftXfcdNodeEntity {
     private long id;
-    private int bpcId;
+    private int businessPartnerId;
     private long deliveryId;
     private long vehicleId;
     private long tripId;
