@@ -18,21 +18,25 @@ public class TrafficsoftDeliveryPackageMySqlDaoImplTest extends AbstractTraffics
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    @Override
     protected TrafficsoftDeliveryMySqlDaoImpl deliveryDao() {
         return new TrafficsoftDeliveryMySqlDaoImpl(namedParameterJdbcTemplate,
                 new TrafficsoftDeliveryRowMapper());
     }
 
+    @Override
     protected TrafficsoftXfcdNodeJdbcDao nodeDao() {
         return new TrafficsoftXfcdNodeMySqlDaoImpl(namedParameterJdbcTemplate,
                 new TrafficsoftXfcdNodeRowMapper());
     }
 
+    @Override
     protected TrafficsoftXfcdStateJdbcDao stateDao() {
         return new TrafficsoftXfcdStateMySqlDaoImpl(namedParameterJdbcTemplate,
                 new TrafficsoftXfcdStateRowMapper());
     }
 
+    @Override
     protected TrafficsoftXfcdXfcdJdbcDao xfcdDao() {
         return new TrafficsoftXfcdXfcdMySqlDaoImpl(namedParameterJdbcTemplate,
                 new TrafficsoftXfcdXfcdRowMapper());

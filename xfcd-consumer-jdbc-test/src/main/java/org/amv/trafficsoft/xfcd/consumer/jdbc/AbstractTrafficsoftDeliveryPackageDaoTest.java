@@ -5,6 +5,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,6 @@ import static org.junit.Assert.assertThat;
 })
 public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
 
-
     private TrafficsoftDeliveryPackageJdbcDao sut;
 
     @Before
@@ -40,7 +40,7 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
         this.sut = systemUnderTest();
     }
 
-    private TrafficsoftDeliveryPackageJdbcDao systemUnderTest() {
+    protected TrafficsoftDeliveryPackageJdbcDao systemUnderTest() {
         return DelegatingTrafficsoftDeliveryPackageDao.builder()
                 .deliveryDao(deliveryDao())
                 .nodeDao(nodeDao())
@@ -66,6 +66,7 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
 
         sut.save(TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(deliveries)
+                .contractId(RandomUtils.nextInt())
                 .build());
 
         final List<Long> deliveryIds = deliveries.stream()

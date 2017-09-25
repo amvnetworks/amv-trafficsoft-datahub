@@ -3,14 +3,16 @@ package org.amv.trafficsoft.xfcd.consumer.jdbc;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-import org.amv.trafficsoft.rest.xfcd.model.NodeRestDto;
-import org.amv.trafficsoft.rest.xfcd.model.ParameterRestDto;
-import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
+import org.amv.trafficsoft.rest.xfcd.model.*;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -91,8 +93,13 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                 .id(node.getId())
                 .businessPartnerId((int) deliveryPackage.getContractId())
                 .deliveryId(delivery.getDeliveryId())
+                .vehicleId(track.getVehicleId())
                 .tripId(track.getId())
-                .timestamp(node.getTimestamp().toInstant())
+                .timestamp(Optional.ofNullable(node.getTimestamp())
+                        .map(Date::toInstant)
+                        .orElse(null))
+                .satelliteCount(Optional.ofNullable(node.getSatellites())
+                        .orElse(-1))
                 .latitude(node.getLatitude())
                 .longitude(node.getLongitude())
                 .altitude(node.getAltitude())
@@ -100,7 +107,6 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                 .horizontalDilution(node.getHdop())
                 .verticalDilution(node.getVdop())
                 .speed(node.getSpeed())
-                .vehicleId(track.getVehicleId())
                 .build();
 
         nodeDao.save(nodeEntity);
@@ -136,5 +142,4 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
 
         xfcdDao.save(xfcdEntity);
     }
-
 }
