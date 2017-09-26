@@ -11,7 +11,9 @@ public interface TrafficsoftXfcdNodeJdbcDao {
         saveAll(Collections.singletonList(node));
     }
 
-    List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(int bpcId, long deliveryId);
+    List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(long bpcId, List<Long> deliveryIds);
 
-    List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(int bpcId, List<Long> deliveryIds);
+    default List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(long bpcId, long deliveryId) {
+        return findByContractIdAndDeliveryIds(bpcId, Collections.singletonList(deliveryId));
+    }
 }

@@ -47,7 +47,7 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
             jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
                     .put("now", Date.from(Instant.now()))
                     .put("id", delivery.getId())
-                    .put("ts", Date.from(delivery.getTimestamp()))
+                    .put("ts", Timestamp.from(delivery.getTimestamp()))
                     .build());
         });
     }
@@ -66,7 +66,7 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
                 "`ID` IN(:ids)";
 
         int affectedRows = jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
-                .put("now", Date.from(Instant.now()))
+                .put("now", Timestamp.from(Instant.now()))
                 .put("ids", ids)
                 .build());
 
@@ -114,7 +114,7 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
     }
 
     @Override
-    public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(int bpcId) {
+    public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(long bpcId) {
         String sql = "SELECT DISTINCT d.`ID` AS `ID` " +
                 "FROM `amv_trafficsoft_xfcd_delivery` d " +
                 "INNER JOIN `amv_trafficsoft_xfcd_node` n " +
@@ -143,9 +143,7 @@ public class TrafficsoftDeliveryMySqlDaoImpl implements TrafficsoftDeliveryJdbcD
         try {
             Timestamp updatedAtOrNull = jdbcTemplate.queryForObject(sql, ImmutableMap.<String, Object>builder()
                     .put("id", id)
-                    .build(), (rs, rowNum) -> {
-                return rs.getTimestamp("UPDATED_AT");
-            });
+                    .build(), (rs, rowNum) -> rs.getTimestamp("UPDATED_AT"));
 
             return Optional.ofNullable(updatedAtOrNull)
                     .map(Timestamp::toInstant);

@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 public class TrafficsoftXfcdStateEntity {
     private long nodeId;
+    @NonNull
     private String code;
     private String value;
 

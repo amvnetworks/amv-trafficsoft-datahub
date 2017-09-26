@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 public class TrafficsoftDeliveryEntity {
     private long id;
+    @NonNull
     private Instant timestamp;
     private Instant confirmedAt;
 

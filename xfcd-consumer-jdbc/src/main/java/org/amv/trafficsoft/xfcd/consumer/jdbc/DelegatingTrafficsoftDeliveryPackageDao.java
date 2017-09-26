@@ -3,16 +3,16 @@ package org.amv.trafficsoft.xfcd.consumer.jdbc;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
-import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
-import org.amv.trafficsoft.rest.xfcd.model.*;
-import org.apache.commons.lang3.RandomUtils;
+import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
+import org.amv.trafficsoft.rest.xfcd.model.NodeRestDto;
+import org.amv.trafficsoft.rest.xfcd.model.ParameterRestDto;
+import org.amv.trafficsoft.rest.xfcd.model.TrackRestDto;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -91,7 +91,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
 
         TrafficsoftXfcdNodeEntity nodeEntity = TrafficsoftXfcdNodeEntity.builder()
                 .id(node.getId())
-                .businessPartnerId((int) deliveryPackage.getContractId())
+                .businessPartnerId(deliveryPackage.getContractId())
                 .deliveryId(delivery.getDeliveryId())
                 .vehicleId(track.getVehicleId())
                 .tripId(track.getId())
@@ -99,7 +99,7 @@ public class DelegatingTrafficsoftDeliveryPackageDao implements TrafficsoftDeliv
                         .map(Date::toInstant)
                         .orElse(null))
                 .satelliteCount(Optional.ofNullable(node.getSatellites())
-                        .orElse(-1))
+                        .orElse(0))
                 .latitude(node.getLatitude())
                 .longitude(node.getLongitude())
                 .altitude(node.getAltitude())

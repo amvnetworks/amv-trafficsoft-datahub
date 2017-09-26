@@ -9,14 +9,14 @@ import java.sql.SQLException;
 public class TrafficsoftXfcdXfcdRowMapper implements RowMapper<TrafficsoftXfcdXfcdEntity> {
     @Override
     public TrafficsoftXfcdXfcdEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        String type = rs.getString("TYPE");
         long nodeId = rs.getLong("IMXFCD_N_ID");
+        String type = rs.getString("TYPE");
         BigDecimal valueOrNull = rs.getBigDecimal("VAL");
         String valueAsStringOrNull = rs.getString("VALSTR");
 
         return TrafficsoftXfcdXfcdEntity.builder()
-                .type(type)
                 .nodeId(nodeId)
+                .type(type)
                 .value(valueOrNull)
                 .valueAsString(valueAsStringOrNull)
                 .build();

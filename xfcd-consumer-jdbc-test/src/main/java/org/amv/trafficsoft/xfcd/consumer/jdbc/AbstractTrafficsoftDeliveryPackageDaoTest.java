@@ -2,9 +2,10 @@ package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.google.common.collect.ImmutableList;
+import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
-import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
-import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
+import org.amv.trafficsoft.rest.xfcd.model.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +17,12 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
@@ -66,7 +71,7 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
 
         sut.save(TrafficsoftDeliveryPackageImpl.builder()
                 .deliveries(deliveries)
-                .contractId(RandomUtils.nextInt())
+                .contractId(RandomUtils.nextLong())
                 .build());
 
         final List<Long> deliveryIds = deliveries.stream()
@@ -82,5 +87,74 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
                 .collect(Collectors.toList());
 
         assertThat(deliveryIdsFromDb, is(equalTo(deliveryIds)));
+    }
+
+
+    @Test
+    public void itShouldTestNullableValuesInMysql() throws Exception {
+        TrafficsoftDeliveryPackageJdbcDao sut = systemUnderTest();
+
+        ParameterRestDto xfcdWithNullValues = ParameterRestDto.builder()
+                .param("ANY_XFCD")
+                .value(null)
+                .build();
+
+        ParameterRestDto stateWithNullValues = ParameterRestDto.builder()
+                .param("ANY_STATE")
+                .value(null)
+                .build();
+
+        NodeRestDto nodeWithNullValues = NodeRestDto.builder()
+                .id(1L)
+                .timestamp(Date.from(Instant.now()))
+                .satellites(RandomUtils.nextInt())
+                .vdop(null)
+                .hdop(BigDecimal.valueOf(RandomUtils.nextInt(0, 10)))
+                .latitude(null)
+                .longitude(BigDecimal.valueOf(RandomUtils.nextInt(0, 1000)))
+                .heading(null)
+                .altitude(BigDecimal.valueOf(RandomUtils.nextInt(0, 1_000_000)))
+                .addXfcd(xfcdWithNullValues)
+                .addState(stateWithNullValues)
+                .build();
+
+        DeliveryRestDto delivery = DeliveryRestDto.builder()
+                .deliveryId(1L)
+                .timestamp(Date.from(Instant.now()))
+                .addTrack(TrackRestDto.builder()
+                        .id(1L)
+                        .vehicleId(1L)
+                        .addNode(nodeWithNullValues)
+                        .build())
+                .build();
+
+        TrafficsoftDeliveryPackage deliveryPackage = TrafficsoftDeliveryPackageImpl.builder()
+                .deliveries(ImmutableList.of(delivery))
+                .contractId(RandomUtils.nextLong())
+                .build();
+
+        sut.save(deliveryPackage);
+
+        TrafficsoftDeliveryEntity deliveryFromDb = deliveryDao().findById(delivery.getDeliveryId())
+                .orElseThrow(IllegalStateException::new);
+
+        assertThat(deliveryFromDb, is(notNullValue()));
+
+        TrafficsoftXfcdNodeEntity nodeFromDb = nodeDao().findByContractIdAndDeliveryId(deliveryPackage.getContractId(), delivery.getDeliveryId())
+                .stream().findFirst().orElseThrow(IllegalStateException::new);
+
+        assertThat(nodeFromDb, is(notNullValue()));
+
+        assertThat(nodeFromDb.getSatelliteCount(), is(Optional.ofNullable(nodeWithNullValues.getSatellites())));
+
+        // null values
+        assertThat(nodeFromDb.getVerticalDilution(), is(Optional.empty()));
+        assertThat(nodeFromDb.getHeading(), is(Optional.empty()));
+        assertThat(nodeFromDb.getLatitude(), is(Optional.empty()));
+
+        // non-null values
+        assertThat(nodeFromDb.getAltitude(), is(not(Optional.empty())));
+        assertThat(nodeFromDb.getHorizontalDilution(), is(not(Optional.empty())));
+        assertThat(nodeFromDb.getLongitude(), is(not(Optional.empty())));
     }
 }

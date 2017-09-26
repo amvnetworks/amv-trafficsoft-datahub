@@ -26,7 +26,7 @@ public interface TrafficsoftDeliveryJdbcDao {
                 .findFirst();
     }
 
-    List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(int bpcId);
+    List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(long bpcId);
 
     void confirmDeliveriesByIds(Collection<Long> ids);
 

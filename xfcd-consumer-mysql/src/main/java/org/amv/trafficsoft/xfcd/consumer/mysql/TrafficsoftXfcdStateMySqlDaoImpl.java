@@ -9,7 +9,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -32,20 +35,27 @@ public class TrafficsoftXfcdStateMySqlDaoImpl implements TrafficsoftXfcdStateJdb
     public void saveAll(List<TrafficsoftXfcdStateEntity> entities) {
         requireNonNull(entities);
 
+        if (entities.isEmpty()) {
+            return;
+        }
+
         String sql = "INSERT INTO `amv_trafficsoft_xfcd_state` " +
                 "(`CREATED_AT`, `IMXFCD_N_ID`, `CD`, `VAL`) " +
-                "VALUES (:now, :nodeId, :code, :value) " +
+                "VALUES (?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "`UPDATED_AT` = :now";
+                "`UPDATED_AT` = ?";
 
         entities.forEach(entity -> {
-            Map<String, Object> paramMap = Maps.newHashMap();
-            paramMap.put("now", Date.from(Instant.now()));
-            paramMap.put("nodeId", entity.getNodeId());
-            paramMap.put("code", entity.getCode());
-            paramMap.put("value", entity.getValue().orElse(null));
-
-            jdbcTemplate.update(sql, paramMap);
+            jdbcTemplate.getJdbcOperations().update(con -> {
+                PreparedStatement ps = con.prepareStatement(sql, new String[] {});
+                Timestamp now = Timestamp.from(Instant.now());
+                ps.setTimestamp(1, now);
+                ps.setLong(2, entity.getNodeId());
+                ps.setString(3, entity.getCode());
+                ps.setString(4, entity.getValue().orElse(null));
+                ps.setTimestamp(5, now);
+                return ps;
+            });
         });
     }
 

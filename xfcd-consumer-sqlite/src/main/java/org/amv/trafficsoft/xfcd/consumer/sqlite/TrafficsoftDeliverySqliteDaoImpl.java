@@ -50,7 +50,7 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
             jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
                     .put("createdAt", Timestamp.from(Instant.now()))
                     .put("id", delivery.getId())
-                    .put("ts", Date.from(delivery.getTimestamp()))
+                    .put("ts", Timestamp.from(delivery.getTimestamp()))
                     .build());
         });
     }
@@ -117,7 +117,7 @@ public class TrafficsoftDeliverySqliteDaoImpl implements TrafficsoftDeliveryJdbc
     }
 
     @Override
-    public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(int bpcId) {
+    public List<Long> findIdsOfUnconfirmedDeliveriesByBpcId(long bpcId) {
         String sql = "SELECT DISTINCT d.`ID` AS `ID` " +
                 "FROM `amv_trafficsoft_xfcd_delivery` d " +
                 "INNER JOIN `amv_trafficsoft_xfcd_node` n " +

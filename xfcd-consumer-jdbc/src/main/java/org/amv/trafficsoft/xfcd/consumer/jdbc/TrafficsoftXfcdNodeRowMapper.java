@@ -14,19 +14,19 @@ public class TrafficsoftXfcdNodeRowMapper implements RowMapper<TrafficsoftXfcdNo
     @Override
     public TrafficsoftXfcdNodeEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         long id = rs.getLong("ID");
-        int bpcId = rs.getInt("BPC_ID");
+        long bpcId = rs.getLong("BPC_ID");
         long deliveryId = rs.getLong("IMXFCD_D_ID");
         long vehicleId = rs.getLong("V_ID");
         long tripId = rs.getLong("TRIPID");
         Instant timestamp = Instant.ofEpochMilli(rs.getLong("TS"));
-        BigDecimal londeg = rs.getBigDecimal("LONDEG");
-        BigDecimal latdeg = rs.getBigDecimal("LATDEG");
-        BigDecimal speed = rs.getBigDecimal("SPEED");
-        BigDecimal heading = rs.getBigDecimal("HEADING");
-        BigDecimal altitude = rs.getBigDecimal("ALTITUDE");
-        int satcnt = rs.getInt("SATCNT");
-        BigDecimal hdop = rs.getBigDecimal("HDOP");
-        BigDecimal vdop = rs.getBigDecimal("VDOP");
+        BigDecimal longitudeOrNull = rs.getBigDecimal("LONDEG");
+        BigDecimal latitudeOrNull = rs.getBigDecimal("LATDEG");
+        BigDecimal speedOrNull = rs.getBigDecimal("SPEED");
+        BigDecimal headingOrNull = rs.getBigDecimal("HEADING");
+        BigDecimal altitudeOrNull = rs.getBigDecimal("ALTITUDE");
+        Integer satelliteCountOrNull = MoreResultSets.getInteger(rs, "SATCNT").orElse(null);
+        BigDecimal horizontalDilutionOrNull = rs.getBigDecimal("HDOP");
+        BigDecimal verticalDilutionOrNull = rs.getBigDecimal("VDOP");
 
         return TrafficsoftXfcdNodeEntity.builder()
                 .id(id)
@@ -35,14 +35,14 @@ public class TrafficsoftXfcdNodeRowMapper implements RowMapper<TrafficsoftXfcdNo
                 .vehicleId(vehicleId)
                 .tripId(tripId)
                 .timestamp(timestamp)
-                .longitude(londeg)
-                .latitude(latdeg)
-                .speed(speed)
-                .heading(heading)
-                .altitude(altitude)
-                .satelliteCount(satcnt)
-                .horizontalDilution(hdop)
-                .verticalDilution(vdop)
+                .longitude(longitudeOrNull)
+                .latitude(latitudeOrNull)
+                .speed(speedOrNull)
+                .heading(headingOrNull)
+                .altitude(altitudeOrNull)
+                .satelliteCount(satelliteCountOrNull)
+                .horizontalDilution(horizontalDilutionOrNull)
+                .verticalDilution(verticalDilutionOrNull)
                 .build();
     }
 }

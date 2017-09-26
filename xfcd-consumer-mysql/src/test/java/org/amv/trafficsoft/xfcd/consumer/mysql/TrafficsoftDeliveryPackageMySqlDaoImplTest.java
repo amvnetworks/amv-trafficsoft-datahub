@@ -12,7 +12,7 @@ public class TrafficsoftDeliveryPackageMySqlDaoImplTest extends AbstractTraffics
 
     @BeforeClass
     public static void skipWindowsOs() {
-        Assume.assumeFalse(System.getProperty("os.name").startsWith("Windows"));
+        Assume.assumeFalse(OperationSystemHelper.isWindows());
     }
 
     @Autowired

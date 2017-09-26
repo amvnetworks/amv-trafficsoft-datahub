@@ -2,6 +2,7 @@ package org.amv.trafficsoft.xfcd.consumer.sqlite;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdNodeEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdNodeJdbcDao;
@@ -14,6 +15,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -60,28 +62,30 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
 
 
         nodes.forEach(node -> {
-            jdbcTemplate.update(sql, ImmutableMap.<String, Object>builder()
-                    .put("createdAt", Timestamp.from(Instant.now()))
-                    .put("id", node.getId())
-                    .put("altitude", node.getAltitude().orElse(null))
-                    .put("heading", node.getHeading().orElse(null))
-                    .put("hdop", node.getHorizontalDilution().orElse(null))
-                    .put("latdeg", node.getLatitude().orElse(null))
-                    .put("londeg", node.getLongitude().orElse(null))
-                    .put("ts", node.getTimestamp().orElse(Instant.now()))
-                    .put("satcnt", node.getSatelliteCount())
-                    .put("speed", node.getSpeed().orElse(null))
-                    .put("tripid", node.getTripId())
-                    .put("vehicleId", node.getVehicleId())
-                    .put("vdop", node.getVerticalDilution().orElse(null))
-                    .put("bpcId", node.getBusinessPartnerId())
-                    .put("deliveryId", node.getDeliveryId())
-                    .build());
+            Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(15);
+
+            paramMap.put("createdAt", Timestamp.from(Instant.now()));
+            paramMap.put("id", node.getId());
+            paramMap.put("tripid", node.getTripId());
+            paramMap.put("vehicleId", node.getVehicleId());
+            paramMap.put("ts", node.getTimestamp().toEpochMilli());
+            paramMap.put("altitude", node.getAltitude().orElse(null));
+            paramMap.put("heading", node.getHeading().orElse(null));
+            paramMap.put("hdop", node.getHorizontalDilution().orElse(null));
+            paramMap.put("latdeg", node.getLatitude().orElse(null));
+            paramMap.put("londeg", node.getLongitude().orElse(null));
+            paramMap.put("satcnt", node.getSatelliteCount().orElse(null));
+            paramMap.put("speed", node.getSpeed().orElse(null));
+            paramMap.put("vdop", node.getVerticalDilution().orElse(null));
+            paramMap.put("bpcId", node.getBusinessPartnerId());
+            paramMap.put("deliveryId", node.getDeliveryId());
+
+            jdbcTemplate.update(sql, paramMap);
         });
     }
 
     @Override
-    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(int bpcId, long deliveryId) {
+    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(long bpcId, long deliveryId) {
         String sql = "SELECT n.`ID`, n.`IMXFCD_D_ID`, " +
                 "n.`BPC_ID`,  n.`V_ID`, n.`TRIPID`, n.`TS`, " +
                 "n.`LONDEG`, n.`LATDEG`, n.`SPEED`, n.`HEADING`, " +
@@ -100,7 +104,7 @@ public class TrafficsoftXfcdNodeSqliteDaoImpl implements TrafficsoftXfcdNodeJdbc
     }
 
     @Override
-    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(int bpcId, List<Long> deliveryIds) {
+    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(long bpcId, List<Long> deliveryIds) {
         requireNonNull(deliveryIds, "`deliveryIds` must not be null");
 
         if (deliveryIds.isEmpty()) {

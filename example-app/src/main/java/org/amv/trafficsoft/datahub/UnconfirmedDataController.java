@@ -23,7 +23,7 @@ public class UnconfirmedDataController {
     @GetMapping("/unconfirmed")
     public String index() {
         final List<Long> idsOfUnconfirmedDeliveriesByBpcId = dao
-                .findIdsOfUnconfirmedDeliveriesByBpcId((int) apiRestProperties.getContractId());
+                .findIdsOfUnconfirmedDeliveriesByBpcId(apiRestProperties.getContractId());
         return Json.encodePrettily(idsOfUnconfirmedDeliveriesByBpcId);
     }
 }

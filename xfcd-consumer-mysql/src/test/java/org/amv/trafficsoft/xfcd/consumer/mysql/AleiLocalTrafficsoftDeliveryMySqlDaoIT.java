@@ -28,29 +28,25 @@ import javax.sql.DataSource;
  * a real mysql database is currently done only on unix based systems.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({
-        DirtiesContextTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class
-})
-@ContextConfiguration(classes = {AleiLocalMySqlIT.Alei2LocalMySqlConfig.class})
+@ContextConfiguration(classes = {AleiLocalTrafficsoftDeliveryMySqlDaoIT.AleiLocalMySqlConfig.class})
 @Transactional
-public class AleiLocalMySqlIT extends AbstractTrafficsoftDeliveryPackageDaoTest {
+public class AleiLocalTrafficsoftDeliveryMySqlDaoIT extends AbstractTrafficsoftDeliveryDaoTest {
 
     @BeforeClass
     public static void skipNonAlei2LocalEnvironment() {
         boolean isAlei2User = "alei2".equals(System.getProperty("user.name"));
-        boolean isWindowsOs = System.getProperty("os.name").startsWith("Windows");
+        boolean isWindowsOs = OperationSystemHelper.isWindows();
 
         Assume.assumeTrue(isAlei2User && isWindowsOs);
     }
 
     @Configuration
-    public static class Alei2LocalMySqlConfig {
+    public static class AleiLocalMySqlConfig {
 
         @Bean(destroyMethod = "shutdown")
         public DataSource dataSource() {
             final String url = String.format("jdbc:mysql://localhost:%d/%s?" +
-                            "profileSQL=true&amp;generateSimpleParameterMetadata=true",
+                            "profileSQL=true",
                     3306,
                     "alei2_datahub_it");
 
@@ -96,23 +92,5 @@ public class AleiLocalMySqlIT extends AbstractTrafficsoftDeliveryPackageDaoTest 
     protected TrafficsoftDeliveryMySqlDaoImpl deliveryDao() {
         return new TrafficsoftDeliveryMySqlDaoImpl(namedParameterJdbcTemplate,
                 new TrafficsoftDeliveryRowMapper());
-    }
-
-    @Override
-    protected TrafficsoftXfcdNodeJdbcDao nodeDao() {
-        return new TrafficsoftXfcdNodeMySqlDaoImpl(namedParameterJdbcTemplate,
-                new TrafficsoftXfcdNodeRowMapper());
-    }
-
-    @Override
-    protected TrafficsoftXfcdStateJdbcDao stateDao() {
-        return new TrafficsoftXfcdStateMySqlDaoImpl(namedParameterJdbcTemplate,
-                new TrafficsoftXfcdStateRowMapper());
-    }
-
-    @Override
-    protected TrafficsoftXfcdXfcdJdbcDao xfcdDao() {
-        return new TrafficsoftXfcdXfcdMySqlDaoImpl(namedParameterJdbcTemplate,
-                new TrafficsoftXfcdXfcdRowMapper());
     }
 }

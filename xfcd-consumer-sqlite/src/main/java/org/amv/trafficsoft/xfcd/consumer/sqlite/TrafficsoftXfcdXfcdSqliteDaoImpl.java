@@ -31,7 +31,6 @@ public class TrafficsoftXfcdXfcdSqliteDaoImpl implements TrafficsoftXfcdXfcdJdbc
     @Override
     public void saveAll(List<TrafficsoftXfcdXfcdEntity> entities) {
         requireNonNull(entities);
-
         /**
          * `INSERT OR IGNORE` is used here so no DuplicateKeyException is thrown
          * if the delivery has already been saved.
@@ -43,7 +42,7 @@ public class TrafficsoftXfcdXfcdSqliteDaoImpl implements TrafficsoftXfcdXfcdJdbc
                 "VALUES (:createdAt, :nodeId, :type, :value, :valueAsString)";
 
         entities.forEach(entity -> {
-            Map<String, Object> paramMap = Maps.newHashMap();
+            Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(5);
             paramMap.put("createdAt", Timestamp.from(Instant.now()));
             paramMap.put("nodeId", entity.getNodeId());
             paramMap.put("type", entity.getType());

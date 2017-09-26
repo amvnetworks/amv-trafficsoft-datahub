@@ -2,7 +2,6 @@ package org.amv.trafficsoft.xfcd.consumer.mysql;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdXfcdEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdXfcdJdbcDao;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,11 +9,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,26 +32,30 @@ public class TrafficsoftXfcdXfcdMySqlDaoImpl implements TrafficsoftXfcdXfcdJdbcD
     public void saveAll(List<TrafficsoftXfcdXfcdEntity> entities) {
         requireNonNull(entities);
 
+        if (entities.isEmpty()) {
+            return;
+        }
+
         String sql = "INSERT INTO `amv_trafficsoft_xfcd_xfcd` " +
                 "(`CREATED_AT`, `IMXFCD_N_ID`, `TYPE`, `VAL`, `VALSTR`) " +
-                "VALUES (:now, :node_id, :val_type, :val, :val_as_string) " +
+                "VALUES (?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "`UPDATED_AT` = :now";
+                "`UPDATED_AT` = ?";
 
         entities.forEach(entity -> {
-            Map<String, Object> paramMap = Maps.newHashMap();
-            paramMap.put("now", Date.from(Instant.now()));
-            paramMap.put("node_id", entity.getNodeId());
-            paramMap.put("val_type", entity.getType());
-
-            // TODO: if val is "null" it throws an exception
-            // even as "VAL" is declared "nullable" -> Investigate!
-            paramMap.put("val", entity.getValue()
-                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("val_as_string", entity.getValueAsString().orElse(null));
-
-            jdbcTemplate.update(sql, paramMap);
+            jdbcTemplate.getJdbcOperations().update(con -> {
+                PreparedStatement ps = con.prepareStatement(sql, new String[]{});
+                Timestamp now = Timestamp.from(Instant.now());
+                ps.setTimestamp(1, now);
+                ps.setLong(2, entity.getNodeId());
+                ps.setString(3, entity.getType());
+                ps.setObject(4, entity.getValue()
+                        .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setString(5, entity.getValueAsString().orElse(null));
+                ps.setTimestamp(6, now);
+                return ps;
+            });
         });
     }
 

@@ -2,7 +2,6 @@ package org.amv.trafficsoft.xfcd.consumer.mysql;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdNodeEntity;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftXfcdNodeJdbcDao;
@@ -12,11 +11,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,8 +32,12 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
     }
 
     @Override
-    public void saveAll(List<TrafficsoftXfcdNodeEntity> nodes) throws DataAccessException {
-        requireNonNull(nodes);
+    public void saveAll(List<TrafficsoftXfcdNodeEntity> entities) throws DataAccessException {
+        requireNonNull(entities);
+
+        if (entities.isEmpty()) {
+            return;
+        }
 
         String sql = "INSERT INTO `amv_trafficsoft_xfcd_node` " +
                 "(`CREATED_AT` ," +
@@ -52,52 +55,51 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
                 "`VDOP`," +
                 "`BPC_ID`," +
                 "`IMXFCD_D_ID`) " +
-                "VALUES (:now, :id, :altitude, :heading, :hdop, :latdeg, :londeg, :ts," +
-                " :satcnt, :speed, :tripId, :vehicleId, :vdop, :bpcId, :deliveryId) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "`UPDATED_AT` = :now";
-
-
-        nodes.forEach(node -> {
-            final Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(15);
-            paramMap.put("now", Date.from(Instant.now()));
-            paramMap.put("id", node.getId());
-            paramMap.put("deliveryId", node.getDeliveryId());
-            paramMap.put("vehicleId", node.getVehicleId());
-            paramMap.put("bpcId", node.getBusinessPartnerId());
-            paramMap.put("tripId", node.getTripId());
-            paramMap.put("altitude", node.getAltitude()
-                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("heading", node.getHeading()
-                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("hdop", node.getHorizontalDilution()
-                    .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("latdeg", node.getLatitude()
-                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("londeg", node.getLongitude()
-                    .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("ts", node.getTimestamp()
-                    .orElseGet(Instant::now)
-                    .toEpochMilli());
-            paramMap.put("satcnt", node.getSatelliteCount());
-            paramMap.put("speed", node.getSpeed()
-                    .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-            paramMap.put("vdop", node.getVerticalDilution()
-                    .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
-                    .orElse(BigDecimal.valueOf(-1L)));
-
-            jdbcTemplate.update(sql, paramMap);
+                "`UPDATED_AT` = ?";
+        entities.forEach(entity -> {
+            jdbcTemplate.getJdbcOperations().update(con -> {
+                PreparedStatement ps = con.prepareStatement(sql, new String[]{});
+                Timestamp now = Timestamp.from(Instant.now());
+                ps.setTimestamp(1, now);
+                ps.setLong(2, entity.getId());
+                ps.setObject(3, entity.getAltitude()
+                        .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setObject(4, entity.getHeading()
+                        .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setObject(5, entity.getHorizontalDilution()
+                        .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setObject(6, entity.getLatitude()
+                        .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setObject(7, entity.getLongitude()
+                        .map(val -> val.setScale(6, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setLong(8, entity.getTimestamp()
+                        .toEpochMilli());
+                ps.setObject(9, entity.getSatelliteCount().orElse(null));
+                ps.setObject(10, entity.getSpeed()
+                        .map(val -> val.setScale(2, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setLong(11, entity.getTripId());
+                ps.setLong(12, entity.getVehicleId());
+                ps.setObject(13, entity.getVerticalDilution()
+                        .map(val -> val.setScale(1, BigDecimal.ROUND_HALF_UP))
+                        .orElse(null));
+                ps.setLong(14, entity.getBusinessPartnerId());
+                ps.setLong(15, entity.getDeliveryId());
+                ps.setTimestamp(16, now);
+                return ps;
+            });
         });
     }
 
     @Override
-    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(int bpcId, long deliveryId) {
+    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryId(long bpcId, long deliveryId) {
         String sql = "SELECT n.`ID`, n.`IMXFCD_D_ID`, " +
                 "n.`BPC_ID`,  n.`V_ID`, n.`TRIPID`, n.`TS`, " +
                 "n.`LONDEG`, n.`LATDEG`, n.`SPEED`, n.`HEADING`, " +
@@ -116,7 +118,7 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
     }
 
     @Override
-    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(int bpcId, List<Long> deliveryIds) {
+    public List<TrafficsoftXfcdNodeEntity> findByContractIdAndDeliveryIds(long bpcId, List<Long> deliveryIds) {
         requireNonNull(deliveryIds, "`deliveryIds` must not be null");
 
         if (deliveryIds.isEmpty()) {

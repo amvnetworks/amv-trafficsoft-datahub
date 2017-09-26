@@ -43,7 +43,7 @@ public class TrafficsoftXfcdStateSqliteDaoImpl implements TrafficsoftXfcdStateJd
                 "VALUES (:createdAt, :nodeId, :code, :value)";
 
         entities.forEach(entity -> {
-            Map<String, Object> paramMap = Maps.newHashMap();
+            Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(4);
             paramMap.put("createdAt", Timestamp.from(Instant.now()));
             paramMap.put("nodeId", entity.getNodeId());
             paramMap.put("code", entity.getCode());
