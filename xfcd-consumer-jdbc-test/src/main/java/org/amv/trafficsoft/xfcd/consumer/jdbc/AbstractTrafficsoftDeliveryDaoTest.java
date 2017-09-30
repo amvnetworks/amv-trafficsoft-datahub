@@ -15,13 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.LongStream;
 
-import static java.util.stream.Collectors.toList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -77,7 +76,7 @@ public abstract class AbstractTrafficsoftDeliveryDaoTest {
                 .add(15532L)
                 .build();
         List<Long> nonExistingIds = LongStream.range(-10, 0).boxed()
-                .collect(toList());
+                .collect(toImmutableList());
 
         ImmutableList<Long> ids = ImmutableList.<Long>builder()
                 .addAll(nonExistingIds)
@@ -91,7 +90,7 @@ public abstract class AbstractTrafficsoftDeliveryDaoTest {
 
         List<Long> fetchedDeliveryIds = fetchedDeliveries.stream()
                 .map(TrafficsoftDeliveryEntity::getId)
-                .collect(toList());
+                .collect(toImmutableList());
         assertThat(fetchedDeliveryIds.containsAll(anyExistingIds), is(true));
     }
 

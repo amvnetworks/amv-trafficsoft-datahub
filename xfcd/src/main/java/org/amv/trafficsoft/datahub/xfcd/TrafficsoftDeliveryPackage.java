@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 @JsonDeserialize(as = TrafficsoftDeliveryPackageImpl.class)
 public interface TrafficsoftDeliveryPackage {
     long getContractId();
@@ -22,7 +24,7 @@ public interface TrafficsoftDeliveryPackage {
         return Optional.ofNullable(getDeliveries())
                 .orElse(Collections.emptyList()).stream()
                 .map(DeliveryRestDto::getDeliveryId)
-                .collect(Collectors.toList());
+                .collect(toImmutableList());
     }
 
     @JsonIgnore

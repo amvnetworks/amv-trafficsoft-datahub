@@ -23,8 +23,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -76,7 +76,7 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
 
         final List<Long> deliveryIds = deliveries.stream()
                 .map(DeliveryRestDto::getDeliveryId)
-                .collect(Collectors.toList());
+                .collect(toImmutableList());
 
         List<TrafficsoftDeliveryEntity> fromDb = deliveryDao().findByIds(deliveryIds);
 
@@ -84,7 +84,7 @@ public abstract class AbstractTrafficsoftDeliveryPackageDaoTest {
 
         final List<Long> deliveryIdsFromDb = deliveries.stream()
                 .map(DeliveryRestDto::getDeliveryId)
-                .collect(Collectors.toList());
+                .collect(toImmutableList());
 
         assertThat(deliveryIdsFromDb, is(equalTo(deliveryIds)));
     }
