@@ -10,8 +10,6 @@ import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -78,6 +76,7 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
 
         xfcdClient.confirmDeliveries(contractId, ImmutableList.copyOf(deliveryIds))
                 .toObservable()
+                .retry(3)
                 .map(foo -> confirmableDeliveryEvent)
                 .map(ConfirmableDeliveryEvent::getDeliveryPackage)
                 .map(deliveryPackage -> ConfirmedDeliveryEvent.builder()
