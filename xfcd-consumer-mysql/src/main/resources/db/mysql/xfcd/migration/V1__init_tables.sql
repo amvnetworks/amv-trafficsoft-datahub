@@ -75,6 +75,7 @@ create table if not exists `amv_trafficsoft_xfcd_latest_node` (
 create table if not exists `amv_trafficsoft_xfcd_latest_state` (
     `CREATED_AT` datetime not null,
     `UPDATED_AT` datetime null,
+    `TS` bigint not null,
     `V_ID` bigint not null,
     `BPC_ID` bigint not null,
     `CD` varchar(10) not null,
@@ -87,6 +88,7 @@ create table if not exists `amv_trafficsoft_xfcd_latest_state` (
 create table if not exists `amv_trafficsoft_xfcd_latest_xfcd` (
     `CREATED_AT` datetime not null,
     `UPDATED_AT` datetime null,
+    `TS` bigint not null,
     `V_ID` bigint not null,
     `BPC_ID` bigint not null,
     `TYPE` varchar(10) not null,
