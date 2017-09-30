@@ -1,16 +1,12 @@
-#spring.profiles.active: production
+spring.profiles.active: production
 
-app.name: trafficsoft-delivery-sqlite-consumer-test
-app.description: a openmrc consumer test
-
-management.context-path: /actuator
+app.name: trafficsoft-delivery-mysql-consumer-test
+app.description: trafficsoft datahub delivery mysql consumer integration test
 
 # LOGGING
-logging.path: ./var/log
 logging.file: application.log
 logging.config: classpath:logback.xml
 logging.level.org.springframework: WARN
-
 
 #amv.trafficsoft.api:
 #  rest:

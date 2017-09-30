@@ -12,7 +12,7 @@ amv.trafficsoft.datahub.xfcd:
 
 amv.trafficsoft.xfcd.consumer.jdbc:
   enabled: true
-  jdbcUrl: jdbc:sqlite:~trafficsoft-datahub-example-app-IT.db
+  jdbcUrl: jdbc:sqlite:build/tmp/~trafficsoft-datahub-example-app-IT.db
   driverClassName: org.sqlite.JDBC
   schemaMigrationEnabled: true
   flywayScriptsLocation: db/sqlite/xfcd/migration

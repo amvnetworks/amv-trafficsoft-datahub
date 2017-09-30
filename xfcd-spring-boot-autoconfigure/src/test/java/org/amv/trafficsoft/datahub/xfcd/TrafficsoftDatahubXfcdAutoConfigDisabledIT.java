@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 @SpringBootTest(classes = {
         TrafficsoftDatahubXfcdAutoConfigDisabledIT.TestApplictaion.class,
 })
-@TestPropertySource(locations="classpath:application-it-disabled.properties")
+@TestPropertySource(locations = "classpath:application-it-disabled.properties")
 public class TrafficsoftDatahubXfcdAutoConfigDisabledIT {
     @SpringBootApplication
     @Import(TrafficsoftDatahubXfcdAutoConfig.class)
@@ -62,11 +62,11 @@ public class TrafficsoftDatahubXfcdAutoConfigDisabledIT {
         assertThat(datahubXfcdProperties, is(notNullValue()));
     }
 
-    @Test(expected = NoSuchBeanDefinitionException.class)
-    public void xfcdEventsBeanDoesNotExist() throws Exception {
+    @Test
+    public void xfcdEventsBeanDoesExist() throws Exception {
         final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);
 
-        Assert.fail("Should have thrown exception");
+        assertThat(xfcdEvents, is(notNullValue()));
     }
 
     @Test(expected = NoSuchBeanDefinitionException.class)

@@ -52,6 +52,12 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
 
     }
 
+    /**
+     * In case the xfcd datahub module is disabled (e.g. during development)
+     * a bean of XfcdEvents must be in the context for the application
+     * to start up normally as other implementations may depend on it.
+     * (Even if no data is published.)
+     */
     @Test
     public void xfcdEventsBeanExists() throws Exception {
         final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);

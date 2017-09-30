@@ -15,7 +15,7 @@ create table if not exists `amv_trafficsoft_xfcd_node` (
     `TRIPID` bigint not null,
     `V_ID` bigint null,
     `TS` bigint not null,
-    `SATCNT` tinyint unsigned null,
+    `SATCNT` integer null,
     `LATDEG` decimal(10,6) null,
     `LONDEG` decimal(10,6) null,
     `HDOP` decimal(10,1) null,

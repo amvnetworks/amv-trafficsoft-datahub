@@ -1,9 +1,9 @@
-#spring.profiles.active: production
+spring.profiles.active: production
+
+debug: true
 
 app.name: trafficsoft-delivery-sqlite-consumer-test
-app.description: a openmrc consumer test
-
-management.context-path: /actuator
+app.description: trafficsoft datahub delivery sqlite consumer integration test
 
 # LOGGING
 logging.path: ./var/log
