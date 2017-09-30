@@ -16,7 +16,7 @@ public class TrafficsoftXfcdNodeRowMapper implements RowMapper<TrafficsoftXfcdNo
         long id = rs.getLong("ID");
         long bpcId = rs.getLong("BPC_ID");
         long deliveryId = rs.getLong("IMXFCD_D_ID");
-        long vehicleId = rs.getLong("V_ID");
+        long vehicleId = MoreResultSets.getLong(rs, "V_ID").orElse(0L);
         long tripId = rs.getLong("TRIPID");
         Instant timestamp = Instant.ofEpochMilli(rs.getLong("TS"));
         BigDecimal longitudeOrNull = rs.getBigDecimal("LONDEG");
