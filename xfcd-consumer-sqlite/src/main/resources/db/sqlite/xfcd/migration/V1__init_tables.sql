@@ -78,7 +78,9 @@ create table if not exists `amv_trafficsoft_xfcd_latest_state` (
     `V_ID` bigint not null,
     `BPC_ID` bigint not null,
     `CD` varchar(10) not null,
-    `VAL` longtext null,
+    `VAL` varchar(1023) null,
+    `LATDEG` decimal(10,6) null,
+    `LONDEG` decimal(10,6) null,
     primary key (`V_ID`, `BPC_ID`, `CD`)
 );
 
@@ -90,5 +92,7 @@ create table if not exists `amv_trafficsoft_xfcd_latest_xfcd` (
     `TYPE` varchar(10) not null,
     `VAL` decimal(14,6) null,
     `VALSTR` varchar(255) null,
+    `LATDEG` decimal(10,6) null,
+    `LONDEG` decimal(10,6) null,
     primary key (`V_ID`, `BPC_ID`, `TYPE`)
 );
