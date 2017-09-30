@@ -91,7 +91,7 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
 
         if (deliveryPackage.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("Ignore empty deliveries for contract {}", deliveryPackage.getContractId());
+                log.info("Ignore empty deliveries for contract {}", deliveryPackage.getContractId());
             }
             return;
         }
