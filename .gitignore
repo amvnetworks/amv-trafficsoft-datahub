@@ -1,8 +1,12 @@
-.attach_pid*
+app.pid
+app.port
+app-management.port
 application-dev.yml
 application-dev-*.yml
+.attach_pid*
 *.db
 *.db.wal.*
+/classes/
 
 # Created by https://www.gitignore.io/api/java,gradle,intellij
 

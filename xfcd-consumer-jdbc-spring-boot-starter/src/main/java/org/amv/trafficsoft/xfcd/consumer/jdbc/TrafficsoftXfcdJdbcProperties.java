@@ -31,7 +31,7 @@ public class TrafficsoftXfcdJdbcProperties {
 
     @Data
     public static class PoolProperties {
-        private long initializationFailTimeout = 1;
+        private long initializationFailTimeoutInMs = 1;
         private int maxPoolSize = 25;
     }
 }

@@ -7,6 +7,7 @@ import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestPropertie
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,22 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         return new TrafficsoftDatahubXfcdPropertiesValidator();
     }
 
+    /**
+     * In case the xfcd datahub module is disabled (e.g. during development)
+     * a bean of XfcdEvents must be in the context for the application
+     * to start up normally as other beans may depend on it.
+     *
+     * However, no
+     *
+     * @param vertx A vertx instance
+     * @return an instance of XfcdEvents
+     */
+    @Bean
+    @ConditionalOnMissingBean(XfcdEvents.class)
+    public XfcdEvents xfcdEvents(Vertx vertx) {
+        return new XfcdEvents(vertx);
+    }
+
     @Configuration
     @ConditionalOnProperty("amv.trafficsoft.datahub.xfcd.enabled")
     public class TrafficsoftDatahubXfcdConfig {
@@ -44,11 +61,6 @@ public class TrafficsoftDatahubXfcdAutoConfig {
                                             TrafficsoftApiRestProperties apiRestProperties) {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.apiRestProperties = requireNonNull(apiRestProperties);
-        }
-
-        @Bean
-        public XfcdEvents xfcdEvents(Vertx vertx) {
-            return new XfcdEvents(vertx);
         }
 
         @Bean

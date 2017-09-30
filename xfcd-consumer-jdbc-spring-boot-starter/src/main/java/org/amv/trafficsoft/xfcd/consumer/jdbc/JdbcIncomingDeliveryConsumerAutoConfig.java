@@ -72,7 +72,7 @@ public class JdbcIncomingDeliveryConsumerAutoConfig {
             }
 
             config.setMaximumPoolSize(properties.getPool().getMaxPoolSize());
-            config.setInitializationFailTimeout(properties.getPool().getInitializationFailTimeout());
+            config.setInitializationFailTimeout(properties.getPool().getInitializationFailTimeoutInMs());
 
             Map<String, String> dataSource = properties.getDataSource();
             Properties dataSourceProperties = new Properties();

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- logging everything -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./log/application.log</file>
+        <!-- file definition -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>./log/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!-- pattern -->
+        <encoder>
+            <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS",CET} %-5level [%logger{0}]: %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC-FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- root element -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC-FILE"/>
+    </root>
+
+    <logger name="org.amv.trafficsoft" level="INFO"/>
+
+    <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.IncomingDeliveryConsumerVerticle" level="DEBUG"/>
+    <logger name="org.amv.trafficsoft.datahub.xfcd.DeliveryConfirmationVerticle" level="DEBUG"/>
+
+</included>
