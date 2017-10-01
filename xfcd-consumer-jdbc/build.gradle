@@ -7,7 +7,7 @@ repositories {
 dependencies {
     compile project(':xfcd-consumer-core')
 
-    compile('com.zaxxer:HikariCP:2.6.3')
+    compile('com.zaxxer:HikariCP:2.7.1')
     compile('org.flywaydb:flyway-core:4.2.0')
     compile('com.h2database:h2:1.4.196')
 
