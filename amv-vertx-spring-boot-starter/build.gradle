@@ -1,9 +1,5 @@
 description = 'Please provide a meaningful description..'
 
-repositories {
-    jcenter()
-}
-
 dependencies {
     compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-rx-java:${vertxVersion}", optional
@@ -12,9 +8,9 @@ dependencies {
     compile "io.vertx:vertx-maven-service-factory:${vertxVersion}", optional
     compile "io.vertx:vertx-health-check:${vertxVersion}", optional
 
-    compile  "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}", optional
-    compile  "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}", optional
-    compile  "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}", optional
+    compile "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}", optional
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}", optional
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}", optional
 
     compile("org.springframework.boot:spring-boot-starter:${springBootVersion}") {
         exclude module: 'spring-boot-starter-logging'

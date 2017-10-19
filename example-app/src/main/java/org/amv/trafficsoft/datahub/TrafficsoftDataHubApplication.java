@@ -2,7 +2,6 @@ package org.amv.trafficsoft.datahub;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.system.ApplicationPidFileWriter;
@@ -16,7 +15,7 @@ public class TrafficsoftDataHubApplication {
         log.info("Starting {} ...", TrafficsoftDataHubApplication.class.getSimpleName());
 
         new SpringApplicationBuilder(TrafficsoftDataHubApplication.class)
-                .web(WebApplicationType.SERVLET)
+                .web(true)
                 .bannerMode(Banner.Mode.CONSOLE)
                 .listeners(applicationPidFileWriter(), embeddedServerPortFileWriter())
                 .run(args);

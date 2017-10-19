@@ -1,18 +1,14 @@
 description = 'Please provide a meaningful description..'
 
-repositories {
-    jcenter()
-}
-
 dependencies {
     compile project(':xfcd-consumer-core')
 
-    compile('com.zaxxer:HikariCP:2.7.1')
+    compile('com.zaxxer:HikariCP:2.7.2')
     compile('org.flywaydb:flyway-core:4.2.0')
-    compile('com.h2database:h2:1.4.196')
 
     compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}") {
         exclude module: 'spring-boot-starter-logging'
+        exclude module: 'tomcat-jdbc'
     }
 
     testCompile 'com.h2database:h2:1.4.196'

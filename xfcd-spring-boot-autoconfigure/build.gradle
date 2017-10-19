@@ -1,9 +1,5 @@
 description = 'Please provide a meaningful description..'
 
-repositories {
-    jcenter()
-}
-
 dependencies {
     compile project(':xfcd')
     testCompile "io.vertx:vertx-unit:${vertxVersion}"

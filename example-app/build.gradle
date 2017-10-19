@@ -2,8 +2,6 @@ description = 'Please provide a meaningful description..'
 
 buildscript {
     repositories {
-        maven { url 'https://repo.spring.io/libs-milestone' }
-        maven { url 'https://repo.spring.io/libs-snapshot' }
         jcenter()
     }
     dependencies {
@@ -12,10 +10,20 @@ buildscript {
 }
 
 apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
-repositories {
-    jcenter()
+configurations.all {
+    resolutionStrategy {
+        preferProjectModules()
+        failOnVersionConflict()
+
+        dependencySubstitution {
+            // necessary as spring-boot plugin pulls in old versions
+            // see https://discuss.gradle.org/t/excluded-dependence-comes-back-when-spring-boot-plugin-is-applied/17945/2
+            substitute module('com.zaxxer:HikariCP') with module('com.zaxxer:HikariCP:2.7.2')
+            substitute module('org.flywaydb:flyway-core') with module('org.flywaydb:flyway-core:4.2.0')
+            substitute module('org.xerial:sqlite-jdbc') with module('org.xerial:sqlite-jdbc:3.19.3')
+        }
+    }
 }
 
 dependencies {
@@ -27,25 +35,21 @@ dependencies {
     compile "io.vertx:vertx-health-check:${vertxVersion}"
 
     compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-json'
-    }
-    compile("org.springframework.boot:spring-boot-starter-json:${springBootVersion}") {
-        // kotlin produces a NoClassDefFoundError at the moment (16.08.17)
-        exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-kotlin'
-    }
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
 }
 
-bootJar {
-    mainClass = 'org.amv.trafficsoft.datahub.TrafficsoftDataHubApplication'
-    launchScript {
-        included = true
-    }
-}
 
 bootRun {
-    //enables commandline args for bootRun
     systemProperties = project.gradle.startParameter.systemPropertiesArgs
+    addResources = true
 }
 
+bootRepackage {
+    executable = true
+    mainClass = 'org.amv.trafficsoft.datahub.TrafficsoftDataHubApplication'
+}
+
+springBoot {
+    executable = true
+}

@@ -29,3 +29,5 @@ amv.trafficsoft.xfcd.consumer.jdbc:
   schemaMigrationEnabled: true
   flywayScriptsLocation: 'db/sqlite/xfcd/migration'
   sendConfirmationEvents: true
+  pool:
+    max-pool-size: 1

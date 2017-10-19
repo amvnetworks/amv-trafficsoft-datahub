@@ -1,9 +1,5 @@
 description = 'Please provide a meaningful description..'
 
-repositories {
-    jcenter()
-}
-
 sourceSets {
     main {
         resources {
