@@ -91,8 +91,6 @@ subprojects {
     apply plugin: 'jacoco'
 //    apply plugin: 'checkstyle'
 
-    String nexusPwd = credentials.nexuspwd
-
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
