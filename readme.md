@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/amvnetworks/amv-trafficsoft-datahub.svg?branch=master)](https://travis-ci.org/amvnetworks/amv-trafficsoft-datahub)
+[![License](https://img.shields.io/github/license/amvnetworks/amv-trafficsoft-datahub.svg?maxAge=2592000)](https://github.com/amvnetworks/amv-trafficsoft-datahub/blob/master/LICENSE)
 
 amv-trafficsoft-datahub
 ========
