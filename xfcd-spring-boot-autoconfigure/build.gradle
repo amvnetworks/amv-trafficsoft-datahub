@@ -1,4 +1,4 @@
-description = 'Please provide a meaningful description..'
+description = 'A module containing spring-boot autoconfiguration classes for handling xfcd data deliveries'
 
 dependencies {
     compile project(':xfcd')

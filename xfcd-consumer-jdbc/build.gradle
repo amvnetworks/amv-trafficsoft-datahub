@@ -1,4 +1,4 @@
-description = 'Please provide a meaningful description..'
+description = 'A module containing core classes for persisting xfcd data deliveries via jdbc'
 
 dependencies {
     compile project(':xfcd-consumer-core')

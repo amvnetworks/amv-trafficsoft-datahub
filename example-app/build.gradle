@@ -1,4 +1,4 @@
-description = 'Please provide a meaningful description..'
+description = 'A demo application using the trafficsoft datahub module'
 
 buildscript {
     repositories {

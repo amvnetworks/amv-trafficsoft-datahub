@@ -31,7 +31,7 @@ plugins {
 //    id 'checkstyle'
 }
 
-description = 'Please provide a meaningful description'
+description = 'Parent package for handling AMV Trafficsoft xfcd data deliveries'
 
 group = 'org.amv.trafficsoft.datahub'
 

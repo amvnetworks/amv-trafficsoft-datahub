@@ -1,4 +1,4 @@
-description = 'Please provide a meaningful description..'
+description = 'A module for handling trafficsoft xfcd data deliveries'
 
 dependencies {
     compile "io.vertx:vertx-rx-java:${vertxVersion}"

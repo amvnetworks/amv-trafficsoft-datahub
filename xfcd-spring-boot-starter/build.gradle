@@ -1,4 +1,4 @@
-description = 'Starter for spring based applications handling AMV Trafficsoft xfcd data'
+description = 'Starter for spring based applications handling xfcd data deliveries'
 
 dependencies {
     compile project(':xfcd-spring-boot-autoconfigure')
