@@ -4,6 +4,7 @@ dependencies {
     compile project(':xfcd-consumer-jdbc')
 
     testCompile project(':xfcd-spring-boot-autoconfigure')
+    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testCompile 'org.xerial:sqlite-jdbc:3.19.3'
 }

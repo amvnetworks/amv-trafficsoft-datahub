@@ -3,4 +3,5 @@ description = 'Please provide a meaningful description..'
 dependencies {
     compile project(':xfcd')
     testCompile "io.vertx:vertx-unit:${vertxVersion}"
+    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 }

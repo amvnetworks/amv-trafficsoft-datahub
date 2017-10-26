@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.amv.spring.vertx.VertxRxAutoConfig,\
-org.amv.spring.vertx.VertxAutoConfig,\
-org.amv.spring.vertx.VertxHealthCheckAutoConfig,\
-org.amv.spring.vertx.VertxMetricsAutoConfig

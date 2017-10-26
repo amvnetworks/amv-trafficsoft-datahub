@@ -28,11 +28,6 @@ configurations.all {
 
 dependencies {
     compile project(':xfcd-spring-boot-starter')
-    compile project(':amv-vertx-spring-boot-starter')
-
-    compile "io.vertx:vertx-dropwizard-metrics:${vertxVersion}"
-    compile "io.vertx:vertx-maven-service-factory:${vertxVersion}"
-    compile "io.vertx:vertx-health-check:${vertxVersion}"
 
     compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

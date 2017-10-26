@@ -16,6 +16,7 @@ dependencies {
     compile 'org.xerial:sqlite-jdbc:3.19.3', optional
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testCompile 'org.xerial:sqlite-jdbc:3.19.3'
 }

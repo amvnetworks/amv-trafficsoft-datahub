@@ -1,11 +1,11 @@
 description = 'Starter for spring based applications handling AMV Trafficsoft xfcd data'
 
 dependencies {
-    compile project(':amv-vertx-spring-boot-starter')
     compile project(':xfcd-spring-boot-autoconfigure')
 
     compile project(':xfcd-consumer-sqlite-spring-boot-starter')
 
+    compile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
     compile "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
 
 }

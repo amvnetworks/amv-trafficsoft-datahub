@@ -16,6 +16,7 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.8', optional
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testCompile 'mysql:mysql-connector-java:5.1.8'
     testCompile 'com.wix:wix-embedded-mysql:2.2.9'

@@ -11,6 +11,5 @@ include 'xfcd-consumer-sqlite'
 include 'xfcd-consumer-sqlite-spring-boot-starter'
 include 'xfcd-spring-boot-autoconfigure'
 include 'xfcd-spring-boot-starter'
-include 'amv-vertx-spring-boot-starter'
 include 'example-app'
 

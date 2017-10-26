@@ -1,9 +1,6 @@
 description = 'Please provide a meaningful description..'
 
 dependencies {
-    compile project(':amv-vertx-spring-boot-starter')
-
-    compile "io.vertx:vertx-core:${vertxVersion}"
     compile "io.vertx:vertx-rx-java:${vertxVersion}"
     compile "io.vertx:vertx-reactive-streams:${vertxVersion}"
 
