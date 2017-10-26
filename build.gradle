@@ -26,6 +26,7 @@ plugins {
     id 'nebula.project' version '3.4.0'
     id 'nebula.optional-base' version '3.2.0'
     id 'com.github.ben-manes.versions' version '0.14.0'
+    id 'com.jfrog.bintray' version '1.7.3'
     id 'findbugs'
 //    id 'checkstyle'
 }
@@ -89,6 +90,7 @@ subprojects {
     apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'findbugs'
     apply plugin: 'jacoco'
+    apply plugin: 'com.jfrog.bintray'
 //    apply plugin: 'checkstyle'
 
     sourceCompatibility = 1.8
@@ -223,24 +225,28 @@ subprojects {
         finalizedBy jacocoTestReport
     }
 
-    // ---- upload into Nexus
-    uploadArchives {
-        String username = project.hasProperty('nexusUsername') ? project.nexusUsername : 'Add parameter -PnexusUsername'
-        String url = project.hasProperty('nexusUrl') ? project.nexusUrl : 'Add parameter -PnexusUrl'
-        String password = credentials.nexuspwd ?: 'Add encrypted password to your gradle.properties file'
+    if (project.hasProperty('releaseToBintray')) {
+        if (rootProject.version.toString().contains('SNAPSHOT')) {
+            throw new GradleException('-PreleaseToBintray param cannot be used with SNAPSHOT versions')
+        }
 
-        repositories {
-            mavenDeployer {
-                repository(url: "${url}/content/repositories/releases") {
-                    authentication(userName: username, password: password)
+        bintray {
+            user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+            key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+            configurations = ['archives']
+            pkg {
+                repo = 'amv-trafficsoft-datahub'
+                name = project.name
+                userOrg = user
+                licenses = ['Apache-2.0']
+                vcsUrl = 'https://github.com/amvnetworks/amv-trafficsoft-datahub.git'
+                labels = ['amv', 'vertx', 'spring']
+                publicDownloadNumbers = false
+                version {
+                    name = rootProject.version
+                    desc = project.description
+                    vcsTag = rootProject.version
                 }
-                snapshotRepository(url: "${url}/content/repositories/snapshots") {
-                    authentication(userName: username, password: password)
-                }
-
-                pom.version = project.version
-                pom.artifactId = project.name
-                pom.groupId = project.group
             }
         }
     }
