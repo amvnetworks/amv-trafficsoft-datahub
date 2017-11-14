@@ -1,6 +1,5 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDto;
@@ -12,12 +11,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
-@Builder
 public class TrafficsoftDeliveryPublisherImpl implements TrafficsoftDeliveryPublisher {
 
     private final XfcdClient xfcdClient;
     private final long contractId;
+
+    public TrafficsoftDeliveryPublisherImpl(XfcdClient xfcdClient, long contractId) {
+        this.xfcdClient = requireNonNull(xfcdClient);
+        this.contractId = contractId;
+    }
 
     @Override
     public void subscribe(Subscriber<? super TrafficsoftDeliveryPackage> subscriber) {

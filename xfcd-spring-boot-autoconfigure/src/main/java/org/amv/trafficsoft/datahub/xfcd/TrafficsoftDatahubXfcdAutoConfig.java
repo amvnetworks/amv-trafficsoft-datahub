@@ -2,6 +2,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
+import org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle.DeliveryRetrievalConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
@@ -38,8 +39,6 @@ public class TrafficsoftDatahubXfcdAutoConfig {
      * a bean of XfcdEvents must be in the context for the application
      * to start up normally as other beans may depend on it.
      *
-     * However, no
-     *
      * @param vertx A vertx instance
      * @return an instance of XfcdEvents
      */
@@ -64,34 +63,15 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         }
 
         @Bean
-        public XfcdEventLoggingVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
-            return XfcdEventLoggingVerticle.builder()
-                    .xfcdEvents(xfcdEvents)
-                    .build();
-        }
-
-        @Bean
-        public XfcdEventMetricsVerticle xfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
-            return XfcdEventMetricsVerticle.builder()
-                    .xfcdEvents(xfcdEvents)
-                    .build();
-        }
-
-        @Bean
-        public DeliveryConfirmationVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
-            return DeliveryConfirmationVerticle.builder()
-                    .xfcdEvents(xfcdEvents)
-                    .contractId(apiRestProperties.getContractId())
-                    .xfcdClient(xfcdClient)
-                    .build();
-        }
-
-        @Bean
         public DeliveryRetrievalVerticle deliveryRetrievalVerticle(XfcdEvents xfcdEvents,
-                                                                   TrafficsoftDeliveryPublisher trafficsoftDeliveryPublisher) {
-            return DeliveryRetrievalVerticle.builder()
-                    .xfcdEvents(xfcdEvents)
-                    .publisher(trafficsoftDeliveryPublisher)
+                                                                   TrafficsoftDeliveryPublisher trafficsoftDeliveryPublisher,
+                                                                   DeliveryRetrievalConfig deliveryRetrievalConfig) {
+            return new DeliveryRetrievalVerticle(xfcdEvents, trafficsoftDeliveryPublisher, deliveryRetrievalConfig);
+        }
+
+        @Bean
+        public DeliveryRetrievalConfig deliveryRetrievalConfig() {
+            return DeliveryRetrievalConfig.builder()
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
                     .maxAmountOfNodesPerDelivery(datahubXfcdProperties.getMaxAmountOfNodesPerDelivery())
                     .refetchImmediatelyOnDeliveryWithMaxAmountOfNodes(datahubXfcdProperties.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes())
@@ -100,10 +80,22 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Bean
         public TrafficsoftDeliveryPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
-            return TrafficsoftDeliveryPublisherImpl.builder()
-                    .xfcdClient(xfcdClient)
-                    .contractId(apiRestProperties.getContractId())
-                    .build();
+            return new TrafficsoftDeliveryPublisherImpl(xfcdClient, apiRestProperties.getContractId());
+        }
+
+        @Bean
+        public DeliveryConfirmationVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
+            return new DeliveryConfirmationVerticle(xfcdEvents, xfcdClient, apiRestProperties.getContractId());
+        }
+
+        @Bean
+        public XfcdEventLoggingVerticle loggingDeliveriesVerticle(XfcdEvents xfcdEvents) {
+            return new XfcdEventLoggingVerticle(xfcdEvents);
+        }
+
+        @Bean
+        public XfcdEventMetricsVerticle xfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
+            return new XfcdEventMetricsVerticle(xfcdEvents);
         }
     }
 }

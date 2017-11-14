@@ -2,7 +2,6 @@ package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.collect.ImmutableList;
 import io.vertx.rxjava.core.AbstractVerticle;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryEvent;
@@ -33,10 +32,9 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
 
     private BaseSubscriber<ConfirmableDeliveryEvent> subscriber;
 
-    @Builder
-    DeliveryConfirmationVerticle(XfcdEvents xfcdEvents,
-                                 XfcdClient xfcdClient,
-                                 long contractId) {
+    public DeliveryConfirmationVerticle(XfcdEvents xfcdEvents,
+                                        XfcdClient xfcdClient,
+                                        long contractId) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
         this.xfcdClient = requireNonNull(xfcdClient);
         this.contractId = contractId;

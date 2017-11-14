@@ -38,8 +38,7 @@ public class XfcdEventMetricsVerticle extends AbstractVerticle {
 
     private final List<BaseSubscriber<?>> subscribers = Lists.newArrayList();
 
-    @Builder
-    XfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
+    public XfcdEventMetricsVerticle(XfcdEvents xfcdEvents) {
         this.xfcdEvents = requireNonNull(xfcdEvents);
     }
 
