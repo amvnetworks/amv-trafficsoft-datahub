@@ -1,0 +1,6 @@
+description = 'A module containing core classes for consuming xfcd data deliveries'
+
+dependencies {
+    compile project(':xfcd')
+    compile "io.vertx:vertx-web:${vertxVersion}"
+}

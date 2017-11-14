@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub;
+package org.amv.trafficsoft.datahub.example;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,5 @@
-description = 'A module containing core classes for consuming xfcd data deliveries'
+description = 'A websocket api for xfcd data deliveries'
 
 dependencies {
     compile project(':xfcd')
-
-    //compile "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 }

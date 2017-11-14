@@ -12,4 +12,5 @@ include 'xfcd-consumer-sqlite-spring-boot-starter'
 include 'xfcd-spring-boot-autoconfigure'
 include 'xfcd-spring-boot-starter'
 include 'example-app'
+include 'xfcd-api-websocket'
 

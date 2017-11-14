@@ -28,6 +28,7 @@ configurations.all {
 
 dependencies {
     compile project(':xfcd-spring-boot-starter')
+    compile project(':xfcd-api-websocket')
 
     compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -42,7 +43,7 @@ bootRun {
 
 bootRepackage {
     executable = true
-    mainClass = 'org.amv.trafficsoft.datahub.TrafficsoftDataHubApplication'
+    mainClass = 'org.amv.trafficsoft.datahub.example.TrafficsoftDataHubApplication'
 }
 
 springBoot {

@@ -1,4 +1,4 @@
-package org.amv.trafficsoft.datahub;
+package org.amv.trafficsoft.datahub.example.api;
 
 import io.vertx.core.json.Json;
 import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
