@@ -3,6 +3,7 @@ app.port
 app-management.port
 application-dev.yml
 application-dev-*.yml
+application-local-*.yml
 .attach_pid*
 *.db
 *.db.wal.*
