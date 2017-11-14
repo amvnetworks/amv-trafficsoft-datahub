@@ -8,7 +8,7 @@ amv-trafficsoft-datahub
 - make all optional attributes "nullable" in database structure
 
 # usage
-The [application.yml](src/main/resources/application.yml) acts as a 
+The [application.yml](example-app/src/main/resources/application.yml) acts as a
 template for your own configuration parameter.
 
 ## configuration
