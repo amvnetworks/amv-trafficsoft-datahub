@@ -26,15 +26,6 @@ public class WebSocketApiVerticle extends AbstractVerticle {
     public void start() {
         vertx.createHttpServer()
                 .requestHandler(req -> {
-                    if (req.uri().equals("/xfcd-latest-data.html")) {
-                        req.response().sendFile("xfcd-latest-data.html");
-                    }
-                    if (req.uri().equals("/xfcd-delivery-stream.html")) {
-                        req.response().sendFile("xfcd-delivery-stream.html");
-                    }
-                    if (req.uri().equals("/xfcd-latest-data.html")) {
-                        req.response().sendFile("xfcd-delivery-stream.html");
-                    }
                 })
                 .websocketHandler(webSocketHandler())
                 .listen(port);

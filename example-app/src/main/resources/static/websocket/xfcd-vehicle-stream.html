@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Web Socket Test</title>
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
             crossorigin="anonymous"></script>
@@ -15,7 +14,7 @@
 <script>
     var socket;
     if (window.WebSocket) {
-        socket = new WebSocket("ws://localhost:9001/xfcd/delivery/stream");
+        socket = new WebSocket("ws://localhost:9001/xfcd/vehicle/stream?vehicleId=1&vehicleId=3");
         socket.onmessage = function (event) {
             console.log("Received data from websocket: " + event.data);
 
@@ -58,3 +57,4 @@
 <div id="console"></div>
 </div>
 </body>
+</html>
