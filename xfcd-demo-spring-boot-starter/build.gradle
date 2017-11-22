@@ -1,0 +1,6 @@
+description = 'A showcase module containing tools for creating a demo environment'
+
+dependencies {
+    compile project(':xfcd-spring-boot-autoconfigure')
+    compile project(':xfcd-api-websocket')
+}

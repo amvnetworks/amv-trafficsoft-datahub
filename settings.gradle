@@ -13,4 +13,5 @@ include 'xfcd-spring-boot-autoconfigure'
 include 'xfcd-spring-boot-starter'
 include 'example-app'
 include 'xfcd-api-websocket'
+include 'xfcd-demo-spring-boot-starter'
 
