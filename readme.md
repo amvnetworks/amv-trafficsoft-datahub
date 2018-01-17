@@ -4,8 +4,9 @@
 amv-trafficsoft-datahub
 ========
 
-# todo
-- make all optional attributes "nullable" in database structure
+amv-trafficsoft-datahub is a replication module for XFCD data interacting with AMV TrafficSoft®.
+Please note that this software is considered experimental until v1.0.0 is reached.
+
 
 # usage
 The [application.yml](example-app/src/main/resources/application.yml) acts as a
