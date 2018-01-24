@@ -73,6 +73,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         public DeliveryRetrievalConfig deliveryRetrievalConfig() {
             return DeliveryRetrievalConfig.builder()
                     .intervalInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getFetchIntervalInSeconds()))
+                    .initialDelayInMs(TimeUnit.SECONDS.toMillis(datahubXfcdProperties.getInitialFetchDelayInSeconds()))
                     .maxAmountOfNodesPerDelivery(datahubXfcdProperties.getMaxAmountOfNodesPerDelivery())
                     .refetchImmediatelyOnDeliveryWithMaxAmountOfNodes(datahubXfcdProperties.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes())
                     .build();
