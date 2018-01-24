@@ -19,6 +19,7 @@ amv.trafficsoft.api.rest:
 amv.trafficsoft.datahub.xfcd:
   enabled: true
   fetch-interval-in-seconds: 120
+  initial-fetch-delay-in-seconds: 30
   max-amount-of-nodes-per-delivery: 5000
   refetch-immediately-on-delivery-with-max-amount-of-nodes: true
 
