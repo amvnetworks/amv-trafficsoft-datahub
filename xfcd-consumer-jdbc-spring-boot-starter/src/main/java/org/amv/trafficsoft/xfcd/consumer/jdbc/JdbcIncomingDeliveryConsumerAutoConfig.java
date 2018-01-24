@@ -34,6 +34,8 @@ public class JdbcIncomingDeliveryConsumerAutoConfig {
      * allows the bean to be created without having to instantiate the @Configuration class
      * <p>
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
+     *
+     * @return a validator for xfcd jdbc settings
      */
     @Bean
     public static TrafficsoftXfcdJdbcPropertiesValidator configurationPropertiesValidator() {
