@@ -7,6 +7,25 @@ amv-trafficsoft-datahub
 amv-trafficsoft-datahub is a replication module for XFCD data interacting with AMV TrafficSoft®.
 Please note that this software is considered experimental until v1.0.0 is reached.
 
+# install
+## gradle
+### repo
+```groovy
+repositories {
+    jcenter()
+    // ... or add bintray repo
+    maven {
+        url 'https://dl.bintray.com/amvnetworks/amv-trafficsoft-datahub'
+    }
+}
+
+// ...
+
+dependencies {
+    compile "org.amv.trafficsoft.datahub:xfcd-spring-boot-starter:${amvDatahubVersion}"
+}
+```
+
 # usage
 The [application.yml](example-app/src/main/resources/application.yml) acts as a
 template for your own configuration parameter.
