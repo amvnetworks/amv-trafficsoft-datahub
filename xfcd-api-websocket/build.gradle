@@ -1,4 +1,4 @@
-description = 'A module containing core classes for consuming xfcd data deliveries'
+description = 'A module for providing xfcd data via websocket'
 
 dependencies {
     compile project(':xfcd')

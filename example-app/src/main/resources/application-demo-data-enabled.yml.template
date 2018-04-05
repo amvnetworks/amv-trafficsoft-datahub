@@ -1,0 +1,26 @@
+
+debug: true
+
+server.port: 9000
+
+amv.trafficsoft.datahub.xfcd:
+  enabled: false
+
+demo.enabled: true
+
+demo.websocket:
+  enabled: true
+  port: 9001
+
+demo.mqtt.enabled: true
+
+amv.trafficsoft.datahub.mqtt:
+  serverId: 'datahub-demo'
+  server:
+    port: 19881
+    websocket-port: 19882
+    host: 0.0.0.0
+    allow-anonymous: false
+  user:
+    username: 'example'
+    password: '<REPLACE_WITH_YOUR_PASSWORD>'

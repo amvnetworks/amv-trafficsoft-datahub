@@ -1,0 +1,16 @@
+description = 'A module for providing xfcd data via mqtt'
+
+buildscript {
+    ext {
+        moquetteVersion = '0.10'
+        eclipsePahoVersion = '1.2.0'
+    }
+}
+
+dependencies {
+    compile project(':xfcd')
+    compile "io.vertx:vertx-web:${vertxVersion}"
+
+    compile "io.moquette:moquette-broker:${moquetteVersion}"
+    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${eclipsePahoVersion}"
+}

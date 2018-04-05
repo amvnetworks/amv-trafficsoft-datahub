@@ -55,6 +55,12 @@ allprojects {
             // e.g. multiple different versions of the same dependency (group and name are equal)
             failOnVersionConflict()
 
+            eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == 'io.netty' &&
+                        details.requested.name.startsWith('netty-')) {
+                    details.useVersion '4.1.15.Final'
+                }
+            }
             force 'com.netflix.archaius:archaius-core:0.6.6',
                     'commons-codec:commons-codec:1.10',
                     'org.slf4j:slf4j-api:1.7.25',
