@@ -77,6 +77,10 @@ public class DemoDeliveryProducerVerticle extends AbstractVerticle {
         final BigDecimal altitude = BigDecimal.valueOf(RandomUtils.nextLong(80, 700));
         final BigDecimal hdop = BigDecimal.valueOf(RandomUtils.nextLong(1, 12));
         final BigDecimal vdop = BigDecimal.valueOf(RandomUtils.nextLong(1, 12));
+        final BigDecimal lat = BigDecimal.valueOf(RandomUtils.nextDouble(40, 48))
+                .setScale(RandomUtils.nextInt(4, 8), BigDecimal.ROUND_HALF_UP);
+        final BigDecimal lng = BigDecimal.valueOf(RandomUtils.nextDouble(10, 15))
+                .setScale(RandomUtils.nextInt(4, 8), BigDecimal.ROUND_HALF_UP);;
 
         return DeliveryRestDto.builder()
                 .deliveryId(RandomUtils.nextLong())
@@ -90,8 +94,8 @@ public class DemoDeliveryProducerVerticle extends AbstractVerticle {
                                 .hdop(hdop)
                                 .heading(vdop)
                                 .satellites(satellites)
-                                .latitude(BigDecimal.valueOf(123.32))
-                                .longitude(BigDecimal.valueOf(213.2))
+                                .latitude(lat)
+                                .longitude(lng)
                                 .addXfcd(ParameterRestDto.builder()
                                         .param("kmrd")
                                         .value(String.valueOf(RandomUtils.nextLong(0L, 120_000L)))
