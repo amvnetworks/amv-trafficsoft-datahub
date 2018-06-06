@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.xfcd.consumer.jdbc;
 
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+@Slf4j
 public class TrafficsoftXfcdJdbcPropertiesValidator implements Validator {
 
     @Override
@@ -24,6 +26,12 @@ public class TrafficsoftXfcdJdbcPropertiesValidator implements Validator {
         checkArgument(supports(target.getClass()), "Unsupported type.");
 
         TrafficsoftXfcdJdbcProperties properties = (TrafficsoftXfcdJdbcProperties) target;
+
+        if (!properties.isEnabled()) {
+            log.debug("Skip validating {} bean as it property `enabled` is `false`",
+                    TrafficsoftXfcdJdbcProperties.class.getSimpleName());
+            return;
+        }
 
         if (properties.getJdbcUrl() == null || Strings.isNullOrEmpty(properties.getJdbcUrl())) {
             errors.rejectValue("jdbcUrl", "jdbcUrl.empty", "Empty jdbc url.");

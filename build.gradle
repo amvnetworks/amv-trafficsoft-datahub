@@ -82,6 +82,7 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'project-report'
     apply plugin: 'nebula.project'
     apply plugin: 'nebula.info'
     apply plugin: 'nebula.optional-base'
