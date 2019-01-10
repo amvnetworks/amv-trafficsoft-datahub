@@ -19,6 +19,7 @@ public class TrafficsoftDatahubXfcdProperties {
     public long getFetchIntervalInSeconds() {
         return Math.max(fetchIntervalInSeconds, MIN_INTERVAL_IN_SECONDS);
     }
+
     public long getInitialFetchDelayInSeconds() {
         return Math.max(initialFetchDelayInSeconds, 1);
     }

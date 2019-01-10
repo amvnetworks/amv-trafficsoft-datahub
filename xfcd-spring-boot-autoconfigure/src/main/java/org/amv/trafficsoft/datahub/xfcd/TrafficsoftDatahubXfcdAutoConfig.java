@@ -30,11 +30,11 @@ public class TrafficsoftDatahubXfcdAutoConfig {
      * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-validation
      *
      * @return a validator for xfcd settings
-     * /
+     * TODO: currently disabled because only one "configurationPropertiesValidator" is invoked
     @Bean
-    public static TrafficsoftDatahubXfcdPropertiesValidator datahubXfcdPropertiesValidator() {
+    public static TrafficsoftDatahubXfcdPropertiesValidator configurationPropertiesValidator() {
         return new TrafficsoftDatahubXfcdPropertiesValidator();
-    }
+    }*/
 
     /**
      * In case the xfcd datahub module is disabled (e.g. during development)
