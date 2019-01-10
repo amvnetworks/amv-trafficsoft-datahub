@@ -1,0 +1,23 @@
+description = 'A module containing spring-boot autoconfiguration classes for persisting xfcd data deliveries with postgres'
+
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/main/resources',
+                    '../xfcd-consumer-postgres/src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    compile project(':xfcd-consumer-jdbc-spring-boot-starter')
+    compile project(':xfcd-consumer-postgres')
+
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.4', optional
+
+    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+
+    testCompile group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
+    testCompile 'com.opentable.components:otj-pg-embedded:0.12.5'
+}

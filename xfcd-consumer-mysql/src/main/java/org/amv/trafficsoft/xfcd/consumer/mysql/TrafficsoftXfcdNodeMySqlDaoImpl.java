@@ -40,8 +40,8 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
         }
 
         String sql = "INSERT INTO `amv_trafficsoft_xfcd_node` " +
-                "(`CREATED_AT` ," +
-                "`ID` ," +
+                "(`CREATED_AT`," +
+                "`ID`," +
                 "`ALTITUDE`," +
                 "`HEADING`," +
                 "`HDOP`," +
@@ -58,6 +58,7 @@ public class TrafficsoftXfcdNodeMySqlDaoImpl implements TrafficsoftXfcdNodeJdbcD
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "`UPDATED_AT` = ?";
+
         entities.forEach(entity -> {
             jdbcTemplate.getJdbcOperations().update(con -> {
                 PreparedStatement ps = con.prepareStatement(sql, new String[]{});

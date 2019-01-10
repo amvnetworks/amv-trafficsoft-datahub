@@ -1,0 +1,33 @@
+spring.profiles.active: production
+
+app.name: trafficsoft-delivery-postgres-consumer-test
+app.description: trafficsoft datahub delivery postgres consumer integration test
+
+# LOGGING
+logging.file: application.log
+logging.config: classpath:logback.xml
+logging.level.org.springframework: WARN
+
+#amv.trafficsoft.api:
+#  rest:
+#    baseUrl: 'https://www.example.com'
+#    username: 'john_doe'
+#    password: 'mysupersecretpassword'
+#    contractId: 0
+
+#amv.trafficsoft.datahub.xfcd:
+#  enabled: true
+#  fetch-interval-in-seconds: 3600
+
+amv.trafficsoft.xfcd.consumer.jdbc:
+  enabled: true
+  send-confirmation-events: true
+  jdbcUrl: will_be_set_programmatically_to_use_random_port_of_embedded_db
+  driverClassName: org.postgresql.Driver
+  username: postgres
+  password: postgres
+  schemaMigrationEnabled: true
+  flywayScriptsLocation: db/postgres/xfcd/migration
+  pool:
+    max-pool-size: 1
+

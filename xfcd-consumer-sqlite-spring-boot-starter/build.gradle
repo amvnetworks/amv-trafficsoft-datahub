@@ -4,7 +4,7 @@ sourceSets {
     main {
         resources {
             srcDirs 'src/main/resources',
-                    '../amv-trafficsoft-datahub-xfcd-consumer-sqlite/src/main/resources'
+                    '../xfcd-consumer-sqlite/src/main/resources'
         }
     }
 }

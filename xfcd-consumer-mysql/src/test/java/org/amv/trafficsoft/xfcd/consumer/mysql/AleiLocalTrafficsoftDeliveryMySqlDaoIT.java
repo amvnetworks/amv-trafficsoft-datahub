@@ -5,6 +5,7 @@ import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryRowMapper;
 import org.flywaydb.core.Flyway;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -28,6 +29,7 @@ import javax.sql.DataSource;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AleiLocalTrafficsoftDeliveryMySqlDaoIT.AleiLocalMySqlConfig.class})
 @Transactional
+@Ignore
 public class AleiLocalTrafficsoftDeliveryMySqlDaoIT extends AbstractTrafficsoftDeliveryDaoTest {
 
     @BeforeClass

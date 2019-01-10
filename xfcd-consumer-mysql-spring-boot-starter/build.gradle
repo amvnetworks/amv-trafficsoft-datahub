@@ -4,7 +4,7 @@ sourceSets {
     main {
         resources {
             srcDirs 'src/main/resources',
-                    '../amv-trafficsoft-datahub-xfcd-consumer-mysql/src/main/resources'
+                    '../xfcd-consumer-mysql/src/main/resources'
         }
     }
 }
@@ -13,11 +13,11 @@ dependencies {
     compile project(':xfcd-consumer-jdbc-spring-boot-starter')
     compile project(':xfcd-consumer-mysql')
 
-    compile 'mysql:mysql-connector-java:5.1.8', optional
+    compile 'mysql:mysql-connector-java:5.1.47', optional
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
     testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
-    testCompile 'mysql:mysql-connector-java:5.1.8'
-    testCompile 'com.wix:wix-embedded-mysql:2.2.9'
+    testCompile 'mysql:mysql-connector-java:5.1.47'
+    testCompile 'com.wix:wix-embedded-mysql:4.2.0'
 }
