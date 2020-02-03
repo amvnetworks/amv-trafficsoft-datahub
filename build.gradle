@@ -234,8 +234,10 @@ subprojects {
         }
 
         bintray {
-            user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-            key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+            //user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+            //key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+            user = 'amvnetworks'
+            key = '238250768dcb51721cf511a5c8ff8ea03c86448f'
             configurations = ['archives']
             pkg {
                 repo = 'amv-trafficsoft-datahub'
