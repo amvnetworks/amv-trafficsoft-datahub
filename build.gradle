@@ -28,7 +28,6 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.14.0'
     id 'com.jfrog.bintray' version '1.7.3'
     id 'findbugs'
-//    id 'checkstyle'
 }
 
 description = 'Parent package for handling AMV Trafficsoft xfcd data deliveries'
@@ -94,7 +93,6 @@ subprojects {
     apply plugin: 'findbugs'
     apply plugin: 'jacoco'
     apply plugin: 'com.jfrog.bintray'
-//    apply plugin: 'checkstyle'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -191,15 +189,6 @@ subprojects {
     artifacts {
         archives /*javadocJar, */ sourcesJar, testJar
     }
-
-    /*checkstyle {
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-        toolVersion = '6.7'
-        ignoreFailures = true
-        showViolations = false
-        sourceSets = [sourceSets.main]
-        reportsDir = rootProject.file("$buildDir/reports/checkstyle")
-    }*/
 
     findbugs {
         effort = 'min'
