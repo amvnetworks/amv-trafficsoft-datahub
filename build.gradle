@@ -2,7 +2,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        trafficsoftRestVersion = '0.6.8'
+        trafficsoftRestVersion = '0.6.10'
         vertxVersion = '3.5.0'
         amvVertxVersion = '0.0.1'
         jacksonVersion = '2.8.10'
@@ -234,10 +234,17 @@ subprojects {
         }
 
         bintray {
-            //user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-            //key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-            user = 'amvnetworks'
-            key = '238250768dcb51721cf511a5c8ff8ea03c86448f'
+            if (!project.hasProperty('bintrayUser')) {
+                throw new GradleException('-PbintrayUser needs to be configured')
+            }
+
+            if (!project.hasProperty('bintrayApiKey')) {
+                throw new GradleException('-PbintrayApiKey needs to be configured')
+            }
+
+            user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+            key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+
             configurations = ['archives']
             pkg {
                 repo = 'amv-trafficsoft-datahub'
