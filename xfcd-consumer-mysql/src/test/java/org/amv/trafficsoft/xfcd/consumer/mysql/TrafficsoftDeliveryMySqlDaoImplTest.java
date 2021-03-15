@@ -20,11 +20,6 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(classes = {DaoDbUnitTestConfig.class})
 public class TrafficsoftDeliveryMySqlDaoImplTest extends AbstractTrafficsoftDeliveryDaoTest {
 
-    @BeforeClass
-    public static void skipWindowsOs() {
-        Assume.assumeFalse(OperationSystemHelper.isWindows());
-    }
-
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

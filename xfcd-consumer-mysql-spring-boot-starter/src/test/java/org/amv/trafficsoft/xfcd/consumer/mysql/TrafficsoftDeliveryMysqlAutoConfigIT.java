@@ -47,11 +47,6 @@ import static org.junit.Assert.assertThat;
 })
 public class TrafficsoftDeliveryMysqlAutoConfigIT {
 
-    @BeforeClass
-    public static void skipWindowsOs() {
-        Assume.assumeFalse(System.getProperty("os.name").startsWith("Windows"));
-    }
-
     @SpringBootApplication
     @Import(EmbeddedDatabaseTestConfig.class)
     public static class TestApplictaion {

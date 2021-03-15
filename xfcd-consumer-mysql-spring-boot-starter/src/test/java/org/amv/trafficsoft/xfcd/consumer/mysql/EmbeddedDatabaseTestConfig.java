@@ -23,7 +23,7 @@ import static com.wix.mysql.config.SchemaConfig.aSchemaConfig;
 
 @TestConfiguration
 public class EmbeddedDatabaseTestConfig {
-    private static final Version embeddedMySqlServerVersion = Version.v5_5_40;
+    private static final Version embeddedMySqlServerVersion = Version.v5_7_27;
     @VisibleForTesting
     static final String SCHEMA_NAME = "amv_trafficsoft_xfcd_consumer_mysql_test";
 

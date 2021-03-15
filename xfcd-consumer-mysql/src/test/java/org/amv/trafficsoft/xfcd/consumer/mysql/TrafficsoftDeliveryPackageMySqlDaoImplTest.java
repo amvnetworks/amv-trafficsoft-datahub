@@ -10,11 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = {DaoDbUnitTestConfig.class})
 public class TrafficsoftDeliveryPackageMySqlDaoImplTest extends AbstractTrafficsoftDeliveryPackageDaoTest {
 
-    @BeforeClass
-    public static void skipWindowsOs() {
-        Assume.assumeFalse(OperationSystemHelper.isWindows());
-    }
-
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

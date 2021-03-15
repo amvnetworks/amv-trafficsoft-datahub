@@ -19,5 +19,5 @@ dependencies {
     testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testCompile 'mysql:mysql-connector-java:5.1.47'
-    testCompile 'com.wix:wix-embedded-mysql:4.2.0'
+    testCompile 'com.wix:wix-embedded-mysql:4.6.1'
 }

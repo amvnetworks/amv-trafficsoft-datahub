@@ -10,7 +10,7 @@ dependencies {
 
     testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
     testCompile 'mysql:mysql-connector-java:5.1.47'
-    testCompile 'com.wix:wix-embedded-mysql:4.2.0'
+    testCompile 'com.wix:wix-embedded-mysql:4.6.1'
 
     testCompile ('org.dbunit:dbunit:2.6.0') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version
