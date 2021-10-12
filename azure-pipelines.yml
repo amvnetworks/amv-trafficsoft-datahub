@@ -9,20 +9,21 @@ trigger:
   - feature/*
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 variables:
-  - group: bintray
+  - group: nexus
 
 steps:
   - task: Gradle@2
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
+      options: '-Prelease.stage=SNAPSHOT -Prelease.scope=patch -PnexusUrl=$(nexusUrl) -PnexusUsername=$(nexusUsername) -PnexusPassword=$(nexusPassword) --refresh-dependencies --stacktrace'
       gradleOptions: '-Xmx3072m'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.8'
       jdkArchitectureOption: 'x64'
       publishJUnitResults: true
       testResultsFiles: '**/TEST-*.xml'
-      tasks: 'clean build bintray -Prelease.stage=final -Prelease.scope=patch -PreleaseToBintray -Pminimal --refresh-dependencies -PbintrayUser=$(bintrayUser) -PbintrayApiKey=$(bintrayApiKey) final --stacktrace'
+      tasks: 'releaseCheck clean build uploadArchives'
