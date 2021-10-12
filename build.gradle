@@ -76,7 +76,8 @@ allprojects {
                     'commons-logging:commons-logging:1.2',
                     'org.apache.commons:commons-compress:1.14',
                     'com.google.code.findbugs:jsr305:3.0.2',
-                    'org.jetbrains.kotlin:kotlin-stdlib:1.3.70'
+                    'org.jetbrains.kotlin:kotlin-stdlib:1.3.70',
+                    'com.squareup.okio:okio:1.17.3'
         }
     }
 }
@@ -218,37 +219,19 @@ subprojects {
         finalizedBy jacocoTestReport
     }
 
-    if (project.hasProperty('releaseToBintray')) {
-        if (rootProject.version.toString().contains('SNAPSHOT')) {
-            throw new GradleException('-PreleaseToBintray param cannot be used with SNAPSHOT versions')
-        }
-
-        bintray {
-            if (!project.hasProperty('bintrayUser')) {
-                throw new GradleException('-PbintrayUser needs to be configured')
-            }
-
-            if (!project.hasProperty('bintrayApiKey')) {
-                throw new GradleException('-PbintrayApiKey needs to be configured')
-            }
-
-            user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-            key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-
-            configurations = ['archives']
-            pkg {
-                repo = 'amv-trafficsoft-datahub'
-                name = project.name
-                userOrg = user
-                licenses = ['Apache-2.0']
-                vcsUrl = 'https://github.com/amvnetworks/amv-trafficsoft-datahub.git'
-                labels = ['amv', 'vertx', 'spring']
-                publicDownloadNumbers = false
-                version {
-                    name = rootProject.version
-                    desc = project.description
-                    vcsTag = rootProject.version
+    // ---- upload into Nexus
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "${nexusUrl}/repository/releases/") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
                 }
+                snapshotRepository(url: "${nexusUrl}/repository/snapshots/") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+                pom.version = project.version
+                pom.artifactId = project.name
+                pom.groupId = project.group
             }
         }
     }
