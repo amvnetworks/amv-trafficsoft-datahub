@@ -229,9 +229,9 @@ subprojects {
                 snapshotRepository(url: "${nexusUrl}/repository/snapshots/") {
                     authentication(userName: nexusUsername, password: nexusPassword)
                 }
-                pom.version = project.version
-                pom.artifactId = project.name
-                pom.groupId = project.group
+                pom.version = rootProject.version
+                pom.artifactId = rootProject.name
+                pom.groupId = rootProject.group
             }
         }
     }
