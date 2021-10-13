@@ -33,6 +33,7 @@ plugins {
 description = 'Parent package for handling AMV Trafficsoft xfcd data deliveries'
 
 group = 'org.amv.trafficsoft.datahub'
+version = '0.3.13-SNAPSHOT'
 
 contacts {
     'devlopment@amv-networks.com' {
