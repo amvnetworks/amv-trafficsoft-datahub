@@ -219,7 +219,6 @@ subprojects {
         finalizedBy jacocoTestReport
     }
 
-    // ---- upload into Nexus
     uploadArchives {
         repositories {
             mavenDeployer {
@@ -229,6 +228,10 @@ subprojects {
                 snapshotRepository(url: "${nexusUrl}/repository/snapshots/") {
                     authentication(userName: nexusUsername, password: nexusPassword)
                 }
+
+                pom.version = project.version
+                pom.artifactId = project.name
+                pom.groupId = project.group
             }
         }
     }
