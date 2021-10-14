@@ -7,7 +7,7 @@ dependencies {
     compile "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
     compile "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 
-    compile 'io.prometheus:simpleclient:0.12.0'
+    compile 'io.prometheus:simpleclient:0.7.0'
 
     testCompile "io.vertx:vertx-unit:${vertxVersion}"
 }
