@@ -19,7 +19,7 @@ steps:
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
-      options: '-Pminimal -Prelease.stage=SNAPSHOT -Prelease.scope=patch -PnexusUrl=$(nexusUrl) -PnexusUsername=$(nexusUsername) -PnexusPassword=$(nexusPassword) --refresh-dependencies  --stacktrace'
+      options: '-Pminimal -Prelease.stage=final -Prelease.scope=patch -PnexusUrl=$(nexusUrl) -PnexusUsername=$(nexusUsername) -PnexusPassword=$(nexusPassword) final --refresh-dependencies  --stacktrace'
       gradleOptions: '-Xmx3072m'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.8'
