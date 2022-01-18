@@ -2,7 +2,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        trafficsoftRestVersion = '0.6.13'
+        trafficsoftRestVersion = '0.7.0'
         vertxVersion = '3.9.10'
         amvVertxVersion = '0.0.2-SNAPSHOT'
         jacksonVersion = '2.8.10'
@@ -10,7 +10,22 @@ buildscript {
         reactorVersion = '3.1.0.RELEASE'
     }
     repositories {
-        jcenter()
+        maven {
+            credentials {
+                username nexusUsername
+                password nexusPassword
+            }
+            url "${nexusUrl}/repository/snapshots/"
+        }
+        maven {
+            credentials {
+                username nexusUsername
+                password nexusPassword
+            }
+            url "${nexusUrl}/repository/releases/"
+        }
+
+        mavenCentral()
     }
     dependencies {
         classpath 'nu.studer:gradle-credentials-plugin:1.0.3'
