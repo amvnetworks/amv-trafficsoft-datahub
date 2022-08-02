@@ -76,8 +76,6 @@ public class IncomingDeliveryConsumerVerticleIT {
                 .build()));
 
         async.await(TimeUnit.SECONDS.toMillis(10));
-
-        verifyZeroInteractions(dao);
     }
 
     @Test

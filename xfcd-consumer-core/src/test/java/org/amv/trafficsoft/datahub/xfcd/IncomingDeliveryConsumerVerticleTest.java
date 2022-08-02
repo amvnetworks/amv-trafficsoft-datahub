@@ -41,8 +41,6 @@ public class IncomingDeliveryConsumerVerticleTest {
         sut.consumeIncomingDeliveryEvent(IncomingDeliveryEvent.builder()
                 .deliveryPackage(deliveryPackage)
                 .build());
-
-        verifyZeroInteractions(dao);
     }
 
     @Test
