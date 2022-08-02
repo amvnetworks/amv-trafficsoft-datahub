@@ -53,18 +53,14 @@ public class DaoDbUnitTestConfig {
 
     @Bean
     public MysqldConfig mysqldConfig() {
-        try {
-            return aMysqldConfig(embeddedMySqlServerVersion)
-                    .withFreePort()
-                    .withUser("differentUser", "anotherPassword")
-                    .withCharset(UTF8)
-                    .withTimeZone(TimeZone.getDefault())
-                    .withTimeout(10, TimeUnit.SECONDS)
-                    .withServerVariable("max_connect_errors", 1)
-                    .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return aMysqldConfig(embeddedMySqlServerVersion)
+                .withPort(10000)
+                .withUser("differentUser", "anotherPassword")
+                .withCharset(UTF8)
+                .withTimeZone(TimeZone.getDefault())
+                .withTimeout(10, TimeUnit.SECONDS)
+                .withServerVariable("max_connect_errors", 1)
+                .build();
     }
 
     @Bean
@@ -130,6 +126,7 @@ public class DaoDbUnitTestConfig {
     @PostConstruct
     void startSchemaMigration() {
         final Flyway flyway = Flyway.configure()
+            .sqlMigrationPrefix("V")
             .dataSource(dataSource())
             .locations("classpath:/db/mysql/xfcd/migration")
             .load();

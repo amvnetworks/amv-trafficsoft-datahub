@@ -48,17 +48,13 @@ public class EmbeddedDatabaseTestConfig {
 
     @Bean
     public MysqldConfig mysqldConfig() {
-        try {
-            return aMysqldConfig(embeddedMySqlServerVersion)
-                    .withFreePort()
-                    .withUser(properties.getUsername(), properties.getPassword())
-                    .withCharset(UTF8)
-                    .withTimeZone(TimeZone.getDefault())
-                    .withTimeout(10, TimeUnit.SECONDS)
-                    .withServerVariable("max_connect_errors", 1)
-                    .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return aMysqldConfig(embeddedMySqlServerVersion)
+                .withPort(10000)
+                .withUser(properties.getUsername(), properties.getPassword())
+                .withCharset(UTF8)
+                .withTimeZone(TimeZone.getDefault())
+                .withTimeout(10, TimeUnit.SECONDS)
+                .withServerVariable("max_connect_errors", 1)
+                .build();
     }
 }

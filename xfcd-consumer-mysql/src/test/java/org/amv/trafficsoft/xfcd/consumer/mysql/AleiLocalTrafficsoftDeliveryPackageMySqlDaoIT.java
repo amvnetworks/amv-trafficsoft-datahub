@@ -84,6 +84,7 @@ public class AleiLocalTrafficsoftDeliveryPackageMySqlDaoIT extends AbstractTraff
         @PostConstruct
         void startSchemaMigration() {
             final Flyway flyway = Flyway.configure()
+            .sqlMigrationPrefix("V")
             .dataSource(dataSource())
             .locations("classpath:/db/mysql/xfcd/migration")
             .load();

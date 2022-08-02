@@ -15,7 +15,7 @@ amv.trafficsoft.xfcd.consumer.jdbc:
   jdbcUrl: jdbc:sqlite:build/tmp/~amv-trafficsoft-datahub-xfcd-consumer-sqlite-test.db
   driverClassName: org.sqlite.JDBC
   schemaMigrationEnabled: true
-  flywayScriptsLocation: db/sqlite/xfcd/migration
+  flywayScriptsLocation: classpath:/db/sqlite/xfcd/migration
   pool:
     max-pool-size: 1
 

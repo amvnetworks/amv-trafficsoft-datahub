@@ -27,7 +27,7 @@ amv.trafficsoft.xfcd.consumer.jdbc:
   username: any_user
   password: any_password
   schemaMigrationEnabled: true
-  flywayScriptsLocation: db/mysql/xfcd/migration
+  flywayScriptsLocation: classpath:/db/mysql/xfcd/migration
   pool:
     max-pool-size: 1
 

@@ -117,6 +117,8 @@ public class JdbcIncomingDeliveryConsumerAutoConfig {
 
         private void startSchemaMigration() {
             final Flyway flyway = Flyway.configure()
+                    .sqlMigrationPrefix("V")
+                    .baselineOnMigrate(true)
                     .dataSource(jdbcConsumerHikariDataSource())
                     .locations(properties.getFlywayScriptsLocation()).load();
 
