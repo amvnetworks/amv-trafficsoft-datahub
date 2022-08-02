@@ -79,7 +79,7 @@ public class DaoDbUnitTestConfig {
     }
 
     @Primary
-    @Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(org.sqlite.JDBC.class.getName());

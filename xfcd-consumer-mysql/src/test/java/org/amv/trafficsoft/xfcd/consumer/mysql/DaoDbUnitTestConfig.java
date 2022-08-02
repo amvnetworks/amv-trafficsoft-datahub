@@ -111,7 +111,7 @@ public class DaoDbUnitTestConfig {
     }
 
     @Primary
-    @Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         final EmbeddedMysql embeddedMysql = embeddedMysql(); // make sure embeddedMySql is started.
 

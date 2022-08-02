@@ -49,7 +49,7 @@ public class AleiLocalTrafficsoftDeliveryPackageMySqlDaoIT extends AbstractTraff
     @Configuration
     public static class AleiLocalMySqlConfig {
 
-        @Bean(destroyMethod = "shutdown")
+        @Bean(destroyMethod = "close")
         public DataSource dataSource() {
             final String url = String.format("jdbc:mysql://localhost:%d/%s?" +
                             "profileSQL=true",
