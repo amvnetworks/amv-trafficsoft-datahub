@@ -31,3 +31,7 @@ amv.trafficsoft.xfcd.consumer.jdbc:
   pool:
     max-pool-size: 1
 
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
