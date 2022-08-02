@@ -3,7 +3,7 @@ description = 'A module containing core classes for persisting xfcd data deliver
 dependencies {
     compile project(':xfcd-consumer-core')
 
-    compile('com.zaxxer:HikariCP:2.7.2')
+    compile('com.zaxxer:HikariCP:4.0.3')
     compile('org.flywaydb:flyway-core:4.2.0')
 
     compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}") {

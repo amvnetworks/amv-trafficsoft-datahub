@@ -4,12 +4,12 @@ dependencies {
     compile project(':xfcd-consumer-jdbc')
     testCompile project(':xfcd-consumer-jdbc-test')
 
-    compileOnly 'mysql:mysql-connector-java:5.1.47'
+    compileOnly 'mysql:mysql-connector-java:5.1.49'
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
     testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
-    testCompile 'mysql:mysql-connector-java:5.1.47'
+    testCompile 'mysql:mysql-connector-java:5.1.49'
     testCompile 'com.wix:wix-embedded-mysql:4.6.1'
 
     testCompile ('org.dbunit:dbunit:2.6.0') {

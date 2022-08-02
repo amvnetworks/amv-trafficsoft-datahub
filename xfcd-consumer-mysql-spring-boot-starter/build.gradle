@@ -13,11 +13,11 @@ dependencies {
     compile project(':xfcd-consumer-jdbc-spring-boot-starter')
     compile project(':xfcd-consumer-mysql')
 
-    compile 'mysql:mysql-connector-java:5.1.47', optional
+    compile 'mysql:mysql-connector-java:5.1.49', optional
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
     testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
-    testCompile 'mysql:mysql-connector-java:5.1.47'
+    testCompile 'mysql:mysql-connector-java:5.1.49'
     testCompile 'com.wix:wix-embedded-mysql:4.6.1'
 }
