@@ -116,11 +116,11 @@ public class JdbcIncomingDeliveryConsumerAutoConfig {
         }
 
         private void startSchemaMigration() {
-            final Flyway flyway = new Flyway();
-            flyway.setDataSource(jdbcConsumerHikariDataSource());
-            flyway.setLocations(properties.getFlywayScriptsLocation());
+            final Flyway flyway = Flyway.configure()
+                    .dataSource(jdbcConsumerHikariDataSource())
+                    .locations(properties.getFlywayScriptsLocation()).load();
 
-            log.info("Starting Trafficsoft Delivery schema migration v{}", flyway.getBaselineVersion().getVersion());
+            log.info("Starting Trafficsoft Delivery schema migration v{}", flyway.baseline().baselineVersion);
 
             flyway.migrate();
         }

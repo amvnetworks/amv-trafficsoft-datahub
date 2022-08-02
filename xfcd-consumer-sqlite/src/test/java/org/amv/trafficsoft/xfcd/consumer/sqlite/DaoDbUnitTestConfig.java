@@ -16,7 +16,7 @@ import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.ext.mysql.MySqlMetadataHandler;
 import org.flywaydb.core.Flyway;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -89,9 +89,10 @@ public class DaoDbUnitTestConfig {
 
     @PostConstruct
     void startSchemaMigration() {
-        final Flyway flyway = new Flyway();
-        flyway.setDataSource(dataSource());
-        flyway.setLocations("classpath:/db/sqlite/xfcd/migration");
+        final Flyway flyway = Flyway.configure()
+                .dataSource(dataSource())
+                .locations("classpath:/db/sqlite/xfcd/migration")
+                .load();
 
         flyway.migrate();
     }
