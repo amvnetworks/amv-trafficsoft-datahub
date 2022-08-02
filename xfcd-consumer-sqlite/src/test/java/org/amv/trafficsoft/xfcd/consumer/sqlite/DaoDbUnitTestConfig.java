@@ -91,7 +91,8 @@ public class DaoDbUnitTestConfig {
     void startSchemaMigration() {
         final Flyway flyway = Flyway.configure()
                 .dataSource(dataSource())
-                .locations("classpath:/db/sqlite/xfcd/migration")
+                .locations("/db/sqlite/xfcd/migration")
+                .baselineOnMigrate(true)
                 .load();
 
         flyway.migrate();
