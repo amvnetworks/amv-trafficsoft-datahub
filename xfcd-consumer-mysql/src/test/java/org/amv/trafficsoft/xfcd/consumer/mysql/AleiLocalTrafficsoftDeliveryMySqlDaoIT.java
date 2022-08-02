@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -77,9 +77,10 @@ public class AleiLocalTrafficsoftDeliveryMySqlDaoIT extends AbstractTrafficsoftD
 
         @PostConstruct
         void startSchemaMigration() {
-            final Flyway flyway = new Flyway();
-            flyway.setDataSource(dataSource());
-            flyway.setLocations("classpath:/db/mysql/xfcd/migration");
+            final Flyway flyway = Flyway.configure()
+                .dataSource(dataSource())
+                .locations("classpath:/db/mysql/xfcd/migration")
+                .load();
 
             flyway.migrate();
         }

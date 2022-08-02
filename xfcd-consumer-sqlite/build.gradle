@@ -4,12 +4,12 @@ dependencies {
     compile project(':xfcd-consumer-jdbc')
     testCompile project(':xfcd-consumer-jdbc-test')
 
-    compileOnly 'org.xerial:sqlite-jdbc:3.19.3'
+    compileOnly 'org.xerial:sqlite-jdbc:3.36.0.3'
 
     testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
     testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
-    testCompile 'org.xerial:sqlite-jdbc:3.19.3'
+    testCompile 'org.xerial:sqlite-jdbc:3.36.0.3'
     testCompile 'com.h2database:h2:1.4.196'
     testCompile ('org.dbunit:dbunit:2.6.0') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version
