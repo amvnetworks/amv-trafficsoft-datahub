@@ -19,7 +19,7 @@ configurations.all {
         dependencySubstitution {
             // necessary as spring-boot plugin pulls in old versions
             // see https://discuss.gradle.org/t/excluded-dependence-comes-back-when-spring-boot-plugin-is-applied/17945/2
-            substitute module('com.zaxxer:HikariCP') with module('com.zaxxer:HikariCP:3.4.5')
+            substitute module('com.zaxxer:HikariCP') with module('com.zaxxer:HikariCP:4.0.3')
             substitute module('org.flywaydb:flyway-core') with module('org.flywaydb:flyway-core:7.15.0')
             substitute module('org.xerial:sqlite-jdbc') with module('org.xerial:sqlite-jdbc:3.19.3')
         }
