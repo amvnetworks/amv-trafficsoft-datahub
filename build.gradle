@@ -143,7 +143,7 @@ subprojects {
     dependencies {
         compile 'com.google.guava:guava:22.0'
         compile 'io.dropwizard.metrics:metrics-core:3.2.5'
-        compileOnly 'org.projectlombok:lombok:1.16.16'
+        compileOnly 'org.projectlombok:lombok:1.18.4'
 
         compile "io.projectreactor:reactor-core:${reactorVersion}"
         compile "io.projectreactor.addons:reactor-adapter:${reactorVersion}"
@@ -164,8 +164,8 @@ subprojects {
     }
 
     lombok {
-        version = '1.16.16'
-        sha256 = 'fbf682c7ff113e5187a9c4b4cbd7a8ad782abd8ccff91b9fa7289a4a6aa8c19a'
+        version = '1.18.4'
+        sha256 '39f3922deb679b1852af519eb227157ef2dd0a21eec3542c8ce1b45f2df39742'
     }
 
     task delombok(type: DelombokTask, dependsOn: compileJava) {
@@ -175,17 +175,6 @@ subprojects {
             inputs.dir(it)
             args(it, '-d', outputDir)
         }
-    }
-
-    task delombokHelp(type: DelombokTask) {
-        args '--help'
-    }
-
-    javadoc {
-        dependsOn delombok
-        source = delombok.outputDir
-        exclude 'lombok.config'
-        failOnError = false
     }
 
     jar.doFirst {
