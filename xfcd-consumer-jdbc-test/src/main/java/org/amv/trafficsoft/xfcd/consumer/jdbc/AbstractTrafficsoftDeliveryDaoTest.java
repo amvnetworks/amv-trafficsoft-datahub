@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
         TransactionDbUnitTestExecutionListener.class,
         DbUnitTestExecutionListener.class
 })
-@Transactional
+@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
 public abstract class AbstractTrafficsoftDeliveryDaoTest {
 
     private TrafficsoftDeliveryJdbcDao sut;

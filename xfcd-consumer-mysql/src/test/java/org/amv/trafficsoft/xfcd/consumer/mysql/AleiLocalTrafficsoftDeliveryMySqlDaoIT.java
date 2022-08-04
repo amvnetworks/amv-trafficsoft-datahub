@@ -28,7 +28,7 @@ import javax.sql.DataSource;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AleiLocalTrafficsoftDeliveryMySqlDaoIT.AleiLocalMySqlConfig.class})
-@Transactional
+@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
 @Ignore
 public class AleiLocalTrafficsoftDeliveryMySqlDaoIT extends AbstractTrafficsoftDeliveryDaoTest {
 
