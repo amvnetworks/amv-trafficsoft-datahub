@@ -34,7 +34,7 @@ import javax.sql.DataSource;
         DependencyInjectionTestExecutionListener.class
 })
 @ContextConfiguration(classes = {AleiLocalTrafficsoftDeliveryPackageMySqlDaoIT.AleiLocalMySqlConfig.class})
-@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
+@Transactional
 @Ignore
 public class AleiLocalTrafficsoftDeliveryPackageMySqlDaoIT extends AbstractTrafficsoftDeliveryPackageDaoTest {
 

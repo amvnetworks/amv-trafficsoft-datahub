@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@Transactional(transactionManager = "trafficsoftDeliveryJdbcConsumerTransactionManager")
+@Transactional
 @TestExecutionListeners({
         DirtiesContextTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
