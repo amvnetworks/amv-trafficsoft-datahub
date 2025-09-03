@@ -2,6 +2,9 @@ description = 'A module containing core classes for persisting xfcd data deliver
 
 dependencies {
     implementation project(':xfcd-consumer-core')
+    // Direct dependencies required by this module's sources
+    implementation project(':xfcd')
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 
     implementation('com.zaxxer:HikariCP:4.0.3')
     implementation('org.flywaydb:flyway-core:7.15.0')

@@ -10,4 +10,9 @@ dependencies {
 
     testImplementation "io.vertx:vertx-unit:${vertxVersion}"
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    testImplementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    // Needed by tests for CollectorRegistry
+    testImplementation 'io.prometheus:simpleclient:0.10.0'
+    // Provides DeliveryRestDtoMother used in tests
+    testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 }

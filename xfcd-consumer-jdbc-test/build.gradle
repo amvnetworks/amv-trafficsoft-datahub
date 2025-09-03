@@ -2,11 +2,19 @@ description = 'A module containing test classes for persisting xfcd data deliver
 
 dependencies {
     implementation project(':xfcd-consumer-jdbc')
+    implementation project(':xfcd')
 
     implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     implementation 'junit:junit:4.12'
     implementation 'org.hamcrest:hamcrest-all:1.3'
     implementation 'pl.pragmatists:JUnitParams:1.0.6'
+
+    // Spring TX needed for @Transactional in main sources of this testing module
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
+
+    // REST model API and test helpers used in main sources
+    implementation("org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}")
+    implementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
     testImplementation ('org.dbunit:dbunit:2.6.0') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version

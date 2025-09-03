@@ -29,6 +29,8 @@ configurations.all {
 dependencies {
     implementation project(':xfcd-spring-boot-starter')
     implementation project(':xfcd-demo-spring-boot-starter')
+    // Ensure DAO API is available at compile time
+    implementation project(':xfcd-consumer-jdbc')
 
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

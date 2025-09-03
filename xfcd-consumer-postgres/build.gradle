@@ -2,6 +2,7 @@ description = 'A module containing core classes for persisting xfcd data deliver
 
 dependencies {
     implementation project(':xfcd-consumer-jdbc')
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
     testImplementation project(':xfcd-consumer-jdbc-test')
 
     compileOnly group: 'org.postgresql', name: 'postgresql', version: '42.2.4'

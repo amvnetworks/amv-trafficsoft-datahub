@@ -4,4 +4,6 @@ dependencies {
     implementation project(':xfcd')
     implementation "io.vertx:vertx-rx-java:${vertxVersion}"
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
+
+    testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 }

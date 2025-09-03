@@ -2,6 +2,7 @@ description = 'A module containing core classes for persisting xfcd data deliver
 
 dependencies {
     implementation project(':xfcd-consumer-jdbc')
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
     testImplementation project(':xfcd-consumer-jdbc-test')
 
     compileOnly 'org.xerial:sqlite-jdbc:3.36.0.3'
@@ -16,4 +17,5 @@ dependencies {
         exclude group: 'postgresql', module: 'postgresql'
     }
     testImplementation 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
+    testImplementation 'org.flywaydb:flyway-core:7.15.0'
 }

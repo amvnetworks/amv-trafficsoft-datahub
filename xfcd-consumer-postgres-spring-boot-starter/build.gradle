@@ -9,12 +9,22 @@ sourceSets {
     }
 }
 
+tasks.named('processResources') {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 dependencies {
     implementation project(':xfcd-consumer-jdbc-spring-boot-starter')
     implementation project(':xfcd-consumer-postgres')
+    implementation project(':xfcd-consumer-jdbc')
+
+    // Spring Boot autoconfigure and JDBC APIs used by auto-config class
+    implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
 
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
 
+    testImplementation project(':xfcd')
     testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 

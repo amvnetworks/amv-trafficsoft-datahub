@@ -2,9 +2,22 @@ description = 'A module containing spring-boot autoconfiguration classes for per
 
 dependencies {
     implementation project(':xfcd-consumer-jdbc')
+    implementation project(':xfcd-consumer-core')
+    implementation project(':xfcd')
+
+    // Spring Boot and JDBC runtime requirements for auto-configuration
+    implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
+    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+
+    // Connection pool and migration used directly in auto-config
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'org.flywaydb:flyway-core:7.15.0'
 
     testImplementation project(':xfcd-spring-boot-autoconfigure')
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    // Provide REST client types used in tests (TrafficsoftApiRestProperties, XfcdClient)
+    testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
 
     testImplementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 }
