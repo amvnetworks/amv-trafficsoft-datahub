@@ -1,5 +1,5 @@
 description = 'A websocket api for xfcd data deliveries'
 
 dependencies {
-    compile project(':xfcd')
+    implementation project(':xfcd')
 }

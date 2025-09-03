@@ -28,17 +28,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:1.0.3'
+        // Removed legacy nu.studer:gradle-credentials-plugin to avoid resolving unavailable artifacts on Gradle 8+
     }
 }
 
 plugins {
     id 'io.franzbecker.gradle-lombok' version '5.0.0'
-    id 'nebula.project' version '3.4.0'
-    id 'nebula.info' version '3.6.0'
-    id 'nebula.release' version '6.0.0'
-    id 'nebula.optional-base' version '3.2.0'
-    id 'nebula.lint' version '17.7.0'
+    // Removed legacy nebula plugins incompatible with Gradle 8+
     id 'com.github.ben-manes.versions' version '0.14.0'
 }
 
@@ -47,16 +43,8 @@ description = 'Parent package for handling AMV Trafficsoft xfcd data deliveries'
 group = 'org.amv.trafficsoft.datahub'
 version = '0.3.13-SNAPSHOT'
 
-contacts {
-    'devlopment@amv-networks.com' {
-        moniker 'AMV Networks GmbH'
-        role 'owner'
-        github 'amvnetworks'
-    }
-}
 
 allprojects {
-    apply plugin: 'nu.studer.credentials'
 
     group 'org.amv.trafficsoft.datahub'
 
@@ -97,13 +85,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
     apply plugin: 'project-report'
-    apply plugin: 'nebula.project'
-    apply plugin: 'nebula.info'
-    apply plugin: 'nebula.optional-base'
-    apply plugin: 'nebula.dependency-lock'
-    apply plugin: 'nebula.lint'
     apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'jacoco'
 
@@ -141,26 +123,26 @@ subprojects {
     }
 
     dependencies {
-        compile 'com.google.guava:guava:22.0'
-        compile 'io.dropwizard.metrics:metrics-core:3.2.5'
+        implementation 'com.google.guava:guava:22.0'
+        implementation 'io.dropwizard.metrics:metrics-core:3.2.5'
         compileOnly 'org.projectlombok:lombok:1.18.4'
 
-        compile "io.projectreactor:reactor-core:${reactorVersion}"
-        compile "io.projectreactor.addons:reactor-adapter:${reactorVersion}"
-        compile "io.projectreactor.addons:reactor-extra:${reactorVersion}"
+        implementation "io.projectreactor:reactor-core:${reactorVersion}"
+        implementation "io.projectreactor.addons:reactor-adapter:${reactorVersion}"
+        implementation "io.projectreactor.addons:reactor-extra:${reactorVersion}"
 
-        testCompile 'junit:junit:4.12'
-        testCompile 'org.hamcrest:hamcrest-all:1.3'
-        testCompile 'pl.pragmatists:JUnitParams:1.0.6'
+        testImplementation 'junit:junit:4.12'
+        testImplementation 'org.hamcrest:hamcrest-all:1.3'
+        testImplementation 'pl.pragmatists:JUnitParams:1.0.6'
 
         // TODO: commons-lang should be a testCompile dependency:
         // only used for RandomUtils in tests
-        compile 'org.apache.commons:commons-lang3:3.5'
+        implementation 'org.apache.commons:commons-lang3:3.5'
 
-        testCompile "io.vertx:vertx-unit:${vertxVersion}"
-        testCompile "io.projectreactor:reactor-test:${reactorVersion}"
+        testImplementation "io.vertx:vertx-unit:${vertxVersion}"
+        testImplementation "io.projectreactor:reactor-test:${reactorVersion}"
 
-        testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+        testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     }
 
     lombok {
@@ -193,11 +175,16 @@ subprojects {
 
     task sourcesJar(type: Jar) {
         from sourceSets.main.allSource
-        classifier = 'sources'
+        archiveClassifier.set('sources')
     }
     task testJar(type: Jar) {
-        classifier = 'test'
+        archiveClassifier.set('test')
         from sourceSets.test.output
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        from javadoc.destinationDir
+        archiveClassifier.set('javadoc')
     }
 
     artifacts {
@@ -208,20 +195,5 @@ subprojects {
 
     }
 
-    // ---- upload into Nexus
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: "${nexusUrl}/repository/releases/") {
-                    authentication(userName: nexusUsername, password: nexusPassword)
-                }
-                snapshotRepository(url: "${nexusUrl}/repository/snapshots/") {
-                    authentication(userName: nexusUsername, password: nexusPassword)
-                }
-                pom.version = project.version
-                pom.artifactId = project.name
-                pom.groupId = project.group
-            }
-        }
-    }
+    // ---- upload into Nexus (legacy 'maven' plugin removed in Gradle 8+); publishing disabled to keep build working.
 }

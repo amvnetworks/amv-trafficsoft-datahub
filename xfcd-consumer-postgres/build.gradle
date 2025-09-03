@@ -1,20 +1,20 @@
 description = 'A module containing core classes for persisting xfcd data deliveries with postgres'
 
 dependencies {
-    compile project(':xfcd-consumer-jdbc')
-    testCompile project(':xfcd-consumer-jdbc-test')
+    implementation project(':xfcd-consumer-jdbc')
+    testImplementation project(':xfcd-consumer-jdbc-test')
 
     compileOnly group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
 
-    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
-    testCompile project(':xfcd-consumer-jdbc-spring-boot-starter')
-    testCompile group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
-    testCompile 'com.opentable.components:otj-pg-embedded:0.12.5'
+    testImplementation project(':xfcd-consumer-jdbc-spring-boot-starter')
+    testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
+    testImplementation 'com.opentable.components:otj-pg-embedded:0.12.5'
 
-    testCompile ('org.dbunit:dbunit:2.6.0') {
+    testImplementation ('org.dbunit:dbunit:2.6.0') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version
         exclude group: 'postgresql', module: 'postgresql'
     }
-    testCompile 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
+    testImplementation 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
 }

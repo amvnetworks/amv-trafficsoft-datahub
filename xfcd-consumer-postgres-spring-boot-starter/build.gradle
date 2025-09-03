@@ -10,14 +10,14 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':xfcd-consumer-jdbc-spring-boot-starter')
-    compile project(':xfcd-consumer-postgres')
+    implementation project(':xfcd-consumer-jdbc-spring-boot-starter')
+    implementation project(':xfcd-consumer-postgres')
 
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.4', optional
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
 
-    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
-    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
-    testCompile group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
-    testCompile 'com.opentable.components:otj-pg-embedded:0.12.5'
+    testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.2.4'
+    testImplementation 'com.opentable.components:otj-pg-embedded:0.12.5'
 }

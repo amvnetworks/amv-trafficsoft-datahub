@@ -1,16 +1,16 @@
 description = 'A module containing test classes for persisting xfcd data deliveries via jdbc'
 
 dependencies {
-    compile project(':xfcd-consumer-jdbc')
+    implementation project(':xfcd-consumer-jdbc')
 
-    compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-    compile 'junit:junit:4.12'
-    compile 'org.hamcrest:hamcrest-all:1.3'
-    compile 'pl.pragmatists:JUnitParams:1.0.6'
+    implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    implementation 'junit:junit:4.12'
+    implementation 'org.hamcrest:hamcrest-all:1.3'
+    implementation 'pl.pragmatists:JUnitParams:1.0.6'
 
-    testCompile ('org.dbunit:dbunit:2.6.0') {
+    testImplementation ('org.dbunit:dbunit:2.6.0') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version
         exclude group: 'postgresql', module: 'postgresql'
     }
-    compile 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
+    implementation 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
 }

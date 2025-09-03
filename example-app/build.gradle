@@ -19,20 +19,20 @@ configurations.all {
         dependencySubstitution {
             // necessary as spring-boot plugin pulls in old versions
             // see https://discuss.gradle.org/t/excluded-dependence-comes-back-when-spring-boot-plugin-is-applied/17945/2
-            substitute module('com.zaxxer:HikariCP') with module('com.zaxxer:HikariCP:4.0.3')
-            substitute module('org.flywaydb:flyway-core') with module('org.flywaydb:flyway-core:7.15.0')
-            substitute module('org.xerial:sqlite-jdbc') with module('org.xerial:sqlite-jdbc:3.19.3')
+            substitute module('com.zaxxer:HikariCP') using module('com.zaxxer:HikariCP:4.0.3')
+            substitute module('org.flywaydb:flyway-core') using module('org.flywaydb:flyway-core:7.15.0')
+            substitute module('org.xerial:sqlite-jdbc') using module('org.xerial:sqlite-jdbc:3.19.3')
         }
     }
 }
 
 dependencies {
-    compile project(':xfcd-spring-boot-starter')
-    compile project(':xfcd-demo-spring-boot-starter')
+    implementation project(':xfcd-spring-boot-starter')
+    implementation project(':xfcd-demo-spring-boot-starter')
 
-    compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    //compile("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    //implementation("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
 }
 
 

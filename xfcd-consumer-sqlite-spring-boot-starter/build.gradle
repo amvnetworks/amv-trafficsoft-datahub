@@ -10,13 +10,13 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':xfcd-consumer-sqlite')
-    compile project(':xfcd-consumer-jdbc-spring-boot-starter')
+    implementation project(':xfcd-consumer-sqlite')
+    implementation project(':xfcd-consumer-jdbc-spring-boot-starter')
 
-    compile 'org.xerial:sqlite-jdbc:3.36.0.3', optional
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 
-    testCompile("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
-    testCompile "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
+    testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
-    testCompile 'org.xerial:sqlite-jdbc:3.36.0.3'
+    testImplementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 }

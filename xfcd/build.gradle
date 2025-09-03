@@ -1,13 +1,13 @@
 description = 'A module for handling trafficsoft xfcd data deliveries'
 
 dependencies {
-    compile "io.vertx:vertx-rx-java:${vertxVersion}"
-    compile "io.vertx:vertx-reactive-streams:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    implementation "io.vertx:vertx-reactive-streams:${vertxVersion}"
 
-    compile "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
-    compile "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 
-    compile 'io.prometheus:simpleclient:0.7.0'
+    implementation 'io.prometheus:simpleclient:0.7.0'
 
-    testCompile "io.vertx:vertx-unit:${vertxVersion}"
+    testImplementation "io.vertx:vertx-unit:${vertxVersion}"
 }
