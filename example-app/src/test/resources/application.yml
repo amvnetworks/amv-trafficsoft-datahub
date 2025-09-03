@@ -7,6 +7,8 @@ amv.trafficsoft.api.rest:
   password: 'mysupersecretpassword'
   contractId: 0
 
+amv.trafficsoft.rest.contract-id: 1
+
 amv.trafficsoft.datahub.xfcd:
   enabled: false
 
