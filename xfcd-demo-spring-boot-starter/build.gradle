@@ -1,6 +1,11 @@
 description = 'A showcase module containing tools for creating a demo environment'
 
 dependencies {
+    implementation project(':xfcd')
     implementation project(':xfcd-spring-boot-autoconfigure')
     implementation project(':xfcd-api-websocket')
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
+    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 }
