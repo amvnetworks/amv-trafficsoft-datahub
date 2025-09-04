@@ -1,6 +1,6 @@
 package org.amv.trafficsoft.xfcd.consumer.mysql;
 
-import com.wix.mysql.EmbeddedMysql;
+import org.testcontainers.containers.MySQLContainer;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
@@ -51,12 +51,12 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
     @Import(EmbeddedDatabaseTestConfig.class)
     public static class TestApplictaion {
         @Bean
-        public InitializingBean setJdbcUrlForTests(EmbeddedMysql embeddedMysql,
+        public InitializingBean setJdbcUrlForTests(MySQLContainer<?> mysqlContainer,
                                                    TrafficsoftXfcdJdbcProperties properties) {
             final String url = String.format("jdbc:mysql://localhost:%d/%s?" +
                             "profileSQL=true" +
                             "&generateSimpleParameterMetadata=true",
-                    embeddedMysql.getConfig().getPort(),
+                    mysqlContainer.getFirstMappedPort(),
                     EmbeddedDatabaseTestConfig.SCHEMA_NAME);
 
             return () -> properties.setJdbcUrl(url);

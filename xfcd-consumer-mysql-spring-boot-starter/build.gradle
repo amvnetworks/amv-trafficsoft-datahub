@@ -29,5 +29,6 @@ dependencies {
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testImplementation 'mysql:mysql-connector-java:5.1.49'
-    testImplementation 'com.wix:wix-embedded-mysql:4.6.2'
+    testImplementation 'org.testcontainers:mysql:1.19.0'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
 }
