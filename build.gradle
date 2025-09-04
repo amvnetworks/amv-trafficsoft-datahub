@@ -10,21 +10,6 @@ buildscript {
         reactorVersion = '3.1.0.RELEASE'
     }
     repositories {
-        maven {
-            credentials {
-                username = nexusUsername
-                password = nexusPassword
-            }
-            url "${nexusUrl}/repository/snapshots/"
-        }
-        maven {
-            credentials {
-                username = nexusUsername
-                password = nexusPassword
-            }
-            url "${nexusUrl}/repository/releases/"
-        }
-
         mavenCentral()
     }
     dependencies {
@@ -108,20 +93,6 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {
-            credentials {
-                username = nexusUsername
-                password = nexusPassword
-            }
-            url "${nexusUrl}/repository/snapshots/"
-        }
-        maven {
-            credentials {
-                username = nexusUsername
-                password = nexusPassword
-            }
-            url "${nexusUrl}/repository/releases/"
-        }
     }
 
     dependencies {
@@ -199,5 +170,5 @@ subprojects {
 
     }
 
-    // ---- upload into Nexus (legacy 'maven' plugin removed in Gradle 8+); publishing disabled to keep build working.
+    // ---- publishing disabled to keep build working (legacy 'maven' plugin removed in Gradle 8+).
 }

@@ -12,7 +12,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: nexus
 
 steps:
   - task: Gradle@3
@@ -21,9 +20,6 @@ steps:
       gradleWrapperFile: 'gradlew'
       options: >
         -Pminimal 
-        -PnexusUrl=$(nexusUrl)
-        -PnexusUsername=$(nexusUsername)
-        -PnexusPassword=$(nexusPassword)
         --refresh-dependencies
         --no-daemon
       gradleOptions: '-Xmx3072m'
