@@ -34,6 +34,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    // Add Spring Data JDBC for DataAccessException
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc:${springBootVersion}")
     //implementation("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
 }
 
