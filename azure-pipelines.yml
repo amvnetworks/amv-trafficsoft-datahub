@@ -13,7 +13,7 @@ pool:
 
 variables:
   - group: trafficsoft
-    
+
 steps:
   - task: Gradle@3
     inputs:
