@@ -1,12 +1,16 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
+import io.vertx.core.Vertx;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcDeliveryConsumer;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcIncomingDeliveryConsumerAutoConfig;
+import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcIncomingDeliveryConsumerAutoConfigCompleted;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +27,8 @@ import static org.mockito.Mockito.mock;
         TrafficsoftDatahubXfcdJdbcAutoConfigIT.TestApplictaion.class,
 })
 public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
-    @SpringBootApplication
-    @Import(JdbcIncomingDeliveryConsumerAutoConfig.class)
+    @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
+    @Import({JdbcIncomingDeliveryConsumerAutoConfig.class, JdbcIncomingDeliveryConsumerAutoConfigCompleted.class})
     public static class TestApplictaion {
         /**
          * This bean simulates an inclusion of an
@@ -34,6 +38,11 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
         @Bean
         public TrafficsoftDeliveryPackageJdbcDao deliveryPackageJdbcDao() {
             return mock(TrafficsoftDeliveryPackageJdbcDao.class);
+        }
+
+        @Bean
+        public Vertx vertx() {
+            return Vertx.vertx();
         }
 
     }

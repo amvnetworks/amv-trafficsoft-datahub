@@ -7,14 +7,14 @@ logging.config: classpath:logback.xml
 logging.level.org.springframework: WARN
 
 amv.trafficsoft.datahub.xfcd:
-  enabled: true
+  enabled: false
   fetch-interval-in-seconds: 3600
 
 amv.trafficsoft.xfcd.consumer.jdbc:
   enabled: true
   jdbcUrl: jdbc:sqlite:build/tmp/~amv-trafficsoft-datahub-xfcd-consumer-sqlite-test.db
   driverClassName: org.sqlite.JDBC
-  schemaMigrationEnabled: true
+  schemaMigrationEnabled: false
   flywayScriptsLocation: classpath:/db/sqlite/xfcd/migration
   pool:
     max-pool-size: 1
