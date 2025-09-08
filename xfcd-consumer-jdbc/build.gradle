@@ -6,7 +6,7 @@ dependencies {
     implementation project(':xfcd')
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 
-    implementation('com.zaxxer:HikariCP:4.0.3')
+    implementation('com.zaxxer:HikariCP:5.1.0')
     implementation('org.flywaydb:flyway-core:7.15.0')
 
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}") {

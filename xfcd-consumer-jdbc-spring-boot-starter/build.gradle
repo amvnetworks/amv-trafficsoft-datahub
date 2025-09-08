@@ -11,7 +11,7 @@ dependencies {
     implementation "io.vertx:vertx-rx-java:${vertxVersion}"
 
     // Connection pool and migration used directly in auto-config
-    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
     implementation 'org.flywaydb:flyway-core:7.15.0'
 
     testImplementation project(':xfcd-spring-boot-autoconfigure')
