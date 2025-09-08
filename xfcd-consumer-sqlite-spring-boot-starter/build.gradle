@@ -26,6 +26,8 @@ dependencies {
     // SQLite JDBC driver
     implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 
+    // Include model classes and test mothers
+    testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}")
     testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
     // Access core Xfcd types (XfcdEvents, events) needed by tests

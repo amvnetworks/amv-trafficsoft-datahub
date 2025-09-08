@@ -21,7 +21,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**

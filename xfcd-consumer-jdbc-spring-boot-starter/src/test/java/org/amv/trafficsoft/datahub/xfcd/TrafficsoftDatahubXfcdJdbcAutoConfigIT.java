@@ -1,7 +1,5 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
-import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcDeliveryConsumer;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.JdbcIncomingDeliveryConsumerAutoConfig;
 import org.amv.trafficsoft.xfcd.consumer.jdbc.TrafficsoftDeliveryPackageJdbcDao;
@@ -38,15 +36,6 @@ public class TrafficsoftDatahubXfcdJdbcAutoConfigIT {
             return mock(TrafficsoftDeliveryPackageJdbcDao.class);
         }
 
-        @Bean
-        public TrafficsoftApiRestProperties apiRestProperties() {
-            return new TrafficsoftApiRestProperties();
-        }
-
-        @Bean
-        public XfcdClient xfcdClient() {
-            return mock(XfcdClient.class);
-        }
     }
 
     @Autowired

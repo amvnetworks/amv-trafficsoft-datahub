@@ -3,8 +3,6 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.prometheus.client.CollectorRegistry;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
-import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,15 +32,6 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
     @SpringBootApplication
     @Import(TrafficsoftDatahubXfcdAutoConfig.class)
     public static class TestApplictaion {
-        @Bean
-        public TrafficsoftApiRestProperties apiRestProperties() {
-            return new TrafficsoftApiRestProperties();
-        }
-
-        @Bean
-        public XfcdClient xfcdClient() {
-            return mock(XfcdClient.class);
-        }
     }
 
     @Autowired

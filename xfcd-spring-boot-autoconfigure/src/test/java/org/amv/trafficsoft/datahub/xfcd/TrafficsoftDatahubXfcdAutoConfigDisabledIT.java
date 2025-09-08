@@ -1,8 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import io.vertx.core.Vertx;
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
-import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,15 +33,6 @@ public class TrafficsoftDatahubXfcdAutoConfigDisabledIT {
             return Vertx.vertx();
         }
 
-        @Bean
-        public TrafficsoftApiRestProperties apiRestProperties() {
-            return new TrafficsoftApiRestProperties();
-        }
-
-        @Bean
-        public XfcdClient xfcdClient() {
-            return mock(XfcdClient.class);
-        }
     }
 
     @Autowired

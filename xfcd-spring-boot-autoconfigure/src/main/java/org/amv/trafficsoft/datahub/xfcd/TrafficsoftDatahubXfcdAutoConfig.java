@@ -3,11 +3,9 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle.DeliveryRetrievalConfig;
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,7 +18,6 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
-@AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
 @EnableConfigurationProperties(TrafficsoftDatahubXfcdProperties.class)
 public class TrafficsoftDatahubXfcdAutoConfig {
     /**
@@ -55,13 +52,13 @@ public class TrafficsoftDatahubXfcdAutoConfig {
     public class TrafficsoftDatahubXfcdConfig {
 
         private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
-        private final TrafficsoftApiRestProperties apiRestProperties;
+        private final long contractId;
 
         @Autowired
         public TrafficsoftDatahubXfcdConfig(TrafficsoftDatahubXfcdProperties datahubXfcdProperties,
-                                            TrafficsoftApiRestProperties apiRestProperties) {
+                                            @Value("${amv.trafficsoft.rest.api.contractId}") long contractId) {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
-            this.apiRestProperties = requireNonNull(apiRestProperties);
+            this.contractId = contractId;
         }
 
         @Bean
@@ -83,12 +80,12 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Bean
         public TrafficsoftDeliveryPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
-            return new TrafficsoftDeliveryPublisherImpl(xfcdClient, apiRestProperties.getContractId());
+            return new TrafficsoftDeliveryPublisherImpl(xfcdClient, contractId);
         }
 
         @Bean
         public DeliveryConfirmationVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
-            return new DeliveryConfirmationVerticle(xfcdEvents, xfcdClient, apiRestProperties.getContractId());
+            return new DeliveryConfirmationVerticle(xfcdEvents, xfcdClient, contractId);
         }
 
         @Bean

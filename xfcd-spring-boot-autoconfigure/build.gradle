@@ -4,7 +4,10 @@ dependencies {
     implementation project(':xfcd')
     implementation "io.vertx:vertx-core:${vertxVersion}"
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
+    // Starter provides auto-config and properties
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
+    // Ensure client API (e.g., XfcdClient) is available on compile classpath
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client:${trafficsoftRestVersion}"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
 
@@ -13,6 +16,7 @@ dependencies {
     testImplementation "io.vertx:vertx-rx-java:${vertxVersion}"
     // Needed by tests for CollectorRegistry
     testImplementation 'io.prometheus:simpleclient:0.10.0'
-    // Provides DeliveryRestDtoMother used in tests
+    // Include model classes and mothers used in tests
+    testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
     testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 }

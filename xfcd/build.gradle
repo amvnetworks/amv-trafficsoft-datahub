@@ -2,12 +2,22 @@ description = 'A module for handling trafficsoft xfcd data deliveries'
 
 dependencies {
     implementation "io.vertx:vertx-rx-java:${vertxVersion}"
-    implementation "io.vertx:vertx-reactive-streams:${vertxVersion}"
+    implementation ("io.vertx:vertx-reactive-streams:${vertxVersion}") {
+        exclude group: 'org.reactivestreams', module: 'reactive-streams'
+    }
 
+    // REST client starter provides XfcdClient
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
-    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
+    // Direct client API to ensure XfcdClient is available on compile classpath
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client:${trafficsoftRestVersion}"
+    // Include model API for DeliveryRestDto, TrackRestDto
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
+    // Test-only model helpers
+    testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"
 
     implementation 'io.prometheus:simpleclient:0.7.0'
+    // Required by XfcdClient methods returning HystrixCommand
+    implementation 'com.netflix.hystrix:hystrix-core:1.5.18'
 
     testImplementation "io.vertx:vertx-unit:${vertxVersion}"
 }
