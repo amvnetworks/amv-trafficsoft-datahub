@@ -2,6 +2,7 @@ package org.amv.trafficsoft.xfcd.consumer.mysql;
 
 import org.testcontainers.containers.MySQLContainer;
 import io.vertx.core.Vertx;
+import org.testcontainers.utility.DockerImageName;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackage;
 import org.amv.trafficsoft.datahub.xfcd.TrafficsoftDeliveryPackageImpl;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
@@ -44,7 +45,7 @@ import static org.junit.Assert.assertThat;
         "amv.trafficsoft.xfcd.consumer.jdbc.enabled=true",
         "amv.trafficsoft.xfcd.consumer.jdbc.username=root",
         "amv.trafficsoft.xfcd.consumer.jdbc.password=",
-        "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName=com.mysql.jdbc.Driver",
+        "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName=com.mysql.cj.jdbc.Driver",
         "amv.trafficsoft.xfcd.consumer.jdbc.sendConfirmationEvents=true",
         "amv.trafficsoft.xfcd.consumer.jdbc.schemaMigrationEnabled=false",
         "amv.trafficsoft.xfcd.consumer.jdbc.flywayScriptsLocation=classpath:db/migration"
@@ -63,7 +64,8 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
                                                    TrafficsoftXfcdJdbcProperties properties) {
             final String url = String.format("jdbc:mysql://localhost:%d/%s?" +
                             "profileSQL=true" +
-                            "&generateSimpleParameterMetadata=true",
+                            "&generateSimpleParameterMetadata=true" +
+                            "&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                     mysqlContainer.getFirstMappedPort(),
                     EmbeddedDatabaseTestConfig.SCHEMA_NAME);
 

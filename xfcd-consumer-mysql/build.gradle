@@ -5,15 +5,16 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
     testImplementation project(':xfcd-consumer-jdbc-test')
 
-    compileOnly 'mysql:mysql-connector-java:5.1.49'
+    compileOnly 'com.mysql:mysql-connector-j:8.4.0'
 
     testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
 
     testImplementation project(':xfcd-consumer-jdbc-spring-boot-starter')
-    testImplementation 'mysql:mysql-connector-java:5.1.49'
-    testImplementation 'org.testcontainers:mysql:1.19.0'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
-    testImplementation 'org.flywaydb:flyway-core:7.15.0'
+    testImplementation 'com.mysql:mysql-connector-j:8.4.0'
+    testImplementation 'org.testcontainers:mysql:1.20.4'
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.4'
+    testImplementation 'org.flywaydb:flyway-core:10.21.0'
+    testImplementation 'org.flywaydb:flyway-mysql:10.21.0'
 
     testImplementation ('org.dbunit:dbunit:2.7.3') {
         // postgresql:postgresql:8.4-701.jdbc3 pulls in wrong driver version

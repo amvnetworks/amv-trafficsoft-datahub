@@ -21,10 +21,10 @@ import java.util.Map;
 @Configuration
 @AutoConfigureAfter(JdbcIncomingDeliveryConsumerAutoConfig.class)
 @AutoConfigureBefore(JdbcIncomingDeliveryConsumerAutoConfigCompleted.class)
-@ConditionalOnClass(com.mysql.jdbc.Driver.class)
+@ConditionalOnClass(com.mysql.cj.jdbc.Driver.class)
 @ConditionalOnProperty(
         value = "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName",
-        havingValue = "com.mysql.jdbc.Driver"
+        havingValue = "com.mysql.cj.jdbc.Driver"
 )
 @ConditionalOnBean(name = "trafficsoftDeliveryJdbcConsumerNamedTemplate")
 @EnableTransactionManagement

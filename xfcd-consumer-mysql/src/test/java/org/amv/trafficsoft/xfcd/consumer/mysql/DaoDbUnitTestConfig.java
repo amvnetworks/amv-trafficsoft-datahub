@@ -27,12 +27,12 @@ public class DaoDbUnitTestConfig {
 
     @Bean(destroyMethod = "stop")
     public MySQLContainer<?> mysqlContainer() {
-        MySQLContainer<?> mysql = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
+        MySQLContainer<?> mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.30"))
                 .withDatabaseName(SCHEMA_NAME)
                 .withUsername("differentUser")
                 .withPassword("anotherPassword")
                 .withExposedPorts(3306);
-        
+
         mysql.start();
         return mysql;
     }
@@ -85,14 +85,14 @@ public class DaoDbUnitTestConfig {
     public DataSource dataSource() {
         final MySQLContainer<?> mysqlContainer = mysqlContainer(); // make sure MySQL container is started.
 
-        final String url = String.format("jdbc:mysql://localhost:%d/%s?profileSQL=true&generateSimpleParameterMetadata=true",
+        final String url = String.format("jdbc:mysql://localhost:%d/%s?profileSQL=true&generateSimpleParameterMetadata=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 mysqlContainer.getFirstMappedPort(),
                 SCHEMA_NAME);
 
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.username(mysqlContainer.getUsername());
         dataSourceBuilder.password(mysqlContainer.getPassword());
-        dataSourceBuilder.driverClassName(com.mysql.jdbc.Driver.class.getName());
+        dataSourceBuilder.driverClassName(com.mysql.cj.jdbc.Driver.class.getName());
         dataSourceBuilder.url(url);
         return dataSourceBuilder.build();
     }

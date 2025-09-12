@@ -21,12 +21,12 @@ public class EmbeddedDatabaseTestConfig {
     @Bean(destroyMethod = "stop")
     @Order(value = Ordered.HIGHEST_PRECEDENCE)
     public MySQLContainer<?> mysqlContainer() {
-        MySQLContainer<?> mysql = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
+        MySQLContainer<?> mysql = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.30"))
                 .withDatabaseName(SCHEMA_NAME)
                 .withUsername(properties.getUsername())
                 .withPassword(properties.getPassword())
                 .withExposedPorts(3306);
-        
+
         mysql.start();
         return mysql;
     }
