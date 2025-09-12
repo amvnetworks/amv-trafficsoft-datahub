@@ -2,7 +2,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        trafficsoftRestVersion = '20250908.2'
+        trafficsoftRestVersion = '20250911.1'
         vertxVersion = '3.9.10'
         amvVertxVersion = '20250908.3'
         jacksonVersion = '2.17.2'
@@ -41,8 +41,9 @@ plugins {
 
 description = 'Parent package for handling AMV Trafficsoft xfcd data deliveries'
 
-group = 'org.amv.trafficsoft.datahub'
-version = '0.3.13-SNAPSHOT'
+if (!project.hasProperty('version') || project.version == 'unspecified') {
+    version = System.getenv('BUILD_VERSION') ?: rootProject.version
+}
 
 
 allprojects {
