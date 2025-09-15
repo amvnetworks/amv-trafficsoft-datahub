@@ -41,14 +41,6 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {
         TrafficsoftDeliveryMysqlAutoConfigIT.TestApplictaion.class
-}, properties = {
-        "amv.trafficsoft.xfcd.consumer.jdbc.enabled=true",
-        "amv.trafficsoft.xfcd.consumer.jdbc.username=root",
-        "amv.trafficsoft.xfcd.consumer.jdbc.password=",
-        "amv.trafficsoft.xfcd.consumer.jdbc.driverClassName=com.mysql.cj.jdbc.Driver",
-        "amv.trafficsoft.xfcd.consumer.jdbc.sendConfirmationEvents=true",
-        "amv.trafficsoft.xfcd.consumer.jdbc.schemaMigrationEnabled=false",
-        "amv.trafficsoft.xfcd.consumer.jdbc.flywayScriptsLocation=classpath:db/migration"
 })
 @TestExecutionListeners({
         DirtiesContextTestExecutionListener.class,

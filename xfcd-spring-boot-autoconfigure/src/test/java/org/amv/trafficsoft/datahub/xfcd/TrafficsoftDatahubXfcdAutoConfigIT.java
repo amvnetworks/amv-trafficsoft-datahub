@@ -32,6 +32,16 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
     @SpringBootApplication
     @Import(TrafficsoftDatahubXfcdAutoConfig.class)
     public static class TestApplictaion {
+        
+        @Bean
+        public Vertx vertx() {
+            return Vertx.vertx();
+        }
+        
+        @Bean
+        public org.amv.trafficsoft.rest.client.xfcd.XfcdClient xfcdClient() {
+            return mock(org.amv.trafficsoft.rest.client.xfcd.XfcdClient.class);
+        }
     }
 
     @Autowired

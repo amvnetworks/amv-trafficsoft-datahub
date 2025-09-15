@@ -12,3 +12,5 @@ amv.trafficsoft.datahub.xfcd:
   enabled: true
   fetch-interval-in-seconds: 3600
 
+amv.trafficsoft.rest.api.contractId: 123456
+

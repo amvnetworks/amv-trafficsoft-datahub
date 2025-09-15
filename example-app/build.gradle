@@ -31,6 +31,8 @@ dependencies {
     implementation project(':xfcd-demo-spring-boot-starter')
     // Ensure DAO API is available at compile time
     implementation project(':xfcd-consumer-jdbc')
+    // Add xfcd module for TrafficsoftDeliveryPackage class
+    implementation project(':xfcd')
 
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

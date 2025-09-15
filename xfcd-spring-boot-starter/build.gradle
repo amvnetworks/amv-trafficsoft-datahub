@@ -2,10 +2,7 @@ description = 'Starter for spring based applications handling xfcd data deliveri
 
 dependencies {
     implementation project(':xfcd-spring-boot-autoconfigure')
-
-    implementation project(':xfcd-consumer-sqlite-spring-boot-starter')
-
-    implementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+        implementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
 
 }
