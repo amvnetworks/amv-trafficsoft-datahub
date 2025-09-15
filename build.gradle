@@ -50,6 +50,10 @@ allprojects {
 
     group 'org.amv.trafficsoft.datahub'
 
+    if (!project.hasProperty('version') || project.version == 'unspecified') {
+        version = System.getenv('BUILD_VERSION') ?: rootProject.version
+    }
+
     configurations.all {
         resolutionStrategy {
             preferProjectModules()
