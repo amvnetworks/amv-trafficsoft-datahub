@@ -4,7 +4,7 @@ buildscript {
     ext {
         trafficsoftRestVersion = '20250911.1'
         vertxVersion = '3.9.10'
-        amvVertxVersion = '20250908.3'
+        amvVertxVersion = '20250918.1'
         jacksonVersion = '2.17.2'
         springBootVersion = '3.3.4'
         reactorVersion = '3.6.10'
