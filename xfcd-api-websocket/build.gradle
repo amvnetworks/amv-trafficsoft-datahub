@@ -5,4 +5,6 @@ dependencies {
     implementation "io.vertx:vertx-web:${vertxVersion}"
     implementation "io.vertx:vertx-rx-java3:${vertxVersion}"
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
+    // Needed to resolve Jackson annotations used by the REST model (e.g., JsonInclude)
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 }
