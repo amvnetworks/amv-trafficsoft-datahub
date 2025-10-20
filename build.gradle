@@ -6,7 +6,7 @@ buildscript {
         vertxVersion = '4.5.10'
         amvVertxVersion = '20250918.1'
         jacksonVersion = '2.17.2'
-        springBootVersion = '3.3.4'
+        springBootVersion = '3.4.5'
         reactorVersion = '3.6.10'
     }
     repositories {
@@ -121,6 +121,9 @@ subprojects {
             }
             implementation('io.reactivex.rxjava3:rxjava:3.1.9') {
                 because 'Ensure RxJava 3 is used consistently across modules and align with vertx-rx-java3'
+            }
+            implementation("io.vertx:vertx-dropwizard-metrics:${vertxVersion}") {
+                because 'Align Vert.x Dropwizard metrics module with Vert.x core to avoid NoClassDefFoundError for removed FileResolver when older 3.x artifact is pulled transitively'
             }
         }
 

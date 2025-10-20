@@ -16,7 +16,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql:10.21.0'
 
     testImplementation project(':xfcd-spring-boot-autoconfigure')
-    testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    // Removed amv-vertx starter (built for Vert.x 3) from test classpath to avoid incompatibility with Vert.x 4
+    // testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
     // Provide REST client types used in tests (TrafficsoftApiRestProperties, XfcdClient)
     testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
 

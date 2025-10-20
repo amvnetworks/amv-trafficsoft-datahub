@@ -18,6 +18,11 @@ public class EmbeddedDatabaseTestConfig {
     @Autowired
     TrafficsoftXfcdJdbcProperties properties;
 
+    @Bean
+    public io.vertx.core.Vertx vertx() {
+        return io.vertx.core.Vertx.vertx();
+    }
+
     @Bean(destroyMethod = "stop")
     @Order(value = Ordered.HIGHEST_PRECEDENCE)
     public MySQLContainer<?> mysqlContainer() {

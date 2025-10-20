@@ -27,7 +27,7 @@ public class WebSocketApiVerticle extends AbstractVerticle {
         vertx.createHttpServer()
                 .requestHandler(req -> {
                 })
-                .websocketHandler(webSocketHandler())
+                .webSocketHandler(webSocketHandler())
                 .listen(port);
     }
 

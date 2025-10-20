@@ -5,6 +5,9 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.json.Json;
 import io.vertx.core.streams.Pump;
+import io.vertx.core.streams.WriteStream;
+import io.vertx.core.Handler;
+import io.vertx.core.AsyncResult;
 import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import org.reactivestreams.Publisher;
@@ -24,21 +27,10 @@ public class VertxEventBusReactorAdapter<E> {
         requireNonNull(clazz);
         requireNonNull(publisher);
 
-        ReactiveReadStream<Object> rrs = ReactiveReadStream.readStream();
-
+        final String address = clazz.getName();
         Flux.from(publisher)
                 .map(Json::encode)
-                .subscribe(rrs);
-
-        MessageProducer<Object> messageProducer = vertx.eventBus().publisher(clazz.getName());
-
-        Pump pump = Pump.pump(rrs, messageProducer);
-
-        pump.start();
-
-        rrs.endHandler(event -> {
-            pump.stop();
-        });
+                .subscribe(json -> vertx.eventBus().publish(address, json));
     }
 
     public <T extends E> void subscribe(Class<T> clazz, Subscriber<T> subscriber) {

@@ -28,7 +28,8 @@ dependencies {
     // Include model classes and test mothers
     testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}")
     testImplementation("org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}")
-    testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
+    // Removed amv-vertx starter (built for Vert.x 3) from test classpath to avoid incompatibility with Vert.x 4
+    // testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
 
     testImplementation 'com.mysql:mysql-connector-j:8.4.0'
     testImplementation 'org.testcontainers:mysql:1.20.4'
