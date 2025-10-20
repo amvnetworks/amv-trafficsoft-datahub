@@ -2,14 +2,7 @@ package org.amv.trafficsoft.datahub;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.json.Json;
-import io.vertx.core.streams.Pump;
-import io.vertx.core.streams.WriteStream;
-import io.vertx.core.Handler;
-import io.vertx.core.AsyncResult;
-import io.vertx.ext.reactivestreams.ReactiveReadStream;
-import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.Flux;
@@ -37,21 +30,19 @@ public class VertxEventBusReactorAdapter<E> {
         requireNonNull(clazz);
         requireNonNull(subscriber);
 
-        final MessageConsumer<String> consumer = vertx.eventBus().consumer(clazz.getName());
+        final String address = clazz.getName();
+        final MessageConsumer<String> consumer = vertx.eventBus().consumer(address);
 
-        ReactiveWriteStream<String> rws = ReactiveWriteStream.writeStream(vertx);
-
-        Pump pump = Pump.pump(consumer.bodyStream(), rws);
-
-        Flux.from(rws)
-                .doOnSubscribe(subscription -> {
-                    pump.start();
-                })
-                .doOnComplete(() -> {
-                    pump.stop();
-                    rws.close();
-                })
-                .map(json -> Json.decodeValue(json, clazz))
-                .subscribe(subscriber);
+        Flux.<T>create(sink -> {
+            consumer.handler(msg -> {
+                try {
+                    T value = Json.decodeValue(msg.body(), clazz);
+                    sink.next(value);
+                } catch (Throwable t) {
+                    sink.error(t);
+                }
+            });
+            sink.onDispose(consumer::unregister);
+        }).subscribe(subscriber);
     }
 }
