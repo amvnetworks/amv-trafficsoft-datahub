@@ -64,24 +64,21 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
         TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        vertx.getDelegate().<Void>executeBlocking(promise -> {
-            try {
-                consumeIncomingDeliveryEvent(event);
-                promise.complete();
-            } catch (Throwable t) {
-                promise.fail(t);
+        vertx.<Void>executeBlocking(promise -> {
+            consumeIncomingDeliveryEvent(event);
+            promise.complete(null);
+        })
+        .doOnError(t -> {
+            log.error("", t);
+        })
+        .doOnSuccess(ignored -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Successfully consumed {} nodes in {}ms", deliveryPackage.getAmountOfNodes(), stopwatch
+                        .elapsed(TimeUnit.MILLISECONDS));
             }
-        }, result -> {
-            if (result.failed()) {
-                log.error("", result.cause());
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Successfully consumed {} nodes in {}ms", deliveryPackage.getAmountOfNodes(), stopwatch
-                            .elapsed(TimeUnit.MILLISECONDS));
-                }
-            }
-            stopwatch.stop();
-        });
+        })
+        .doFinally(() -> stopwatch.stop())
+        .subscribe();
     }
 
     @VisibleForTesting

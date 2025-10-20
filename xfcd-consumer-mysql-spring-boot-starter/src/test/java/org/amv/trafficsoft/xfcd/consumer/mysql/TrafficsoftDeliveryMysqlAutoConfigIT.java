@@ -65,58 +65,6 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
         public XfcdEvents xfcdEvents(Vertx vertx) {
             return new XfcdEvents(vertx);
         }
-
-        @Bean
-        public InitializingBean wireIncomingEventPipeline(org.springframework.context.ApplicationContext ctx,
-                                                          XfcdEvents xfcdEvents) {
-            return () -> xfcdEvents.subscribe(org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent.class,
-                    new org.reactivestreams.Subscriber<org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent>() {
-                        @Override
-                        public void onSubscribe(org.reactivestreams.Subscription s) {
-                            s.request(Long.MAX_VALUE);
-                        }
-
-                        @Override
-                        public void onNext(org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent event) {
-                            try {
-                                Object bean = ctx.getBean("trafficsoftIncomingDeliveryEventConsumerJdbc");
-                                java.lang.reflect.Method accept = null;
-                                for (java.lang.reflect.Method m : bean.getClass().getMethods()) {
-                                    if (m.getName().equals("accept") && m.getParameterCount() == 2) {
-                                        accept = m;
-                                        break;
-                                    }
-                                }
-                                if (accept == null) {
-                                    throw new IllegalStateException("Could not find accept(IncomingDeliveryEvent, Confirmation) on bean");
-                                }
-                                Class<?> confirmationType = accept.getParameterTypes()[1];
-                                Object confirmationProxy = java.lang.reflect.Proxy.newProxyInstance(
-                                        confirmationType.getClassLoader(),
-                                        new Class[]{confirmationType},
-                                        (proxy, method, args) -> {
-                                            if (method.getName().equals("confirm")) {
-                                                xfcdEvents.publish(org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent.class,
-                                                        reactor.core.publisher.Flux.just(org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent.builder()
-                                                                .deliveryPackage(event.getDeliveryPackage())
-                                                                .build()));
-                                            }
-                                            return null;
-                                        });
-                                accept.invoke(bean, event, confirmationProxy);
-                            } catch (Throwable t) {
-                                // Swallow to not fail the test wiring; real errors will surface via assertions
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable t) { }
-
-                        @Override
-                        public void onComplete() { }
-                    });
-        }
-
     }
 
     @Autowired
@@ -132,6 +80,8 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
     public void itShouldPersistToDatabase() throws Exception {
         assertThat(properties.isSendConfirmationEvents(), is(true));
 
+        CountDownLatch latch = new CountDownLatch(1);
+
         List<DeliveryRestDto> deliveries = DeliveryRestDtoMother.randomList();
 
         long deliveryId = deliveries.stream().findFirst()
@@ -146,14 +96,30 @@ public class TrafficsoftDeliveryMysqlAutoConfigIT {
                 .deliveryPackage(deliveryPackage)
                 .build()));
 
-        // Wait up to 30 seconds for the delivery to be persisted
-        long deadline = System.currentTimeMillis() + 30_000L;
-        while (System.currentTimeMillis() < deadline) {
-            if (this.deliveryDao.findById(deliveryId).isPresent()) {
-                break;
+        xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, new Subscriber<>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                s.request(1);
             }
-            Thread.sleep(200);
-        }
+
+            @Override
+            public void onNext(ConfirmableDeliveryEvent event) {
+                assertThat(event.getDeliveryPackage(), equalTo(deliveryPackage));
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                latch.countDown();
+            }
+
+            @Override
+            public void onComplete() {
+                latch.countDown();
+            }
+        });
+
+        latch.await();
 
         TrafficsoftDeliveryEntity fromDb = this.deliveryDao.findById(deliveryId)
                 .orElseThrow(IllegalStateException::new);

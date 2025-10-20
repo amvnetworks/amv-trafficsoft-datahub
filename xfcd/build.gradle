@@ -6,7 +6,7 @@ dependencies {
         exclude group: 'org.reactivestreams', module: 'reactive-streams'
     }
 
-    // Jackson annotations used in this module
+    // Jackson for annotations and databind (JsonDeserialize, JsonPOJOBuilder, JsonIgnore)
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
