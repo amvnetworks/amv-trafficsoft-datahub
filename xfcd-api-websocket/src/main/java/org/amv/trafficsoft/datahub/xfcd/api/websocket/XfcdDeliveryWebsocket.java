@@ -2,7 +2,7 @@ package org.amv.trafficsoft.datahub.xfcd.api.websocket;
 
 import com.google.common.base.Strings;
 import io.vertx.core.json.Json;
-import io.vertx.rxjava.core.http.ServerWebSocket;
+import io.vertx.reactivex.core.http.ServerWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;

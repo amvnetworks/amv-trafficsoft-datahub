@@ -1,7 +1,7 @@
 description = 'A module for handling trafficsoft xfcd data deliveries'
 
 dependencies {
-    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java2:${vertxVersion}"
     implementation ("io.vertx:vertx-reactive-streams:${vertxVersion}") {
         exclude group: 'org.reactivestreams', module: 'reactive-streams'
     }

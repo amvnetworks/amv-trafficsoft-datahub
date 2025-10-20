@@ -1,6 +1,6 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;

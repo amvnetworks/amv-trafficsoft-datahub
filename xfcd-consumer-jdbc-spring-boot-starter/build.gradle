@@ -8,7 +8,7 @@ dependencies {
     // Spring Boot and JDBC runtime requirements for auto-configuration
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
-    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java2:${vertxVersion}"
 
     // Connection pool and migration used directly in auto-config
     implementation 'com.zaxxer:HikariCP:5.1.0'

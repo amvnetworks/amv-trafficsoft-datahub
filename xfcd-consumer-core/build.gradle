@@ -2,7 +2,7 @@ description = 'A websocket api for xfcd data deliveries'
 
 dependencies {
     implementation project(':xfcd')
-    implementation "io.vertx:vertx-rx-java:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java2:${vertxVersion}"
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 
     testImplementation "org.amv.trafficsoft:amv-trafficsoft-rest-model-test:${trafficsoftRestVersion}"

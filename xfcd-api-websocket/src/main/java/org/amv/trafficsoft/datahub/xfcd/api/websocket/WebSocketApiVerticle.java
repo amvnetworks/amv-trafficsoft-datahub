@@ -2,8 +2,8 @@ package org.amv.trafficsoft.datahub.xfcd.api.websocket;
 
 import com.google.common.collect.ImmutableList;
 import io.vertx.core.Handler;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.http.ServerWebSocket;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.ServerWebSocket;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

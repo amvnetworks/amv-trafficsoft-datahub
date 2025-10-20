@@ -2,7 +2,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmableDeliveryEvent;

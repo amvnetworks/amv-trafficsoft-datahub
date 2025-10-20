@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Longs;
 import io.vertx.core.json.Json;
-import io.vertx.rxjava.core.http.ServerWebSocket;
+import io.vertx.reactivex.core.http.ServerWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.rest.xfcd.model.ParameterRestDto;
 import org.apache.commons.lang3.RandomUtils;
