@@ -13,7 +13,7 @@ dependencies {
 
     testImplementation "io.vertx:vertx-unit:${vertxVersion}"
     testImplementation "org.amv.vertx:amv-vertx-spring-boot-starter:${amvVertxVersion}"
-    testImplementation "io.vertx:vertx-rx-java2:${vertxVersion}"
+    testImplementation "io.vertx:vertx-rx-java3:${vertxVersion}"
     // Needed by tests for CollectorRegistry
     testImplementation 'io.prometheus:simpleclient:0.10.0'
     // Include model classes and mothers used in tests

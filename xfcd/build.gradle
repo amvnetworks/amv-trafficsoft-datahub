@@ -1,10 +1,14 @@
 description = 'A module for handling trafficsoft xfcd data deliveries'
 
 dependencies {
-    implementation "io.vertx:vertx-rx-java2:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java3:${vertxVersion}"
     implementation ("io.vertx:vertx-reactive-streams:${vertxVersion}") {
         exclude group: 'org.reactivestreams', module: 'reactive-streams'
     }
+
+    // Jackson annotations used in this module
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
     // REST client starter provides XfcdClient
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"

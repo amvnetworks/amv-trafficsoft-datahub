@@ -3,7 +3,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 import com.google.common.collect.Lists;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
-import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.rxjava3.core.AbstractVerticle;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.ConfirmedDeliveryEvent;

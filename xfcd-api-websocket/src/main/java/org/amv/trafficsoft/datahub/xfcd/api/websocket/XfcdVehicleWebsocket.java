@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Longs;
 import io.vertx.core.json.Json;
-import io.vertx.rxjava.core.http.ServerWebSocket;
+import io.vertx.rxjava3.core.http.ServerWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.XfcdEvents;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;

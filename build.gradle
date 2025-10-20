@@ -2,7 +2,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 
 buildscript {
     ext {
-        trafficsoftRestVersion = '20251017.2'
+        trafficsoftRestVersion = '20250911.1'
         vertxVersion = '4.5.10'
         amvVertxVersion = '20250918.1'
         jacksonVersion = '2.17.2'
@@ -119,8 +119,8 @@ subprojects {
             implementation('org.slf4j:slf4j-api:2.0.16') {
                 because 'Align all modules to SLF4J 2.0.x to match Spring Boot 3.x starter-logging and avoid version conflicts with legacy transitive 1.7.x (e.g., metrics-core)'
             }
-            implementation('io.reactivex:rxjava:1.3.8') {
-                because 'Resolve conflict between 1.3.8 and 1.2.0 pulled transitively; required by vertx-rx-java 3.9.10'
+            implementation('io.reactivex.rxjava3:rxjava:3.1.9') {
+                because 'Ensure RxJava 3 is used consistently across modules and align with vertx-rx-java3'
             }
         }
 

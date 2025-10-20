@@ -6,6 +6,6 @@ dependencies {
     implementation project(':xfcd-api-websocket')
 
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
-    implementation "io.vertx:vertx-rx-java2:${vertxVersion}"
+    implementation "io.vertx:vertx-rx-java3:${vertxVersion}"
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-model:${trafficsoftRestVersion}"
 }
