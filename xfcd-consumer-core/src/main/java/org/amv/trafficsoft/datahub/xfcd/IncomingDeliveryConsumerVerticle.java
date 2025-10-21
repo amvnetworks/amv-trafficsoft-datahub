@@ -65,8 +65,12 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         vertx.<Void>executeBlocking(promise -> {
-            consumeIncomingDeliveryEvent(event);
-            promise.complete(null);
+            try {
+                consumeIncomingDeliveryEvent(event);
+                promise.complete(null);
+            } catch (Exception e) {
+                promise.fail(e);
+            }
         })
         .doOnError(t -> {
             log.error("", t);
@@ -89,7 +93,7 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
 
         if (deliveryPackage.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.info("Ignore empty deliveries for contract {}", deliveryPackage.getContractId());
+                log.debug("Ignore empty deliveries for contract {}", deliveryPackage.getContractId());
             }
             return;
         }
