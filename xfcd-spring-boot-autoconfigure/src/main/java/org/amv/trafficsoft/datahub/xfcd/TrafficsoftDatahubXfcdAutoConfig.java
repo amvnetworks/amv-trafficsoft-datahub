@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +34,9 @@ public class TrafficsoftDatahubXfcdAutoConfig {
         return new TrafficsoftDatahubXfcdPropertiesValidator();
     }*/
 
+    @Autowired
+    private Environment environment;
+
     /**
      * In case the xfcd datahub module is disabled (e.g. during development)
      * a bean of XfcdEvents must be in the context for the application
@@ -44,6 +48,8 @@ public class TrafficsoftDatahubXfcdAutoConfig {
     @Bean
     @ConditionalOnMissingBean(XfcdEvents.class)
     public XfcdEvents xfcdEvents(Vertx vertx) {
+        String enabled = environment != null ? environment.getProperty("amv.trafficsoft.datahub.xfcd.enabled", "false") : "unknown";
+        log.info("TrafficsoftDatahubXfcdAutoConfig active (amv.trafficsoft.datahub.xfcd.enabled={})", enabled);
         return new XfcdEvents(vertx);
     }
 
@@ -60,6 +66,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.contractId = contractId;
         }
+
 
         @Bean
         public DeliveryRetrievalVerticle deliveryRetrievalVerticle(XfcdEvents xfcdEvents,
@@ -80,6 +87,12 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Bean
         public TrafficsoftDeliveryPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
+            log.info("TrafficsoftDatahubXfcdConfig active: contractId={}, fetchIntervalInSeconds={}, initialFetchDelayInSeconds={}, maxAmountOfNodesPerDelivery={}, refetchImmediatelyOnDeliveryWithMaxAmountOfNodes={}",
+                    contractId,
+                    datahubXfcdProperties.getFetchIntervalInSeconds(),
+                    datahubXfcdProperties.getInitialFetchDelayInSeconds(),
+                    datahubXfcdProperties.getMaxAmountOfNodesPerDelivery(),
+                    datahubXfcdProperties.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes());
             return new TrafficsoftDeliveryPublisherImpl(xfcdClient, contractId);
         }
 
