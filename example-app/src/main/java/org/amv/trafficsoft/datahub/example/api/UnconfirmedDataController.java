@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/data")
 public class UnconfirmedDataController {
 
-    @Value("${amv.trafficsoft.rest.contract-id}")
+    @Value("${amv.trafficsoft.api.rest.contractId}")
     private long contractId;
 
     @Autowired
