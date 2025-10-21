@@ -56,7 +56,7 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Autowired
         public TrafficsoftDatahubXfcdConfig(TrafficsoftDatahubXfcdProperties datahubXfcdProperties,
-                                            @Value("${amv.trafficsoft.rest.api.contractId}") long contractId) {
+                                            @Value("${amv.trafficsoft.api.rest.contractId}") long contractId) {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
             this.contractId = contractId;
         }
