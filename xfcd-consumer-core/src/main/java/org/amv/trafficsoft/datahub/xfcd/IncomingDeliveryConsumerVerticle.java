@@ -50,6 +50,7 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
             }
         };
 
+        log.info("Subscribing to {} on Vert.x event bus", IncomingDeliveryEvent.class.getSimpleName());
         xfcdEvents.subscribe(IncomingDeliveryEvent.class, this.subscriber);
     }
 
@@ -64,6 +65,14 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
         TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
+        if (log.isDebugEnabled()) {
+            log.debug("Start consuming delivery: contract={}, deliveries={}, nodes={}, ids={}",
+                    deliveryPackage.getContractId(),
+                    deliveryPackage.getDeliveries().size(),
+                    deliveryPackage.getAmountOfNodes(),
+                    deliveryPackage.getDeliveryIds());
+        }
+
         vertx.<Void>executeBlocking(promise -> {
             try {
                 consumeIncomingDeliveryEvent(event);
@@ -73,7 +82,12 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
             }
         })
         .doOnError(t -> {
-            log.error("", t);
+            log.error("Failed to consume delivery for contract {} (deliveries={}, nodes={}, ids={}): {}",
+                    deliveryPackage.getContractId(),
+                    deliveryPackage.getDeliveries().size(),
+                    deliveryPackage.getAmountOfNodes(),
+                    deliveryPackage.getDeliveryIds(),
+                    t.getMessage(), t);
         })
         .doOnSuccess(ignored -> {
             if (log.isDebugEnabled()) {
@@ -92,9 +106,8 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
         TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
 
         if (deliveryPackage.isEmpty()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Ignore empty deliveries for contract {}", deliveryPackage.getContractId());
-            }
+            log.info("Not consuming delivery for contract {} because it is empty (0 deliveries, 0 nodes)",
+                    deliveryPackage.getContractId());
             return;
         }
 
@@ -103,15 +116,25 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
             log.debug("Consuming {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
         }
 
-        incomingDeliveryEventConsumer.accept(event, (consumer) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Confirming {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
-            }
+        try {
+            incomingDeliveryEventConsumer.accept(event, (consumer) -> {
+                if (log.isDebugEnabled()) {
+                    log.debug("Confirming {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
+                }
 
-            xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
-                    .deliveryPackage(deliveryPackage)
-                    .build()));
-        });
+                xfcdEvents.publish(ConfirmableDeliveryEvent.class, Flux.just(ConfirmableDeliveryEvent.builder()
+                        .deliveryPackage(deliveryPackage)
+                        .build()));
+            });
+        } catch (Exception e) {
+            log.error("Exception while consuming delivery for contract {} (deliveries={}, nodes={}, ids={}): {}",
+                    deliveryPackage.getContractId(),
+                    deliveries.size(),
+                    deliveryPackage.getAmountOfNodes(),
+                    deliveryPackage.getDeliveryIds(),
+                    e.getMessage(), e);
+            throw e;
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Consumed {} deliveries: {}", deliveries.size(), deliveryPackage.getDeliveryIds());
