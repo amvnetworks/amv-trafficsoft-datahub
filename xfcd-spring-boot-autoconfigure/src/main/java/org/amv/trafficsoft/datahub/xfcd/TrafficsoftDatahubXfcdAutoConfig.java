@@ -3,15 +3,16 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.DeliveryRetrievalVerticle.DeliveryRetrievalConfig;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
 import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Configuration
+@AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
 @EnableConfigurationProperties(TrafficsoftDatahubXfcdProperties.class)
 public class TrafficsoftDatahubXfcdAutoConfig {
     /**
@@ -29,13 +31,10 @@ public class TrafficsoftDatahubXfcdAutoConfig {
      *
      * @return a validator for xfcd settings
      * TODO: currently disabled because only one "configurationPropertiesValidator" is invoked
-    @Bean
-    public static TrafficsoftDatahubXfcdPropertiesValidator configurationPropertiesValidator() {
-        return new TrafficsoftDatahubXfcdPropertiesValidator();
-    }*/
-
-    @Autowired
-    private Environment environment;
+     @Bean
+     public static TrafficsoftDatahubXfcdPropertiesValidator configurationPropertiesValidator() {
+     return new TrafficsoftDatahubXfcdPropertiesValidator();
+     }*/
 
     /**
      * In case the xfcd datahub module is disabled (e.g. during development)
@@ -48,8 +47,6 @@ public class TrafficsoftDatahubXfcdAutoConfig {
     @Bean
     @ConditionalOnMissingBean(XfcdEvents.class)
     public XfcdEvents xfcdEvents(Vertx vertx) {
-        String enabled = environment != null ? environment.getProperty("amv.trafficsoft.datahub.xfcd.enabled", "false") : "unknown";
-        log.info("TrafficsoftDatahubXfcdAutoConfig active (amv.trafficsoft.datahub.xfcd.enabled={})", enabled);
         return new XfcdEvents(vertx);
     }
 
@@ -58,15 +55,14 @@ public class TrafficsoftDatahubXfcdAutoConfig {
     public class TrafficsoftDatahubXfcdConfig {
 
         private final TrafficsoftDatahubXfcdProperties datahubXfcdProperties;
-        private final long contractId;
+        private final TrafficsoftApiRestProperties apiRestProperties;
 
         @Autowired
         public TrafficsoftDatahubXfcdConfig(TrafficsoftDatahubXfcdProperties datahubXfcdProperties,
-                                            @Value("${amv.trafficsoft.api.rest.contractId}") long contractId) {
+                                            TrafficsoftApiRestProperties apiRestProperties) {
             this.datahubXfcdProperties = requireNonNull(datahubXfcdProperties);
-            this.contractId = contractId;
+            this.apiRestProperties = requireNonNull(apiRestProperties);
         }
-
 
         @Bean
         public DeliveryRetrievalVerticle deliveryRetrievalVerticle(XfcdEvents xfcdEvents,
@@ -87,18 +83,12 @@ public class TrafficsoftDatahubXfcdAutoConfig {
 
         @Bean
         public TrafficsoftDeliveryPublisher xfcdGetDataPublisher(XfcdClient xfcdClient) {
-            log.info("TrafficsoftDatahubXfcdConfig active: contractId={}, fetchIntervalInSeconds={}, initialFetchDelayInSeconds={}, maxAmountOfNodesPerDelivery={}, refetchImmediatelyOnDeliveryWithMaxAmountOfNodes={}",
-                    contractId,
-                    datahubXfcdProperties.getFetchIntervalInSeconds(),
-                    datahubXfcdProperties.getInitialFetchDelayInSeconds(),
-                    datahubXfcdProperties.getMaxAmountOfNodesPerDelivery(),
-                    datahubXfcdProperties.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes());
-            return new TrafficsoftDeliveryPublisherImpl(xfcdClient, contractId);
+            return new TrafficsoftDeliveryPublisherImpl(xfcdClient, apiRestProperties.getContractId());
         }
 
         @Bean
         public DeliveryConfirmationVerticle confirmDeliveriesVerticle(XfcdEvents xfcdEvents, XfcdClient xfcdClient) {
-            return new DeliveryConfirmationVerticle(xfcdEvents, xfcdClient, contractId);
+            return new DeliveryConfirmationVerticle(xfcdEvents, xfcdClient, apiRestProperties.getContractId());
         }
 
         @Bean

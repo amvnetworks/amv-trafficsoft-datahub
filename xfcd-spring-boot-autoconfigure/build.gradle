@@ -6,6 +6,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
     // Starter provides auto-config and properties
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-starter:${trafficsoftRestVersion}"
+    implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client-spring-boot-autoconfigure:${trafficsoftRestVersion}"
+
     // Ensure client API (e.g., XfcdClient) is available on compile classpath
     implementation "org.amv.trafficsoft:amv-trafficsoft-rest-client:${trafficsoftRestVersion}"
 

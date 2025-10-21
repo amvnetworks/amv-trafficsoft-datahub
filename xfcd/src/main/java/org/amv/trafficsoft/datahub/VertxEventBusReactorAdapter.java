@@ -2,7 +2,11 @@ package org.amv.trafficsoft.datahub;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.json.Json;
+import io.vertx.core.streams.Pump;
+import io.vertx.ext.reactivestreams.ReactiveReadStream;
+import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import reactor.core.publisher.Flux;
@@ -20,11 +24,12 @@ public class VertxEventBusReactorAdapter<E> {
         requireNonNull(clazz);
         requireNonNull(publisher);
 
-        final String address = clazz.getName();
+        final MessageProducer<Object> messageProducer = vertx.eventBus().publisher(clazz.getName());
 
         Flux.from(publisher)
                 .map(Json::encode)
-                .doOnNext(json -> vertx.eventBus().publish(address, json))
+                .doOnNext(messageProducer::write)
+                .doOnComplete(messageProducer::close)
                 .subscribe();
     }
 

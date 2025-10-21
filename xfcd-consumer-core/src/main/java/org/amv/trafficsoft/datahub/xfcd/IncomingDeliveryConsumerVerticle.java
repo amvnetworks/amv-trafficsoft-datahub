@@ -39,7 +39,7 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        this.subscriber = new BaseSubscriber<>() {
+        this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
                 try {
