@@ -52,6 +52,7 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                 }
             }
         };
+        log.info("Subscribing to {} on Vert.x event bus", ConfirmableDeliveryEvent.class.getSimpleName());
         xfcdEvents.subscribe(ConfirmableDeliveryEvent.class, this.subscriber);
     }
 
@@ -71,6 +72,10 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
                 .flatMap(Collection::stream)
                 .map(DeliveryRestDto::getDeliveryId)
                 .collect(Collectors.toSet());
+
+        if (log.isDebugEnabled()) {
+            log.debug("Preparing to confirm {} deliveries for contract {}: {}", deliveryIds.size(), contractId, deliveryIds);
+        }
 
         xfcdClient.confirmDeliveries(contractId, ImmutableList.copyOf(deliveryIds))
                 .toObservable()
