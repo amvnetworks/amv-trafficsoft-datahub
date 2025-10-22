@@ -3,9 +3,9 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.prometheus.client.CollectorRegistry;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
-import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestProperties;
+import org.amv.trafficsoft.rest.client.xfcd.XfcdClient;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +31,16 @@ import static org.mockito.Mockito.mock;
 })
 public class TrafficsoftDatahubXfcdAutoConfigIT {
     @SpringBootApplication
-    @Import({TrafficsoftApiRestClientAutoConfig.class, TrafficsoftDatahubXfcdAutoConfig.class})
+    @Import(TrafficsoftDatahubXfcdAutoConfig.class)
     public static class TestApplictaion {
-        
         @Bean
-        public Vertx vertx() {
-            return Vertx.vertx();
+        public TrafficsoftApiRestProperties apiRestProperties() {
+            return new TrafficsoftApiRestProperties();
         }
-        
+
         @Bean
-        public org.amv.trafficsoft.rest.client.xfcd.XfcdClient xfcdClient() {
-            return mock(org.amv.trafficsoft.rest.client.xfcd.XfcdClient.class);
+        public XfcdClient xfcdClient() {
+            return mock(XfcdClient.class);
         }
     }
 
