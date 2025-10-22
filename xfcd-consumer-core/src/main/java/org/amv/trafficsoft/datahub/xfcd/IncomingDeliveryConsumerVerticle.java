@@ -41,6 +41,17 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
     public void start() throws Exception {
         this.subscriber = new BaseSubscriber<IncomingDeliveryEvent>() {
             @Override
+            protected void hookOnSubscribe(org.reactivestreams.Subscription subscription) {
+                super.hookOnSubscribe(subscription);
+                try {
+                    requestUnbounded();
+                    log.info("Subscribed to {} in IncomingDeliveryConsumerVerticle", IncomingDeliveryEvent.class.getSimpleName());
+                } catch (Exception e) {
+                    log.warn("Failed during subscription setup in IncomingDeliveryConsumerVerticle: {}", e.getMessage(), e);
+                }
+            }
+
+            @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
                 try {
                     final TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();

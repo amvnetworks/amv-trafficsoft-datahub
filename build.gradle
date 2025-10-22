@@ -3,7 +3,7 @@ import io.franzbecker.gradle.lombok.task.DelombokTask
 buildscript {
     ext {
         trafficsoftRestVersion = '20251020.2'
-        vertxVersion = '4.5.10'
+        vertxVersion = '4.5.21'
         amvVertxVersion = '20251020.1'
         jacksonVersion = '2.17.2'
         springBootVersion = '3.3.4'
