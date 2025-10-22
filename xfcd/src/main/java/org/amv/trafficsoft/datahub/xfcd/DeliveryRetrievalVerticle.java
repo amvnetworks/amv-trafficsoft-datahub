@@ -76,6 +76,8 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         if (config.isRefetchImmediatelyOnDeliveryWithMaxAmountOfNodes()) {
+            log.info("Refetch-on-max-nodes is enabled: subscribing to {} to trigger immediate refetches",
+                    ConfirmedDeliveryEvent.class.getSimpleName());
             this.subscriber = new BaseSubscriber<ConfirmedDeliveryEvent>() {
                 @Override
                 protected void hookOnNext(ConfirmedDeliveryEvent event) {
@@ -88,6 +90,9 @@ public class DeliveryRetrievalVerticle extends AbstractVerticle {
             };
 
             xfcdEvents.subscribe(ConfirmedDeliveryEvent.class, this.subscriber);
+        } else {
+            log.info("Refetch-on-max-nodes is disabled: not subscribing to {}. onConfirmedDeliveryPackage() will not be invoked.",
+                    ConfirmedDeliveryEvent.class.getSimpleName());
         }
 
         this.initTimerId = vertx.setTimer(config.getInitialDelayInMs(), timerId -> {

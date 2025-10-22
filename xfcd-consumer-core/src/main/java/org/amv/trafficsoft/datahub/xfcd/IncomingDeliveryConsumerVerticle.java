@@ -43,6 +43,12 @@ public class IncomingDeliveryConsumerVerticle extends AbstractVerticle {
             @Override
             protected void hookOnNext(IncomingDeliveryEvent event) {
                 try {
+                    final TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
+                    final int amountOfNodes = deliveryPackage.getAmountOfNodes();
+                    log.info("Received {} in IncomingDeliveryConsumerVerticle with {} nodes: {}",
+                            event.getClass().getSimpleName(),
+                            amountOfNodes,
+                            deliveryPackage.getDeliveryIds());
                     onIncomingDeliveryPackage(event);
                 } catch (Exception e) {
                     log.error("", e);

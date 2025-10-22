@@ -1,6 +1,7 @@
 package org.amv.trafficsoft.datahub.xfcd;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
 
 import static java.util.Objects.requireNonNull;
@@ -12,6 +13,7 @@ import static java.util.Objects.requireNonNull;
  * If enabled, this class will execute the given confirm action {@link Confirmation}.
  * Otherwise no action is taken after successful consumption.
  */
+@Slf4j
 public class ConfirmingDeliveryConsumer implements IncomingDeliveryEventConsumer {
 
     private final DeliveryConsumer deliveryConsumer;
@@ -31,7 +33,13 @@ public class ConfirmingDeliveryConsumer implements IncomingDeliveryEventConsumer
         deliveryConsumer.consume(event.getDeliveryPackage());
 
         if (confirmDelivery) {
+            if (log.isDebugEnabled()) {
+                log.debug("Confirming deliveries: {}", event.getDeliveryPackage().getDeliveryIds());
+            }
             action.confirm(this);
+        } else {
+            log.info("Skipping confirmation for deliveries (confirmDelivery=false): {}",
+                    event.getDeliveryPackage().getDeliveryIds());
         }
     }
 }
