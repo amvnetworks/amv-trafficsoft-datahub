@@ -33,6 +33,8 @@ dependencies {
     implementation project(':xfcd-consumer-jdbc')
     // Add xfcd module for TrafficsoftDeliveryPackage class
     implementation project(':xfcd')
+    // Import auto-configuration classes referenced explicitly from example app config
+    implementation project(':xfcd-spring-boot-autoconfigure')
 
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
