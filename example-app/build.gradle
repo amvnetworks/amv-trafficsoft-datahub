@@ -31,6 +31,8 @@ dependencies {
     implementation project(':xfcd-demo-spring-boot-starter')
     // Ensure DAO API is available at compile time
     implementation project(':xfcd-consumer-jdbc')
+    // Bring in auto-configuration that deploys the consumer verticle
+    implementation project(':xfcd-consumer-jdbc-spring-boot-starter')
     // Add xfcd module for TrafficsoftDeliveryPackage class
     implementation project(':xfcd')
     // Import auto-configuration classes referenced explicitly from example app config
