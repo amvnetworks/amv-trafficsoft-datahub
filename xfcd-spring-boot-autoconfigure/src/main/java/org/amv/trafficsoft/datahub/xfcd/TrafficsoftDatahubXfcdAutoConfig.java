@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Configuration
 @AutoConfigureAfter(TrafficsoftApiRestClientAutoConfig.class)
-@EnableConfigurationProperties(TrafficsoftDatahubXfcdProperties.class)
+@EnableConfigurationProperties({TrafficsoftDatahubXfcdProperties.class, TrafficsoftApiRestProperties.class})
 public class TrafficsoftDatahubXfcdAutoConfig {
     /**
      * Reasons for static declaration: created very early in the application’s lifecycle

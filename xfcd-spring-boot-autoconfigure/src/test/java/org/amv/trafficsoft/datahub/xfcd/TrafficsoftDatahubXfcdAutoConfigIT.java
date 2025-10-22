@@ -3,6 +3,7 @@ package org.amv.trafficsoft.datahub.xfcd;
 import io.prometheus.client.CollectorRegistry;
 import io.vertx.core.Vertx;
 import org.amv.trafficsoft.datahub.xfcd.event.IncomingDeliveryEvent;
+import org.amv.trafficsoft.rest.client.autoconfigure.TrafficsoftApiRestClientAutoConfig;
 import org.amv.trafficsoft.rest.xfcd.model.DeliveryRestDtoMother;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.mock;
 })
 public class TrafficsoftDatahubXfcdAutoConfigIT {
     @SpringBootApplication
-    @Import(TrafficsoftDatahubXfcdAutoConfig.class)
+    @Import({TrafficsoftApiRestClientAutoConfig.class, TrafficsoftDatahubXfcdAutoConfig.class})
     public static class TestApplictaion {
         
         @Bean
@@ -90,7 +91,6 @@ public class TrafficsoftDatahubXfcdAutoConfigIT {
     }
 
     @Test
-    @Ignore("Failed on pipeline")
     public void itShouldCollectBasicMetrics() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         final XfcdEvents xfcdEvents = applicationContext.getBean(XfcdEvents.class);

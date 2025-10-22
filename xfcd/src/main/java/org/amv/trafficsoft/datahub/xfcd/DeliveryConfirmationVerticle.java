@@ -46,6 +46,13 @@ public class DeliveryConfirmationVerticle extends AbstractVerticle {
             @Override
             protected void hookOnNext(ConfirmableDeliveryEvent event) {
                 try {
+                    final TrafficsoftDeliveryPackage deliveryPackage = event.getDeliveryPackage();
+                    final int amountOfNodes = deliveryPackage.getAmountOfNodes();
+
+                    log.info("Received event in DeliveryConfirmationVerticle '{}' with {} nodes: {}", event.getClass().getSimpleName(),
+                            amountOfNodes,
+                            deliveryPackage.getDeliveryIds());
+
                     onConfirmableDeliveryEvent(event);
                 } catch (Exception e) {
                     log.error("", e);
